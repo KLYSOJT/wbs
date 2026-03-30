@@ -10,9 +10,9 @@
 
   <!-- Your CSS -->
   <link rel="stylesheet" href="src/css/navbar.css">
-  <link rel="stylesheet" href="src/css/facilities.css">
   <link rel="stylesheet" href="src/css/footer.css">
-  <link rel="stylesheet" href="src/css/index.css">
+   <link rel="stylesheet" href="src/css/header.css">
+
 
 </head>
 
@@ -36,35 +36,35 @@
     </button>
 
     <ul class="nav-links">
-      <li><a href="dashboard.html" class="active">Home</a></li>
+      <li><a href="../../dashboard.html"class="active" >Home</a></li>
 
       <li class="dropdown mobile-open">
-        <a href="#" onclick="return false" class=>About <i class="arrow down"></i></a>
+        <a href="#" onclick="return false" ">About <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
           <li><a href="src/pages/organizational-structure.html">Organizational Structure</a></li>
-          <li><a href="recognized-structure.html">Recognized Organization</a></li>
-          <li><a href="history.html" class=>History Profile</a></li>
-          <li><a href="mvc.html">VMC</a></li>
+          <li><a href="src/pages/recognized-structure.html">Recognized Organization</a></li>
+          <li><a href="src/pages/history.html" class=>History Profile</a></li>
+          <li><a href="src/pages/mvc.html">VMC</a></li>
         </ul>
       </li>
 
       <li class="dropdown">
         <a href="#" onclick="return false">Resources <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
-          <li><a href="school-memo.html">School Memorandum</a></li>
-          <li><a href="division-memo.html">Division Memorandum</a></li>
-          <li><a href="deped-memo.html">DepEd Memorandum</a></li>
-          <li><a href="deped-order.html">DepEd Order</a></li>
+          <li><a href="src/pages/school-memo.html">School Memorandum</a></li>
+          <li><a href="src/pages/division-memo.html">Division Memorandum</a></li>
+          <li><a href="src/pages/deped-memo.html">DepEd Memorandum</a></li>
+          <li><a href="src/pages/deped-order.html">DepEd Order</a></li>
 
           <li class="dropdown-submenu">
             <a href="#" onclick="return false">Learning Materials <i class="arrow down"></i></a>
             <ul class="dropdown-submenu-list">
-              <li><a href="grade7.html">Grade 7</a></li>
-              <li><a href="grade8.html">Grade 8</a></li>
-              <li><a href="grade9.html">Grade 9</a></li>
-              <li><a href="grade10.html">Grade 10</a></li>
-              <li><a href="grade11.html">Grade 11</a></li>
-              <li><a href="grade12.html">Grade 12</a></li>
+              <li><a href="src/pages/grade7.html">Grade 7</a></li>
+              <li><a href="src/pages/grade8.html">Grade 8</a></li>
+              <li><a href="src/pages/grade9.html">Grade 9</a></li>
+              <li><a href="src/pages/grade10.html">Grade 10</a></li>
+              <li><a href="src/pages/grade11.html">Grade 11</a></li>
+              <li><a href="src/pages/grade12.html">Grade 12</a></li>
             </ul>
           </li>
         </ul>
@@ -98,8 +98,8 @@
         </ul>
       </li>
 
-      <li><a href="research.html">Research</a></li>
-      <li><a href="location.html">Location</a></li>
+      <li><a href="src/pages/research.html">Research</a></li>
+      <li><a href="src/pages/location.html">Location</a></li>
     </ul>
 
     <div class="admin-icon-container">
@@ -110,7 +110,6 @@
   </nav>
 
   <!-- JS -->
-  <script src="script.js"></script>
   <script src="src/js/navbar.js"></script>
 
 
@@ -146,6 +145,7 @@
   </div>
 </header>
 
+
 <!-- Carousel -->
 <section class="carousel-container">
   <div class="carousel">
@@ -160,164 +160,58 @@
         <img src="userimages/tatakrecto.png">
       </div>
     </div>
+
+    <div class="carousel-indicators">
+      <span class="indicator active" onclick="currentSlide(1)"></span>
+      <span class="indicator" onclick="currentSlide(2)"></span>
+      <span class="indicator" onclick="currentSlide(3)"></span>
+    </div>
   </div>
 </section>
 
-<!-- Quick Link to Organizational Structure -->
-<section class="quick-link">
-  <div class="quick-link-container" style="text-align:center; margin: 30px 0;">
-    <a href="src/pages/organizational-structure.html" style="display:inline-block; padding: 12px 20px; background:#2b6cb0; color:#fff; border-radius: 6px; text-decoration:none; font-weight:600;">View Organizational Structure</a>
-  </div>
-</section>
-
-<!-- Announcements (STATIC SAMPLE) -->
+<!-- Announcements -->
 <section class="announcements">
   <div class="announcements-container">
     <h2>Announcements</h2>
-
-    <div class="announcements-grid">
-      <div class="announcement-card">
-        <img src="userimages/sample.jpg">
-        <p>March 30, 2026</p>
-        <p>Sample announcement content...</p>
-      </div>
-    </div>
+    <div id="announcementsGrid"></div>
+    <div id="paginationContainer"></div>
   </div>
 </section>
 
-<!-- Latest News (STATIC SAMPLE) -->
+<!-- Latest News -->
 <section class="latest-news">
   <div class="latest-news-container">
     <h2>Latest News</h2>
-
-    <div class="news-grid">
-      <div class="news-card">
-        <img src="userimages/sample.jpg">
-        <h3>Sample News Title</h3>
-        <p>Sample news description...</p>
-      </div>
-    </div>
+    <div id="newsGrid"></div>
+    <div id="newsPaginationContainer"></div>
   </div>
 </section>
 
-<!-- Featured Video (STATIC) -->
+<!-- Featured Video (STATIC PLACEHOLDER) -->
 <section class="featured-video">
   <div class="featured-video-container">
     <h2>Featured Video</h2>
 
-    <div class="video-wrapper">
-      <iframe width="100%" height="500"
-        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-        style="border:none; border-radius:8px;"
-        allowfullscreen>
-      </iframe>
-    </div>
+    <div class="featured-video-grid">
+      <div class="featured-main">
+        <div class="video-wrapper">
+          <iframe id="mainVideo" width="100%" height="500"
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            allowfullscreen></iframe>
+        </div>
 
-    <div class="video-info">
-      <h3>Sample Video Title</h3>
-      <p>Description of the featured video...</p>
-      <p>March 30, 2026</p>
+        <div class="video-info">
+          <h3 id="mainTitle">Sample Video Title</h3>
+          <p id="mainDesc">Sample description here.</p>
+          <p id="mainDate">January 1, 2026</p>
+        </div>
+      </div>
+
+      <div class="video-list" id="videoList"></div>
     </div>
   </div>
 </section>
 
-<!-- Footer -->
-<footer style="text-align:center; padding:20px;">
-  <p>© 2026 RMNHS. All rights reserved.</p>
-</footer>
-
-<!-- JS -->
-<script>
-  // Simple carousel auto-slide
-  let index = 0;
-  const slides = document.querySelectorAll(".carousel-item");
-
-  function showSlide(i) {
-    slides.forEach(s => s.classList.remove("active"));
-    slides[i].classList.add("active");
-  }
-
-  setInterval(() => {
-    index = (index + 1) % slides.length;
-    showSlide(index);
-  }, 4000);
-</script>
-
-<!-- Facilities Section -->
-<section class="facilities-section">
-
-  <header class="facilities-header">Facilities</header>
-
-  <section class="facilities-container">
-    <div class="cards">
-
-      <div class="card-large"
-        style="background-image: url('userimages/facilities/speechlab.png');"
-        role="img" tabindex="0">
-        <div class="number-circle">01</div>
-        <div class="card-text">Speech Laboratory</div>
-      </div>
-
-      <div class="card-small-container">
-
-        <div class="card-small"
-          style="background-image: url('userimages/facilities/comlabG11-4.png');"
-          role="img" tabindex="0">
-          <div class="number-circle">02</div>
-          <div class="card-text">Computer Laboratory</div>
-        </div>
-
-        <div class="card-small"
-          style="background-image: url('https://images.unsplash.com/photo-1581092795360-6023b0c50592');"
-          role="img" tabindex="0">
-          <div class="number-circle">03</div>
-          <div class="card-text">Suarez ICT Computer Laboratory</div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Additional Facilities -->
-  <section class="additional-facilities-container">
-    <div class="additional-facilities-cards">
-
-      <div class="additional-left-cards">
-
-        <div class="card-small"
-          style="background-image: url('https://images.unsplash.com/photo-1562774059-f1e75f0c60b0');"
-          tabindex="0">
-          <div class="number-circle">04</div>
-          <div class="card-text">Covered Court</div>
-        </div>
-
-        <div class="card-small"
-          style="background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d');"
-          tabindex="0">
-          <div class="number-circle">05</div>
-          <div class="card-text">Auditorium</div>
-        </div>
-
-      </div>
-
-      <div class="additional-right-card"
-        style="background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f');"
-        tabindex="0">
-        <div class="number-circle">06</div>
-        <div class="card-text">Canteen</div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Banner -->
-  <section class="facilities-wide-banner">
-    <div class="banner-inner">
-      Recto Memorial National High School Facilities
-    </div>
-  </section>
-
-</section>
 
 <!-- Footer -->
 <footer class="footer">

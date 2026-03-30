@@ -10,9 +10,10 @@
 
   <!-- Your CSS -->
   <link rel="stylesheet" href="../css/navbar.css">
-  <link rel="stylesheet" href="../css/facilities.css">
   <link rel="stylesheet" href="../css/footer.css">
-  <link rel="stylesheet" href="../css/index.css">
+   <link rel="stylesheet" href="../css/header.css">
+      <link rel="stylesheet" href="../css/organizational-structure.css">
+
 
 </head>
 
@@ -145,3 +146,121 @@
     </div>
   </div>
 </header>
+
+<main class="department-page">
+  <h2 class="section-title">Organizational Structure</h2>
+
+  <div class="departments-container">
+    <div class="department-card" onclick="openModal('TLE')">
+      <img src="userimages/tle.png">
+      <div class="dept-name">TLE DEPARTMENT</div>
+    </div>
+
+    <div class="department-card" onclick="openModal('Math')">
+      <img src="userimages/math.png">
+      <div class="dept-name">MATH DEPARTMENT</div>
+    </div>
+
+    <div class="department-card" onclick="openModal('English')">
+      <img src="userimages/ENGLISH.png">
+      <div class="dept-name">ENGLISH DEPARTMENT</div>
+    </div>
+
+    <div class="department-card" onclick="openModal('Science')">
+      <img src="userimages/science.png">
+      <div class="dept-name">SCIENCE DEPARTMENT</div>
+    </div>
+
+    <div class="department-card" onclick="openModal('Filipino')">
+      <img src="userimages/filipino.jpg">
+      <div class="dept-name">FILIPINO DEPARTMENT</div>
+    </div>
+
+    <div class="department-card" onclick="openModal('AP')">
+      <img src="userimages/ap.jpg">
+      <div class="dept-name">AP DEPARTMENT</div>
+    </div>
+
+    <div class="department-card" onclick="openModal('MAPEH')">
+      <img src="userimages/mapeh.png">
+      <div class="dept-name">MAPEH DEPARTMENT</div>
+    </div>
+
+    <div class="department-card" onclick="openModal('Values Education')">
+      <img src="userimages/esp.png">
+      <div class="dept-name">VALUES EDUCATION DEPARTMENT</div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div id="departmentModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- FOOTER: paste manually -->
+
+<script src="organization.js"></script>
+
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+
+    <!-- Logos -->
+    <div class="footer-section footer-logos">
+      <div class="logos-grid">
+        <img src="footer/rectologo.png" class="footer-logo">
+        <img src="footer/depedquezon.png" class="footer-logo">
+        <img src="footer/bagongpilipinas.png" class="footer-logo">
+        <img src="footer/schoolseal.png" class="footer-logo">
+      </div>
+    </div>
+
+    <!-- Facilities -->
+    <div class="footer-section footer-facilities">
+      <h3>Our facilities</h3>
+      <ul>
+        <li><a href="#">Libraries</a></li>
+        <li><a href="#">Conferences</a></li>
+        <li><a href="#">Research</a></li>
+        <li><a href="#">IT support</a></li>
+        <li><a href="#">Sport</a></li>
+      </ul>
+    </div>
+
+    <!-- Contact -->
+    <div class="footer-section footer-contact">
+      <h3>Contact Us</h3>
+      <h4>RECTO MEMORIAL NATIONAL HIGH SCHOOL</h4>
+      <p class="address">X85C+R5C, Tiaong, Quezon Province</p>
+      <p class="phone">0949 995 1769</p>
+
+      <div class="social-icons">
+        <a href="https://www.facebook.com/TheRectorianPress" target="_blank">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://mail.google.com" target="_blank">
+          <i class="fas fa-envelope"></i>
+        </a>
+        <a href="https://maps.google.com/?q=X85C+R5C,+Tiaong,+Quezon+Province" target="_blank">
+          <i class="fas fa-location-dot"></i>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy;2026 All Rights Reserved</p>
+  </div>
+</footer>
+</body>
+</html>
+</body>
+</html>
+
+
