@@ -1,0 +1,138 @@
+/* Root Variables */
+:root {
+  --bg: #3c0008;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #5d0000;
+  --accent-2: #3c0008;
+  --text: #0f172a;
+  --glass: rgba(15, 23, 42, 0.06);
+}
+
+/* Reset */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Section Background */
+.facilities-section {
+  background-color: var(--bg);
+  color: #fff;
+  padding: 1.5rem 0 2rem;
+}
+
+/* Header */
+.facilities-header {
+  text-align: center;
+  font-size: 2.25rem;
+  font-weight: 700;
+  padding: 2rem 1rem;
+}
+
+/* Container */
+.facilities-container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 1rem;
+}
+
+/* Grid */
+.cards {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+}
+
+/* Cards */
+.card-large,
+.card-small,
+.additional-right-card {
+  position: relative;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: 0.3s ease;
+  filter: brightness(0.75);
+}
+
+.card-large { min-height: 420px; }
+.card-small { height: 200px; }
+
+/* Card container */
+.card-small-container {
+  display: grid;
+  gap: 1rem;
+}
+
+/* Text */
+.card-text {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+/* Number badge */
+.number-circle {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #fff;
+  color: #000;
+  padding: 5px 10px;
+  border-radius: 50px;
+  font-weight: bold;
+}
+
+/* Hover */
+.card-large:hover,
+.card-small:hover,
+.additional-right-card:hover {
+  transform: scale(1.05);
+  filter: brightness(1);
+}
+
+/* Additional section */
+.additional-facilities-container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 1rem;
+}
+
+.additional-facilities-cards {
+  display: grid;
+  grid-template-columns: 40% 1fr;
+  gap: 1rem;
+}
+
+.additional-left-cards {
+  display: grid;
+  gap: 1rem;
+}
+
+.additional-right-card {
+  min-height: 420px;
+}
+
+/* Banner */
+.facilities-wide-banner {
+  text-align: center;
+  padding: 1rem;
+  background: #5d0000;
+  color: #cfa66f;
+  margin-top: 2rem;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .additional-facilities-cards {
+    grid-template-columns: 1fr;
+  }
+}
