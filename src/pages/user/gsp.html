@@ -9,10 +9,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <!-- Your CSS -->
-  <link rel="stylesheet" href="../css/navbar.css">
-  <link rel="stylesheet" href="../css/footer.css">
-   <link rel="stylesheet" href="../css/header.css">
-      <link rel="stylesheet" href="../css/organizational-structure.css">
+  <link rel="stylesheet" href="../../css/navbar.css">
+  <link rel="stylesheet" href="../../css/footer.css">
+  <link rel="stylesheet" href="../../css/header.css">
 
 
 </head>
@@ -22,7 +21,7 @@
   <!-- Navigation Bar -->
   <nav class="navbar">
     <div class="logo-container">
-      <img src="../imgs/rectologo.png" alt="RMNHS Logo" class="logo-img">
+      <img src="../../imgs/rectologo.png" alt="RMNHS Logo" class="logo-img">
       <span class="logo-text">RMNHS</span>
     </div>
 
@@ -37,12 +36,12 @@
     </button>
 
     <ul class="nav-links">
-      <li><a href="../../dashboard.html" >Home</a></li>
+      <li><a href="/dashboard.html" >Home</a></li>
 
       <li class="dropdown mobile-open">
-        <a href="#" onclick="return false" class="active">About <i class="arrow down"></i></a>
+        <a href="#" onclick="return false" ">About <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
-          <li><a href="organizational-structure.html"class="active">Organizational Structure</a></li>
+          <li><a href="organizational-structure.html">Organizational Structure</a></li>
           <li><a href="recognized-structure.html">Recognized Organization</a></li>
           <li><a href="history.html" class=>History Profile</a></li>
           <li><a href="mvc.html">VMC</a></li>
@@ -72,14 +71,14 @@
       </li>
 
       <li class="dropdown">
-        <a href="#" onclick="return false">Transparency <i class="arrow down"></i></a>
+        <a href="#" onclick="return false"class="active">Transparency <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
           <li><a href="transparency-info.html">Transparency Information</a></li>
 
           <li class="dropdown-submenu">
             <a href="#" onclick="return false">Procurement Bulletin <i class="arrow down"></i></a>
             <ul class="dropdown-submenu-list">
-              <li><a href="app.html">APP</a></li>
+              <li><a href="app.html"class="active">APP</a></li>
               <li><a href="award-contracts.html">Award of Contracts</a></li>
               <li><a href="bac.html">Bid and Awards Committee</a></li>
               <li><a href="bid-bulletin.html">Bid Bulletin</a></li>
@@ -147,63 +146,6 @@
   </div>
 </header>
 
-<main class="department-page">
-  <h2 class="section-title">Organizational Structure</h2>
-
-  <div class="departments-container">
-    <div class="department-card" onclick="openModal('TLE')">
-      <img src="userimages/tle.png">
-      <div class="dept-name">TLE DEPARTMENT</div>
-    </div>
-
-    <div class="department-card" onclick="openModal('Math')">
-      <img src="userimages/math.png">
-      <div class="dept-name">MATH DEPARTMENT</div>
-    </div>
-
-    <div class="department-card" onclick="openModal('English')">
-      <img src="userimages/ENGLISH.png">
-      <div class="dept-name">ENGLISH DEPARTMENT</div>
-    </div>
-
-    <div class="department-card" onclick="openModal('Science')">
-      <img src="userimages/science.png">
-      <div class="dept-name">SCIENCE DEPARTMENT</div>
-    </div>
-
-    <div class="department-card" onclick="openModal('Filipino')">
-      <img src="userimages/filipino.jpg">
-      <div class="dept-name">FILIPINO DEPARTMENT</div>
-    </div>
-
-    <div class="department-card" onclick="openModal('AP')">
-      <img src="userimages/ap.jpg">
-      <div class="dept-name">AP DEPARTMENT</div>
-    </div>
-
-    <div class="department-card" onclick="openModal('MAPEH')">
-      <img src="userimages/mapeh.png">
-      <div class="dept-name">MAPEH DEPARTMENT</div>
-    </div>
-
-    <div class="department-card" onclick="openModal('Values Education')">
-      <img src="userimages/esp.png">
-      <div class="dept-name">VALUES EDUCATION DEPARTMENT</div>
-    </div>
-  </div>
-</main>
-
-<!-- Modal -->
-<div id="departmentModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <div id="modalBody"></div>
-  </div>
-</div>
-
-<!-- FOOTER: paste manually -->
-
-<script src="organization.js"></script>
 
 
 <!-- Footer -->
@@ -262,5 +204,3 @@
 </html>
 </body>
 </html>
-
-

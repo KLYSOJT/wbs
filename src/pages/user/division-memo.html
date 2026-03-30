@@ -9,9 +9,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <!-- Your CSS -->
-  <link rel="stylesheet" href="../css/navbar.css">
-  <link rel="stylesheet" href="../css/footer.css">
-   <link rel="stylesheet" href="../css/header.css">
+  <link rel="stylesheet" href="../../css/navbar.css">
+  <link rel="stylesheet" href="../../css/footer.css">
+  <link rel="stylesheet" href="../../css/header.css">
+  <link rel="stylesheet" href="../../css/memorandum.css">
 
 
 </head>
@@ -21,7 +22,7 @@
   <!-- Navigation Bar -->
   <nav class="navbar">
     <div class="logo-container">
-      <img src="../imgs/rectologo.png" alt="RMNHS Logo" class="logo-img">
+      <img src="../../imgs/rectologo.png" alt="RMNHS Logo" class="logo-img">
       <span class="logo-text">RMNHS</span>
     </div>
 
@@ -36,7 +37,7 @@
     </button>
 
     <ul class="nav-links">
-      <li><a href="../../dashboard.html" >Home</a></li>
+      <li><a href="/dashboard.html" >Home</a></li>
 
       <li class="dropdown mobile-open">
         <a href="#" onclick="return false" >About <i class="arrow down"></i></a>
@@ -51,8 +52,8 @@
       <li class="dropdown">
         <a href="#" onclick="return false"class="active">Resources <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
-          <li><a href="school-memo.html"class="active">School Memorandum</a></li>
-          <li><a href="division-memo.html">Division Memorandum</a></li>
+          <li><a href="school-memo.html">School Memorandum</a></li>
+          <li><a href="division-memo.html"class="active">Division Memorandum</a></li>
           <li><a href="deped-memo.html">DepEd Memorandum</a></li>
           <li><a href="deped-order.html">DepEd Order</a></li>
 
@@ -145,6 +146,131 @@
     </div>
   </div>
 </header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Main Content -->
+<main class="main-content">
+  <div class="container">
+
+    <div class="section-title-container">
+      <h1 class="section-title">SCHOOL MEMORANDUM</h1>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-section">
+      <div class="filter-controls">
+        <select class="filter-dropdown" id="yearFilter">
+          <option value="">Year</option>
+          <option value="2026">2026</option>
+          <option value="2025">2025</option>
+          <option value="2024">2024</option>
+        </select>
+
+        <select class="filter-dropdown" id="monthFilter">
+          <option value="">Month</option>
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+          <option value="06">June</option>
+          <option value="07">July</option>
+          <option value="08">August</option>
+          <option value="09">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+      </div>
+
+      <div class="search-box">
+        <input type="text" class="search-input" placeholder="Search" id="searchInput">
+        <button class="search-btn"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <table class="memo-table">
+        <thead>
+          <tr>
+            <th>Date Added</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>File</th>
+          </tr>
+        </thead>
+
+        <tbody id="memoTableBody">
+          <!-- STATIC SAMPLE DATA -->
+          <tr>
+            <td>03-25-2026</td>
+            <td>Enrollment Guidelines</td>
+            <td>Guidelines for student enrollment for SY 2026...</td>
+            <td><a href="#" class="download-link">View</a></td>
+          </tr>
+
+          <tr>
+            <td>02-10-2025</td>
+            <td>Faculty Meeting</td>
+            <td>Meeting schedule for all teaching staff...</td>
+            <td><a href="#" class="download-link">View</a></td>
+          </tr>
+
+          <tr>
+            <td>01-15-2024</td>
+            <td>School Event</td>
+            <td>Upcoming school activities and events...</td>
+            <td><span style="color:#999;">No file</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+      <div class="pagination" id="paginationControls"></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- External JS -->
+<script src="src/js/memo.js"></script>
+
+
+
+
+
+
+
 
 
 

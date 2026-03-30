@@ -14,6 +14,7 @@ let currentPage = 1;
 
 function renderAnnouncements() {
   const grid = document.getElementById("announcementsGrid");
+  if (!grid) return; // Skip if element doesn't exist
   grid.innerHTML = "";
 
   announcements.forEach((a) => {
