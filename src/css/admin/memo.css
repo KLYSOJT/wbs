@@ -1,0 +1,354 @@
+/* --- Global Styles --- */
+:root {
+  --primary-color: #5d0000;       /* Your brand maroon */
+  --primary-hover: #450000;       /* Darker shade for hover */
+  --accent-light: #fef2f2;        /* Very light tint for backgrounds */
+  --bg-color: #f8fafc;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --card-bg: #ffffff;
+  --border-color: #e2e8f0;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg-color);
+  min-height: 100vh;
+}
+
+.main-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-bottom: 50px;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 30px;
+  height: calc(100vh - 60px);
+  margin-top: 20px;
+}
+
+/* Card Styles */
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Form Panel */
+.form-panel {
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-panel h2 {
+  color: var(--text-main);
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--text-main);
+  font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 14px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: var(--bg-color);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  background: var(--card-bg);
+  box-shadow: 0 0 0 3px rgba(93, 0, 0, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* File Input */
+.file-input-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.file-label {
+  display: inline-block;
+  padding: 14px 20px;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.file-label:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(93, 0, 0, 0.4);
+}
+
+.file-name {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Upload Button */
+.upload-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 16px 30px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.upload-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(93, 0, 0, 0.4);
+}
+
+/* Table Panel */
+.table-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.table-header h1 {
+  color: var(--text-main);
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.search-bar {
+  padding: 14px 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 25px;
+  font-size: 1rem;
+  width: 300px;
+  background: var(--bg-color);
+  transition: all 0.3s ease;
+}
+
+.search-bar:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(93, 0, 0, 0.1);
+}
+
+/* Table Styles */
+.table-card {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 400px;
+}
+
+.resources-table {
+  width: 100%;
+  border-collapse: collapse;
+  flex: 1;
+  background: var(--card-bg);
+}
+
+.resources-table thead {
+  background: var(--primary-color);
+  color: white;
+}
+
+.resources-table th {
+  padding: 20px 15px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.resources-table td {
+  padding: 20px 15px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.resources-table tbody tr {
+  transition: all 0.3s ease;
+}
+
+.resources-table tbody tr:hover {
+  background: var(--bg-color);
+  transform: scale(1.01);
+}
+
+.resources-table td:first-child {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.resources-table a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 16px;
+  border: 2px solid var(--primary-color);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.resources-table a:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Action Buttons */
+.btn-edit,
+.btn-delete {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-right: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-edit {
+  background: #27ae60;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #229954;
+  transform: translateY(-2px);
+}
+
+.btn-delete {
+  background: #e74c3c;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    height: auto;
+  }
+  
+  .table-header {
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
+  }
+  
+  .search-bar {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  .card {
+    padding: 20px;
+  }
+  
+  .resources-table {
+    font-size: 0.9rem;
+  }
+  
+  .resources-table th,
+  .resources-table td {
+    padding: 15px 10px;
+  }
+}
+
+/* Scrollbar Styling */
+.table-card::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-card::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.table-card::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+.table-card::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

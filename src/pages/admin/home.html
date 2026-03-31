@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Home</title>
-    <link rel="stylesheet" href="../../css/admin/home.css">
+    <link rel="stylesheet" href="../../css/admin/navbar.css">
+     <link rel="stylesheet" href="../../css/admin/home.css">
     <!-- Add Font Awesome if not already included -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -94,5 +95,332 @@
   <!-- JS -->
   <script src="script.js"></script>
   <script src="src/js/navbar.js"></script>
-</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Main Content -->
+  <main class="admin-dashboard">
+    <div class="dashboard-header">
+      <h1>Dashboard</h1>
+      <p>Welcome to the RMNHS Admin Panel</p>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Announcement Card -->
+      <div class="card announcement-card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <i class="fas fa-bullhorn"></i>
+            Announcement
+          </h2>
+        </div>
+        <div class="card-body">
+          <form id="announcementForm" enctype="multipart/form-data">
+            <div class="upload-zone">
+              <div class="drag-drop-area" id="announcementDragDrop">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p class="primary-text">Drag and drop your image here</p>
+                <p class="secondary-text">or click to select</p>
+                <div class="loading-spinner" id="announcementLoading" style="display: none;">
+                  <div class="spinner"></div>
+                  <p style="margin-top: 10px; color: #666;">Processing...</p>
+                </div>
+              </div>
+              <input type="file" id="announcementImage" name="image" accept="image/*" style="display: none;">
+              <div id="announcementImagePreview" style="display: none; margin-top: 10px;">
+                <img id="announcementImagePreviewImg" style="max-width: 100%; max-height: 200px; border-radius: 5px;">
+                <button type="button" class="remove-btn" onclick="clearAnnouncementImage()">Remove Image</button>
+              </div>
+            </div>
+            <textarea class="form-input" name="announcement" placeholder="Write your announcement here..."></textarea>
+            <button type="submit" class="btn btn-primary btn-block">
+              <i class="fas fa-upload"></i>
+              Publish Announcement
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- News Card -->
+      <div class="card news-card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <i class="fas fa-newspaper"></i>
+            News
+          </h2>
+        </div>
+        <div class="card-body">
+          <form id="newsForm" enctype="multipart/form-data">
+            <div class="upload-zone">
+              <div class="drag-drop-area" id="newsDragDrop">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p class="primary-text">Drag and drop your image here</p>
+                <p class="secondary-text">or click to select</p>
+                <div class="loading-spinner" id="newsLoading" style="display: none;">
+                  <div class="spinner"></div>
+                  <p style="margin-top: 10px; color: #666;">Processing...</p>
+                </div>
+              </div>
+              <input type="file" id="newsImage" name="image" accept="image/*" style="display: none;">
+              <div id="newsImagePreview" style="display: none; margin-top: 10px;">
+                <img id="newsImagePreviewImg" style="max-width: 100%; max-height: 200px; border-radius: 5px;">
+                <button type="button" class="remove-btn" onclick="clearNewsImage()">Remove Image</button>
+              </div>
+            </div>
+            <textarea class="form-input" name="news" placeholder="Write your news here..."></textarea>
+            <button type="submit" class="btn btn-primary btn-block">
+              <i class="fas fa-upload"></i>
+              Publish News
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Published Items Section -->
+    <div class="published-items-section">
+      <!-- Sample Announcements -->
+      <div class="published-card announcements-list-card">
+        <div class="card-header">
+          <h2 class="card-title"><i class="fas fa-list"></i> Published Announcements</h2>
+        </div>
+        <div class="card-body">
+          <div class="items-container">
+            <div class="published-item" data-id="1" data-type="announcement" data-content="Welcome back to school! Excited for the new academic year." data-image="sample1.jpg">
+              <div class="item-content">
+                <div class="item-image">
+                  <img src="https://via.placeholder.com/100x80/4CAF50/ffffff?text=Ann1" alt="Announcement Image">
+                </div>
+                <div class="item-text">
+                  <p class="item-content-text">Welcome back to school! Excited for the new academic year...</p>
+                  <p class="item-date">Dec 15, 2024 - 2:30 PM</p>
+                </div>
+              </div>
+              <div class="item-actions">
+                <button class="btn-action btn-edit" type="button"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn-action btn-delete" type="button"><i class="fas fa-trash"></i> Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sample News -->
+      <div class="published-card news-list-card">
+        <div class="card-header">
+          <h2 class="card-title"><i class="fas fa-list"></i> Published News</h2>
+        </div>
+        <div class="card-body">
+          <div class="items-container">
+            <div class="published-item" data-id="1" data-type="news" data-content="Science fair winners announced today!" data-image="sample2.jpg">
+              <div class="item-content">
+                <div class="item-image">
+                  <img src="https://via.placeholder.com/100x80/2196F3/ffffff?text=News1" alt="News Image">
+                </div>
+                <div class="item-text">
+                  <p class="item-content-text">Science fair winners announced today!...</p>
+                  <p class="item-date">Dec 14, 2024 - 10:15 AM</p>
+                </div>
+              </div>
+              <div class="item-actions">
+                <button class="btn-action btn-edit" type="button"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn-action btn-delete" type="button"><i class="fas fa-trash"></i> Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sample Videos -->
+      <div class="published-card videos-list-card">
+        <div class="card-header">
+          <h2 class="card-title"><i class="fas fa-video"></i> Featured Videos</h2>
+        </div>
+        <div class="card-body">
+          <div class="items-container">
+            <div class="published-item" data-id="1" data-type="video" data-content="Welcome Video" data-description="Introductory video for new students" data-filename="welcome.mp4">
+              <div class="item-content">
+                <div class="item-text">
+                  <p class="item-content-text">Welcome Video</p>
+                  <p class="item-desc">Introductory video for new students</p>
+                  <p class="item-date">Dec 10, 2024 - 9:00 AM</p>
+                </div>
+              </div>
+              <div class="item-actions">
+                <button class="btn-action btn-edit" type="button"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn-action btn-delete" type="button"><i class="fas fa-trash"></i> Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Video Upload Section -->
+    <div class="video-upload-section" style="margin-top: 2rem;">
+      <div class="card video-card">
+        <div class="card-header">
+          <h2 class="card-title"><i class="fas fa-video"></i> Upload Video</h2>
+          <p style="font-size: 12px; color: #666; margin: 5px 0 0;">Max upload size: <span id="videoMaxSize">50 MB</span></p>
+        </div>
+        <div class="card-body">
+          <form id="videoForm" enctype="multipart/form-data">
+            <input type="text" class="form-input" name="title" placeholder="Video title">
+            <textarea class="form-input" name="description" placeholder="Video description (optional)" style="min-height:80px;"></textarea>
+            
+            <div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 5px;">
+              <p style="font-size: 13px; font-weight: 600; margin: 0 0 10px 0; color: #333;">Choose upload method:</p>
+              <div style="display: flex; gap: 20px;">
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="radio" name="video_method" value="upload" checked style="margin-right: 8px;">
+                  <span style="font-size: 13px;">Upload Video File</span>
+                </label>
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="radio" name="video_method" value="url" style="margin-right: 8px;">
+                  <span style="font-size: 13px;">Paste Video URL</span>
+                </label>
+              </div>
+            </div>
+
+            <div id="videoProgress" style="display:none; margin-bottom:10px;">
+              <div id="videoProgressBar" style="width:0; height:8px; background:var(--primary-color); border-radius:4px;"></div>
+              <p id="videoProgressText" style="font-size:12px; margin:4px 0 0;">0%</p>
+            </div>
+            
+            <div id="fileUploadSection" class="upload-zone">
+              <div class="drag-drop-area" id="videoDragDrop">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p class="primary-text">Drag and drop your video here</p>
+                <p class="secondary-text">or click to select</p>
+                <div class="loading-spinner" id="videoLoading" style="display: none;">
+                  <div class="spinner"></div>
+                  <p style="margin-top: 10px; color: #666;">Processing...</p>
+                </div>
+              </div>
+              <input type="file" id="videoFile" name="video" accept="video/*" style="display: none;">
+              <div id="videoPreview" style="display: none; margin-top: 10px;">
+                <video id="videoPreviewElem" controls style="max-width: 100%; max-height: 200px; border-radius: 5px;"></video>
+                <button type="button" class="remove-btn" onclick="clearVideo()">Remove Video</button>
+              </div>
+            </div>
+
+            <div id="urlInputSection" style="display: none;">
+              <input type="url" class="form-input" id="videoUrl" name="video_url" placeholder="Enter video URL (YouTube, Vimeo, etc.)">
+              <div id="urlPreview" style="display: none; margin-top: 10px; text-align: center;">
+                <p style="font-size: 12px; color: #666; margin-bottom: 8px;">URL Preview</p>
+                <iframe id="urlPreviewFrame" width="100%" height="300" style="border-radius: 5px; border: 1px solid #ddd;" allowfullscreen></iframe>
+                <button type="button" class="remove-btn" onclick="clearVideoUrl()">Remove URL</button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+              <i class="fas fa-upload"></i> Upload
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="publishModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <div class="modal-icon"><i class="fas fa-check-circle"></i></div>
+        <h2 class="modal-title" id="modalTitle">Published Successfully!</h2>
+        <div id="modalImageContainer" style="display: none; margin: 20px 0; text-align: center;">
+          <p style="font-size: 14px; color: #999; margin-bottom: 10px;">Image Preview</p>
+          <img id="modalImage" style="max-width: 100%; max-height: 300px; border-radius: 5px;">
+        </div>
+        <div id="modalVideoContainer" style="display: none; margin: 20px 0; text-align: center;">
+          <p style="font-size: 14px; color: #999; margin-bottom: 10px;">Video Preview</p>
+          <video id="modalVideo" controls style="max-width: 100%; max-height: 300px; border-radius: 5px;"></video>
+        </div>
+        <div id="modalContentContainer" style="display: none; margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 5px;">
+          <p style="font-size: 12px; color: #999; margin-bottom: 10px;">Content Preview</p>
+          <p id="modalContent" style="color: #333; margin: 0; white-space: pre-wrap;"></p>
+        </div>
+        <p class="modal-message" id="modalMessage">Your content has been published successfully.</p>
+        <div class="modal-buttons">
+          <button class="modal-button modal-button-primary" onclick="closeModal()">
+            <i class="fas fa-check"></i> OK
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeEditModal()">&times;</span>
+        <h2 class="modal-title">Edit Item</h2>
+        <form id="editForm" enctype="multipart/form-data">
+          <input type="hidden" id="editId" name="id">
+          <input type="hidden" id="editType" name="type">
+          <div class="form-group">
+            <label>Current Media:</label>
+            <div id="currentImageContainer"></div>
+          </div>
+          <div class="form-group">
+            <label>New Media (Optional):</label>
+            <div class="upload-zone">
+              <div class="drag-drop-area" id="editDragDrop">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Drag and drop or click to select</p>
+              </div>
+              <input type="file" id="editImage" name="image" style="display: none;">
+              <div id="editImagePreview" style="display: none; margin-top: 10px;">
+                <img id="editImagePreviewImg">
+                <button type="button" class="remove-btn" onclick="clearEditImage()">Remove</button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Content:</label>
+            <textarea id="editContent" class="form-input" name="content" style="width: 100%; min-height: 100px;"></textarea>
+          </div>
+          <div class="form-group" id="editDescriptionGroup" style="display:none;">
+            <label>Description:</label>
+            <textarea id="editDescription" class="form-input" name="description" style="width: 100%; min-height: 80px;"></textarea>
+          </div>
+          <div class="modal-buttons">
+            <button type="button" class="modal-button modal-button-secondary" onclick="closeEditModal()">Cancel</button>
+            <button type="submit" class="modal-button modal-button-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="deleteConfirmModal" class="modal">
+      <div class="modal-content">
+        <h2 class="modal-title">Confirm Delete</h2>
+        <div class="modal-icon"><i class="fas fa-exclamation-triangle" style="color: #f44336; font-size: 50px;"></i></div>
+        <p class="modal-message">Are you sure you want to delete this item? This action cannot be undone.</p>
+        <div class="modal-buttons">
+          <button class="modal-button modal-button-secondary" onclick="closeDeleteModal()">Cancel</button>
+          <button class="modal-button modal-button-delete" onclick="confirmDelete()">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="editSuccessModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeEditSuccessModal()">&times;</span>
+        <div class="modal-icon"><i class="fas fa-check-circle" style="color: #4CAF50;"></i></div>
+        <h2 class="modal-title">Success!</h2>
+        
+
+        </body>
 </html>

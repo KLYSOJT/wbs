@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Home</title>
+    <link rel="stylesheet" href="../../css/admin/navbar.css">
+    <link rel="stylesheet" href="../../css/admin/recognized-structure.css">
+    <!-- Add Font Awesome if not already included -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="logo-container">
+      <img src="../../imgs/rectologo.png" alt="RMNHS Logo" class="logo-img">
+      <span class="logo-text">RMNHS</span>
+    </div>
+
+    <!-- Static Search (no backend) -->
+    <form class="search-container">
+      <input type="text" placeholder="Search">
+      <button type="button"><i class="fa fa-search"></i></button>
+    </form>
+
+    <ul class="nav-links">
+      <li><a href="home.html" >Home</a></li>
+
+      <li class="dropdown mobile-open">
+        <a href="#" onclick="return false"class="active">About <i class="arrow down"></i></a>
+        <ul class="dropdown-menu">
+          <li><a href="organizational-structure.html">Organizational Structure</a></li>
+          <li><a href="recognized-structure.html"class="active">Recognized Organization</a></li>
+        </ul>
+      </li>
+
+      <li class="dropdown">
+        <a href="#" onclick="return false">Resources <i class="arrow down"></i></a>
+        <ul class="dropdown-menu">
+          <li><a href="school-memo.html" >School Memorandum</a></li>
+          <li><a href="division-memo.html">Division Memorandum</a></li>
+          <li><a href="deped-order.html">DepEd Order</a></li>
+
+          <li class="dropdown-submenu">
+            <a href="#" onclick="return false">Learning Materials <i class="arrow down"></i></a>
+            <ul class="dropdown-submenu-list">
+              <li><a href="grade7.html">Grade 7</a></li>
+              <li><a href="grade8.html">Grade 8</a></li>
+              <li><a href="grade9.html">Grade 9</a></li>
+              <li><a href="grade10.html">Grade 10</a></li>
+              <li><a href="grade11.html">Grade 11</a></li>
+              <li><a href="grade12.html">Grade 12</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+
+      <li class="dropdown">
+        <a href="#" onclick="return false">Transparency <i class="arrow down"></i></a>
+        <ul class="dropdown-menu">
+          <li class="dropdown-submenu">
+            <a href="#" onclick="return false">Procurement Bulletin <i class="arrow down"></i></a>
+            <ul class="dropdown-submenu-list">
+              <li><a href="app.html">APP</a></li>
+              <li><a href="award-contracts.html">Award of Contracts</a></li>
+              <li><a href="bac.html">Bid and Awards Committee</a></li>
+              <li><a href="bid-bulletin.html">Bid Bulletin</a></li>
+              <li><a href="invitation-bid.html">Invitation to Bid</a></li>
+              <li><a href="philgeps.html">PhilGEPS</a></li>
+              <li><a href="procurement-reports.html">Procurement Reports</a></li>
+            </ul>
+          </li>
+
+          <li><a href="spta.html">SPTA</a></li>
+          <li><a href="sslg.html">SSLG</a></li>
+          <li><a href="bsp.html">BSP</a></li>
+          <li><a href="gsp.html">GSP</a></li>
+          <li><a href="tr.html">TR</a></li>
+          <li><a href="mooe.html">MOOE</a></li>
+          <li><a href="redcross.html">Red Cross</a></li>
+        </ul>
+      </li>
+
+      <li><a href="research.html">Research</a></li>
+
+    </ul>
+
+    <div class="admin-icon-container">
+      <a href="/dashboard.html" title="Logout" class="admin-icon-link">
+        <i class="fas fa-power-off logout-icon"></i>
+      </a>
+    </div>
+
+
+  <!-- JS -->
+  <script src="script.js"></script>
+  <script src="src/js/navbar.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<main class="main-content">
+  <div class="dashboard-header">
+    <h1>Recognized Organization</h1>
+    <p>Manage recognized organization details here.</p>
+  </div>
+
+  <div class="content-card">
+    <!-- Example Notices -->
+    <div class="notice success">Organization saved successfully.</div>
+    <div class="notice error" style="display:none;">Error message example</div>
+
+    <form id="recognizedForm" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="action" value="save">
+      
+      <div class="form-group">
+        <label for="org_name">Organization Name *</label>
+        <input type="text" id="org_name" name="org_name" placeholder="Enter organization name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="date_established">Date Established</label>
+        <input type="date" id="date_established" name="date_established">
+      </div>
+
+      <div class="form-group">
+        <label for="adviser_name">Adviser Name</label>
+        <input type="text" id="adviser_name" name="adviser_name" placeholder="Enter adviser name">
+      </div>
+
+      <div class="upload-zone">
+        <label>Upload Image</label>
+        <div class="drag-drop-area" id="imageDragDrop">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p class="primary-text">Upload Image</p>
+          <p class="secondary-text">Drag & drop or click to browse</p>
+        </div>
+        <input type="file" id="orgImage" name="image" accept="image/*">
+      </div>
+
+      <div class="upload-zone">
+        <label>Upload PDF (Optional)</label>
+        <div class="drag-drop-area" id="pdfDragDrop">
+          <i class="fas fa-file-pdf"></i>
+          <p class="primary-text">Upload PDF (Optional)</p>
+          <p class="secondary-text">Drag & drop or click to browse</p>
+        </div>
+        <input type="file" id="orgPdf" name="pdf" accept=".pdf,application/pdf">
+      </div>
+
+      <button type="submit" class="btn btn-primary">Save Organization</button>
+    </form>
+
+    <!-- Uploaded Organizations Section (static placeholders) -->
+    <div class="section-title">Uploaded Organizations</div>
+    <div class="uploaded-grid">
+      <div class="uploaded-item">
+        <img src="placeholder-image.jpg" alt="Organization Example" class="item-image">
+        <div class="meta">Example Organization</div>
+        <div class="established">Established: Jan 01, 2000</div>
+        <div class="adviser">Adviser: John Doe</div>
+        <div class="date">Updated: Mar 31, 2026</div>
+        <div class="pdf-link">
+          <a href="example.pdf" target="_blank" class="btn-pdf">
+            <i class="fas fa-file-pdf"></i> View PDF
+          </a>
+        </div>
+        <form class="replace-form" onsubmit="return confirm('Are you sure you want to delete this organization?');">
+          <button type="submit" class="btn-delete">Delete</button>
+        </form>
+      </div>
+      <!-- Add more static uploaded items here if needed -->
+    </div>
+  </div>
+</main>
+
+<!-- External JS -->
+<script src="recognized.js"></script>
+
+</body>
+</html>

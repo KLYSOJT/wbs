@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>School Memorandum - RMNHS Admin</title>
-  <link rel="stylesheet" href="../../css/admin/navbar.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Home</title>
+    <link rel="stylesheet" href="../../css/admin/navbar.css">
+    <link rel="stylesheet" href="../../css/admin/memo.css">
+    <!-- Add Font Awesome if not already included -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-
-<!-- Navigation Bar -->
+  <!-- Navigation Bar -->
   <nav class="navbar">
     <div class="logo-container">
       <img src="../../imgs/rectologo.png" alt="RMNHS Logo" class="logo-img">
@@ -20,10 +22,6 @@
       <input type="text" placeholder="Search">
       <button type="button"><i class="fa fa-search"></i></button>
     </form>
-
-    <button class="menu-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
-      <i class="fas fa-bars"></i>
-    </button>
 
     <ul class="nav-links">
       <li><a href="home.html" >Home</a></li>
@@ -37,7 +35,7 @@
       </li>
 
       <li class="dropdown">
-        <a href="#" onclick="return false" class="active">Resources <i class="arrow down"></i></a>
+        <a href="#" onclick="return false"class="active">Resources <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
           <li><a href="school-memo.html" class="active">School Memorandum</a></li>
           <li><a href="division-memo.html">Division Memorandum</a></li>
@@ -60,8 +58,6 @@
       <li class="dropdown">
         <a href="#" onclick="return false">Transparency <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
-          <li><a href="transparency-info.html">Transparency Information</a></li>
-
           <li class="dropdown-submenu">
             <a href="#" onclick="return false">Procurement Bulletin <i class="arrow down"></i></a>
             <ul class="dropdown-submenu-list">
@@ -86,27 +82,114 @@
       </li>
 
       <li><a href="research.html">Research</a></li>
-      <li><a href="location.html">Location</a></li>
+
     </ul>
 
     <div class="admin-icon-container">
-      <a href="#" class="admin-icon-link" title="Admin Panel">
-        <i class="fa fa-user-shield"></i>
-      </a>
-      <a href="../user/school-memo.html" title="Logout" class="admin-icon-link">
+      <a href="/dashboard.html" title="Logout" class="admin-icon-link">
         <i class="fas fa-power-off logout-icon"></i>
       </a>
     </div>
-  </nav>
+
 
   <!-- JS -->
   <script src="script.js"></script>
+  <script src="src/js/navbar.js"></script>
 
-<!-- Add page content below -->
-<div class="page-content">
-  <h1>School Memorandum</h1>
-  <p>This is the static page content for School Memorandum (admin). Update as needed.</p>
-</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Main Content -->
+  <main class="main-content">
+  <div class="dashboard-grid">
+
+    <!-- LEFT: FORM PANEL -->
+    <div class="form-panel">
+      <div class="card">
+        <h2>Add New Document</h2>
+
+        <form id="uploadForm" class="upload-form">
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" placeholder="Enter title" required>
+          </div>
+
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" required>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea rows="4" placeholder="Enter description"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Upload File</label>
+            <div class="file-input-wrapper">
+              <input type="file" id="docFile" class="file-input-hidden">
+              <label for="docFile" class="file-label">Choose File</label>
+              <span class="file-name">No file chosen</span>
+            </div>
+          </div>
+
+          <button type="submit" class="upload-btn">Upload</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- RIGHT: TABLE PANEL -->
+    <div class="table-panel">
+      
+      <!-- HEADER TOOLBAR -->
+      <div class="table-header">
+        <h1>School Memorandum</h1>
+        <input type="text" class="search-bar" placeholder="Search documents...">
+      </div>
+
+      <div class="card table-card">
+        <table class="resources-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>File</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>03-31-2026</td>
+              <td>Sample DepEd Order</td>
+              <td>This is a sample description.</td>
+              <td><a href="#">View</a></td>
+              <td>
+                <button class="btn-edit">Edit</button>
+                <button class="btn-delete">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
 
 </body>
 </html>
