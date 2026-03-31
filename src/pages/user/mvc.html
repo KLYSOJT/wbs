@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../../css/navbar.css">
   <link rel="stylesheet" href="../../css/footer.css">
   <link rel="stylesheet" href="../../css/header.css">
+   <link rel="stylesheet" href="../../css/mvc.css ">
 
 
 </head>
@@ -147,6 +148,140 @@
 </header>
 
 
+
+
+
+
+
+
+
+<main class="mvc-main">
+  <div class="container">
+    <section>
+        <h2>Mission</h2>
+        <p>To protect and promote the right of every Filipino to quality, equitable, culture-based, and complete basic education where:</p>
+        <ul class="mission-points">
+            <li><strong>Students</strong> learn in a child-friendly, gender-sensitive, safe, and motivating environment.</li>
+            <li><strong>Teachers</strong> facilitate learning and constantly nurture every learner.</li>
+            <li><strong>Administrators and staff</strong>, as stewards of the institution, ensure an enabling and supportive environment for effective learning to happen.</li>
+            <li><strong>Family, community, and other stakeholders</strong> are actively engaged and share responsibility for developing life-long learners.</li>
+        </ul>
+    </section>
+
+    <hr>
+
+    <section>
+        <h2>Vision</h2>
+        <p>We dream of Filipinos who passionately love their country and whose values and competencies enable them to realize their full potential and contribute meaningfully to building the nation.</p>
+        <p>As a learner-centered public institution, the Department of Education continuously improves itself to better serve its stakeholders.</p>
+    </section>
+
+    <hr>
+
+    <section>
+        <h2>Core Values</h2>
+        <div class="core-values-grid">
+            
+            <div class="custom-dropdown" id="dropdown-diyos">
+                <div class="dropdown-header">
+                  <span onclick="openValueModal('userimages/makadiyos.png', 'Maka-diyos: pagkakaroon ng matibay na pananalig, pagmamahal, at pagsunod sa mga utos ng Panginoong Maykapal')">Maka-Diyos</span>
+                  <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true" onclick="event.stopPropagation(); toggleDropdown('dropdown-diyos')"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <ul class="reports-list">
+                    <li>Accomplishment Report 1</li>
+                    <li>Accomplishment Report 2</li>
+                </ul>
+            </div>
+
+            <div class="custom-dropdown" id="dropdown-tao">
+                <div class="dropdown-header">
+                  <span onclick="openValueModal('userimages/makatao.png', 'Maka-tao: pagpapakita ng pagmamahal, paggalang, at malasakit sa kapwa tao')">Maka-Tao</span>
+                  <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true" onclick="event.stopPropagation(); toggleDropdown('dropdown-tao')"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <ul class="reports-list">
+                    <li>Accomplishment Report 1</li>
+                </ul>
+            </div>
+
+            <div class="custom-dropdown" id="dropdown-kalikasan">
+                <div class="dropdown-header">
+                  <span onclick="openValueModal('userimages/makakalikasan.png', 'Maka-kalikasan: pagmamahal, pagpapahalaga, at pangangalaga sa kapaligiran')">Makakalikasan</span>
+                  <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true" onclick="event.stopPropagation(); toggleDropdown('dropdown-kalikasan')"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <ul class="reports-list">
+                    <li>Accomplishment Report 1</li>
+                </ul>
+            </div>
+
+            <div class="custom-dropdown" id="dropdown-bansa">
+                <div class="dropdown-header">
+                  <span onclick="openValueModal('userimages/makabansa.png', 'Maka-bansa: pagmamahal, katapatan, at paggalang ng isang indibidwal sa kanyang sariling bayan')">Makabansa</span>
+                  <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true" onclick="event.stopPropagation(); toggleDropdown('dropdown-bansa')"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <ul class="reports-list">
+                    <li>Accomplishment Report 1</li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <div id="coreModal" class="core-modal" aria-hidden="true">
+      <div class="core-modal-overlay" id="coreModalOverlay"></div>
+      <div class="core-modal-content" role="dialog" aria-modal="true">
+        <button class="core-modal-close" id="coreModalClose" aria-label="Close modal">&times;</button>
+        <div class="core-modal-body">
+          <img id="coreModalImage" src="" alt="Core value image">
+          <p id="coreModalCaption" class="core-modal-caption"></p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* Dropdown Logic */
+      function toggleDropdown(id) {
+          const el = document.getElementById(id);
+          const isActive = el.classList.contains('active');
+          
+          // Close others
+          document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('active'));
+          
+          // Toggle current
+          if (!isActive) el.classList.add('active');
+      }
+
+      /* Modal Logic */
+      const modal = document.getElementById('coreModal');
+      const overlay = document.getElementById('coreModalOverlay');
+      const modalImg = document.getElementById('coreModalImage');
+      const modalCaption = document.getElementById('coreModalCaption');
+      const closeBtn = document.getElementById('coreModalClose');
+
+      function openValueModal(src, text) {
+          modalImg.src = src;
+          modalCaption.textContent = text;
+          modal.classList.add('open');
+          modal.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeModal() {
+          modal.classList.remove('open');
+          modal.setAttribute('aria-hidden', 'true');
+      }
+
+      overlay.addEventListener('click', closeModal);
+      closeBtn.addEventListener('click', closeModal);
+      document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+
+      // Close dropdowns on outside click
+      window.onclick = function(event) {
+          if (!event.target.closest('.custom-dropdown')) {
+              document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('active'));
+          }
+      }
+    </script>
+  </div>
+</main>
 
 <!-- Footer -->
 <footer class="footer">

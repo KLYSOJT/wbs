@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Home</title>
-    <link rel="stylesheet" href="../../css/admin/home.css">
-    <!-- Add Font Awesome if not already included -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Division Memorandum - RMNHS Admin</title>
+  <link rel="stylesheet" href="../../css/admin/navbar.css">
 </head>
 <body>
-  <!-- Navigation Bar -->
+
+<!-- Navigation Bar -->
   <nav class="navbar">
     <div class="logo-container">
       <img src="../../imgs/rectologo.png" alt="RMNHS Logo" class="logo-img">
@@ -22,8 +21,12 @@
       <button type="button"><i class="fa fa-search"></i></button>
     </form>
 
+    <button class="menu-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+      <i class="fas fa-bars"></i>
+    </button>
+
     <ul class="nav-links">
-      <li><a href="home.html" class="active">Home</a></li>
+      <li><a href="home.html">Home</a></li>
 
       <li class="dropdown mobile-open">
         <a href="#" onclick="return false">About <i class="arrow down"></i></a>
@@ -34,10 +37,10 @@
       </li>
 
       <li class="dropdown">
-        <a href="#" onclick="return false">Resources <i class="arrow down"></i></a>
+        <a href="#" onclick="return false" class="active">Resources <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
           <li><a href="school-memo.html">School Memorandum</a></li>
-          <li><a href="division-memo.html">Division Memorandum</a></li>
+          <li><a href="division-memo.html" class="active">Division Memorandum</a></li>
           <li><a href="deped-order.html">DepEd Order</a></li>
 
           <li class="dropdown-submenu">
@@ -57,6 +60,8 @@
       <li class="dropdown">
         <a href="#" onclick="return false">Transparency <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
+          <li><a href="../user/transparency-info.html">Transparency Information</a></li>
+
           <li class="dropdown-submenu">
             <a href="#" onclick="return false">Procurement Bulletin <i class="arrow down"></i></a>
             <ul class="dropdown-submenu-list">
@@ -81,18 +86,27 @@
       </li>
 
       <li><a href="research.html">Research</a></li>
-
+      <li><a href="../user/location.html">Location</a></li>
     </ul>
 
     <div class="admin-icon-container">
-      <a href="/dashboard.html" title="Logout" class="admin-icon-link">
+      <a href="#" class="admin-icon-link" title="Admin Panel">
+        <i class="fa fa-user-shield"></i>
+      </a>
+      <a href="../user/division-memo.html" title="Logout" class="admin-icon-link">
         <i class="fas fa-power-off logout-icon"></i>
       </a>
     </div>
-
+  </nav>
 
   <!-- JS -->
   <script src="script.js"></script>
-  <script src="src/js/navbar.js"></script>
+
+<!-- Add page content below -->
+<div class="page-content">
+  <h1>Division Memorandum</h1>
+  <p>This is the static page content for Division Memorandum (admin). Update as needed.</p>
+</div>
+
 </body>
 </html>

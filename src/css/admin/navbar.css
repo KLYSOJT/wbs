@@ -1,0 +1,202 @@
+
+.navbar {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #fff;
+  font-family: 'Roboto', sans-serif;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Logo Styling */
+.logo-container {
+  display: flex;
+  align-items: center;
+  margin-right: 30px;
+}
+
+.logo-img {
+  height: 50px;
+  margin-right: 10px;
+}
+
+.logo-text {
+  font-weight: bold;
+  font-style: italic;
+  font-size: 1.5rem;
+}
+
+/* Search Bar Styling */
+.search-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #800000; /* Maroon border */
+  border-radius: 20px;
+  padding: 5px 15px;
+  margin-right: 40px;
+}
+
+.search-container input {
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
+
+/* Nav Links Styling */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  flex: 1;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+  background-color: #5d0000; /* Dark Maroon */
+  color: white;
+  padding: 8px 16px;
+  border-radius: 5px;
+}
+
+/* Active State (Maroon box) */
+.nav-links a.active {
+  background-color: #5d0000; /* Dark Maroon */
+  color: white;
+  padding: 8px 16px;
+  border-radius: 5px;
+}
+
+/* Logout Icon Styling */
+.logout-icon {
+  font-size: 1.2rem;
+  color: #800000;
+  transition: all 0.3s ease;
+}
+
+.nav-links a:hover .logout-icon,
+.nav-links a.active .logout-icon {
+  color: white;
+}
+
+
+/* Dropdown Menu Styling */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  min-width: 250px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu li {
+  position: relative;
+}
+
+.dropdown-menu li a {
+  display: block;
+  padding: 12px 20px;
+  color: #333;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.dropdown-menu li a:hover {
+  background-color: #f0f0f0;
+  color: #5d0000;
+  padding-left: 25px;
+}
+
+/* Submenu Styling */
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu-list {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  background-color: white;
+  min-width: 200px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+  border-radius: 5px;
+
+}
+
+.dropdown-submenu:hover .dropdown-submenu-list {
+  display: block;
+}
+
+.submenu-header {
+  display: block;
+  padding: 12px 20px;
+  color: #333;
+  font-size: 0.95rem;
+  cursor: default;
+  user-select: none;
+}
+
+.submenu-header .arrow {
+  border: solid #333;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 3px;
+  margin-left: 5px;
+  transform: translateY(-2px) rotate(45deg);
+}
+
+.dropdown-submenu-list li a {
+  display: block;
+  padding: 12px 20px;
+  color: #333;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.dropdown-submenu-list li a:hover {
+  background-color: #f0f0f0;
+  color: #5d0000;
+  padding-right: 25px;
+}
+
+/* Simple CSS Arrow for Dropdowns */
+.arrow {
+  border: solid #333;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 3px;
+  margin-left: 5px;
+  transform: translateY(-2px) rotate(45deg);
+}
+
+a.active .arrow {
+  border-color: white;
+}
