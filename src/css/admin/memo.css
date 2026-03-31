@@ -21,13 +21,14 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: var(--bg-color);
-  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .main-content {
   max-width: 1400px;
   margin: 0 auto;
   padding-bottom: 50px;
+  overflow-y: visible;
 }
 
 /* Dashboard Grid */
@@ -35,7 +36,6 @@ body {
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 30px;
-  height: calc(100vh - 60px);
   margin-top: 20px;
 }
 
@@ -163,7 +163,7 @@ body {
 .table-panel {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: auto;
 }
 
 .table-header {
@@ -200,7 +200,6 @@ body {
 /* Table Styles */
 .table-card {
   flex: 1;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   margin-bottom: 400px;
