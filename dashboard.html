@@ -171,20 +171,29 @@
 </section>
 
 <!-- Announcements -->
+<!-- Announcements Section -->
 <section class="announcements">
   <div class="announcements-container">
-    <h2>Announcements</h2>
-    <div id="announcementsGrid"></div>
-    <div id="paginationContainer"></div>
+    <h2 class="announcements-title">Announcements</h2>
+    
+    <div class="announcements-grid" id="announcementsGrid">
+      <!-- Announcements will be dynamically populated here -->
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="paginationContainer">
+      <!-- Pagination buttons will be dynamically generated here -->
+    </div>
   </div>
 </section>
+
 
 <!-- Latest News -->
 <section class="latest-news">
   <div class="latest-news-container">
-    <h2>Latest News</h2>
-    <div id="newsGrid"></div>
-    <div id="newsPaginationContainer"></div>
+    <h2 class="latest-news-title">Latest News</h2>
+    <div class="news-grid" id="newsGrid"></div>
+    <div class="pagination" id="newsPaginationContainer"></div>
   </div>
 </section>
 
@@ -213,6 +222,93 @@
   </div>
 </section>
 
+
+<!-- HTML Templates -->
+<div style="display: none;">
+  <!-- Announcement Card Template -->
+  <template id="announcementCardTemplate">
+    <div class="announcement-card">
+      <div class="announcement-image">
+        <img src="" alt="Announcement">
+      </div>
+      <div class="announcement-content">
+        <div class="announcement-date"></div>
+        <h3 class="announcement-title"></h3>
+        <p class="announcement-description"></p>
+        <button class="read-more-btn">Read more</button>
+      </div>
+    </div>
+  </template>
+
+  <!-- News Card Template -->
+  <template id="newsCardTemplate">
+    <div class="news-card">
+      <div class="news-image">
+        <img src="" alt="News">
+      </div>
+      <div class="news-content">
+        <div class="news-date"></div>
+        <h3 class="news-title"></h3>
+        <p class="news-description"></p>
+        <button class="read-more-btn">Read more</button>
+      </div>
+    </div>
+  </template>
+
+  <!-- Video Card Template -->
+  <template id="videoCardTemplate">
+    <div class="video-card-user">
+      <img src="" alt="Video" style="width: 100%; height: auto;">
+      <p style="margin-top: 5px; font-size: 14px;"></p>
+    </div>
+  </template>
+
+  <!-- Announcement Modal Template -->
+  <template id="announcementModalTemplate">
+    <div class="modal-announcement">
+      <div class="modal-overlay"></div>
+      <div class="modal-announcement-content">
+        <button class="modal-close-btn">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="modal-announcement-image">
+          <img src="" alt="Announcement">
+        </div>
+        <div class="modal-announcement-body">
+          <div class="modal-announcement-label">ANNOUNCEMENT</div>
+          <div class="modal-announcement-date"></div>
+          <h2 class="modal-announcement-title"></h2>
+          <div class="modal-announcement-source">RMNHS Office</div>
+          <div class="modal-announcement-section-label">ANNOUNCEMENT</div>
+          <div class="modal-announcement-text"></div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- News Modal Template -->
+  <template id="newsModalTemplate">
+    <div class="modal-announcement">
+      <div class="modal-overlay"></div>
+      <div class="modal-announcement-content">
+        <button class="modal-close-btn">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="modal-announcement-image">
+          <img src="" alt="News">
+        </div>
+        <div class="modal-announcement-body">
+          <div class="modal-announcement-label">NEWS</div>
+          <div class="modal-announcement-date"></div>
+          <h2 class="modal-announcement-title"></h2>
+          <div class="modal-announcement-source">RMNHS Office</div>
+          <div class="modal-announcement-section-label">NEWS</div>
+          <div class="modal-announcement-text"></div>
+        </div>
+      </div>
+    </div>
+  </template>
+</div>
 
 <!-- Footer -->
 <footer class="footer">
