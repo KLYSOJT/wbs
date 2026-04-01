@@ -135,48 +135,24 @@ function handleChangeImage(button) {
       // Remove error handler for saved images to prevent fallback override
       img.onerror = null;
 
-      // Compress image before storing to avoid quota issues
-      const tempImg = new Image();
-      tempImg.onload = () => {
-        // Create canvas and compress
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // Set canvas size to reasonable dimensions
-        canvas.width = 400;
-        canvas.height = 300;
-        
-        // Calculate aspect ratio to maintain proportions
-        const scale = Math.min(canvas.width / tempImg.width, canvas.height / tempImg.height);
-        const x = (canvas.width - tempImg.width * scale) / 2;
-        const y = (canvas.height - tempImg.height * scale) / 2;
-        
-        // Draw image on canvas
-        ctx.drawImage(tempImg, x, y, tempImg.width * scale, tempImg.height * scale);
-        
-        // Convert to JPEG with lower quality to compress
-        const compressedData = canvas.toDataURL('image/jpeg', 0.6);
-        
-        // Save to Supabase
-        const now = new Date();
-        const timestamp = now.toISOString();
-        
-        saveImageToSupabase(title, compressedData, timestamp)
-          .then(() => {
-            // Get formatted date for UI
-            const formatted = now.toLocaleString();
-            
-            // Update UI
-            updatedText.textContent = "Updated: " + formatted;
-          })
-          .catch((error) => {
-            console.error('Error saving to Supabase:', error);
-            alert('Error saving image: ' + (error.message || 'Unknown error'));
-            // Clear the image from display on error
-            img.src = img.dataset.placeholder;
-          });
-      };
-      tempImg.src = imageData;
+      // Store original image data for maximum quality preservation
+      const now = new Date();
+      const timestamp = now.toISOString();
+      
+      saveImageToSupabase(title, imageData, timestamp)
+        .then(() => {
+          // Get formatted date for UI
+          const formatted = now.toLocaleString();
+          
+          // Update UI
+          updatedText.textContent = "Updated: " + formatted;
+        })
+        .catch((error) => {
+          console.error('Error saving to Supabase:', error);
+          alert('Error saving image: ' + (error.message || 'Unknown error'));
+          // Clear the image from display on error
+          img.src = img.dataset.placeholder;
+        });
     };
 
     reader.readAsDataURL(file);

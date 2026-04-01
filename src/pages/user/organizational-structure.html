@@ -111,7 +111,7 @@
   </nav>
 
   <!-- JS -->
-  <script src="src/js/navbar.js"></script>
+  <script src="../../js/navbar.js"></script>
 
 
 <!-- NAVBAR (replace with your static navbar file if needed) -->
@@ -151,42 +151,42 @@
 
   <div class="departments-container">
     <div class="department-card" onclick="openModal('TLE')">
-      <img src="userimages/tle.png">
+      <img src="../../imgs/tle.png" alt="TLE Department">
       <div class="dept-name">TLE DEPARTMENT</div>
     </div>
 
     <div class="department-card" onclick="openModal('Math')">
-      <img src="userimages/math.png">
+      <img src="../../imgs/math.png" alt="Math Department">
       <div class="dept-name">MATH DEPARTMENT</div>
     </div>
 
     <div class="department-card" onclick="openModal('English')">
-      <img src="userimages/ENGLISH.png">
+      <img src="../../imgs/english.png" alt="English Department">
       <div class="dept-name">ENGLISH DEPARTMENT</div>
     </div>
 
     <div class="department-card" onclick="openModal('Science')">
-      <img src="userimages/science.png">
+      <img src="../../imgs/science.png" alt="Science Department">
       <div class="dept-name">SCIENCE DEPARTMENT</div>
     </div>
 
     <div class="department-card" onclick="openModal('Filipino')">
-      <img src="userimages/filipino.jpg">
+      <img src="../../imgs/filipino.jpg" alt="Filipino Department">
       <div class="dept-name">FILIPINO DEPARTMENT</div>
     </div>
 
     <div class="department-card" onclick="openModal('AP')">
-      <img src="userimages/ap.jpg">
+      <img src="../../imgs/ap.jpg" alt="AP Department">
       <div class="dept-name">AP DEPARTMENT</div>
     </div>
 
     <div class="department-card" onclick="openModal('MAPEH')">
-      <img src="userimages/mapeh.png">
+      <img src="../../imgs/mapeh.png" alt="MAPEH Department">
       <div class="dept-name">MAPEH DEPARTMENT</div>
     </div>
 
     <div class="department-card" onclick="openModal('Values Education')">
-      <img src="userimages/esp.png">
+      <img src="../../imgs/esp.png" alt="VALUES EDUCATION Department">
       <div class="dept-name">VALUES EDUCATION DEPARTMENT</div>
     </div>
   </div>
@@ -202,8 +202,14 @@
 
 <!-- FOOTER: paste manually -->
 
-<script src="organization.js"></script>
-
+<!-- Supabase Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Supabase Configuration -->
+<script src="../../js/supabase-config.js"></script>
+<!-- Supabase Helpers -->
+<script src="../../js/supabase-helpers.js"></script>
+<!-- Organizational Structure Script -->
+<script src="../../js/user/organizational-structure.js"></script>
 
 <!-- Footer -->
 <footer class="footer">

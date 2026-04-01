@@ -3,7 +3,7 @@
 /**
  * Save or update organizational structure image to Supabase
  * @param {string} title - Department title
- * @param {string} imageData - Compressed image data URL (JPEG)
+ * @param {string} imageData - Image data URL (PNG - lossless quality)
  * @param {string} timestamp - Updated timestamp
  */
 async function saveImageToSupabase(title, imageData, timestamp) {
@@ -25,7 +25,7 @@ async function saveImageToSupabase(title, imageData, timestamp) {
         .from('organizational_structure')
         .update({
           image: imageData,
-          mime: 'image/jpeg',
+          mime: 'image/png',
           updated_at: timestamp
         })
         .eq('id', existing.id)
@@ -40,7 +40,7 @@ async function saveImageToSupabase(title, imageData, timestamp) {
         .insert([{
           department: title,
           image: imageData,
-          mime: 'image/jpeg',
+          mime: 'image/png',
           created_at: timestamp
         }])
         .select();
