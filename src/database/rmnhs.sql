@@ -7,6 +7,11 @@ CREATE TABLE announcement (
   created_at timestamptz DEFAULT now()
 );
 
+-- RLS policies for announcement table
+ALTER TABLE announcement ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read announcements" ON announcement FOR SELECT USING (true);
+CREATE POLICY "Admin write announcements" ON announcement FOR ALL USING (true) WITH CHECK (true);
+
 -- news
 CREATE TABLE news (
   id bigint PRIMARY KEY,
@@ -15,6 +20,11 @@ CREATE TABLE news (
   timestamp text NOT NULL,
   created_at timestamptz DEFAULT now()
 );
+
+-- RLS policies for news table (Fixes 42501 error)
+ALTER TABLE news ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read news" ON news FOR SELECT USING (true);
+CREATE POLICY "Admin write news" ON news FOR ALL USING (true) WITH CHECK (true);
 
 -- featured_videos
 CREATE TABLE featured_videos (
@@ -26,6 +36,11 @@ CREATE TABLE featured_videos (
   timestamp text NOT NULL,
   created_at timestamptz DEFAULT now()
 );
+
+-- RLS policies for featured_videos table
+ALTER TABLE featured_videos ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read featured videos" ON featured_videos FOR SELECT USING (true);
+CREATE POLICY "Admin write featured videos" ON featured_videos FOR ALL USING (true) WITH CHECK (true);
 
 -- school_memorandum
 CREATE TABLE school_memorandum (

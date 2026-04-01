@@ -98,6 +98,199 @@ async function loadAllImagesFromSupabase() {
 }
 
 /**
+ * Announcement Supabase Functions
+ */
+
+/**
+ * Save announcement to Supabase (upsert by id)
+ */
+async function saveAnnouncementToSupabase(data) {
+  try {
+    const { error } = await supabaseClient
+      .from('announcement')
+      .upsert({
+        id: data.id,
+        announcement_posts: data.text,
+        image: data.image,
+        timestamp: data.timestamp
+      });
+
+    if (error) throw error;
+    console.log('Announcement saved to Supabase');
+    return true;
+  } catch (error) {
+    console.error('Error saving announcement to Supabase:', error);
+    throw error;
+  }
+}
+
+/**
+ * Load all announcements from Supabase
+ */
+async function loadAnnouncementsFromSupabase() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('announcement')
+      .select('*')
+      .order('id', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error('Error loading announcements from Supabase:', error);
+    return [];
+  }
+}
+
+/**
+ * Delete announcement from Supabase
+ */
+async function deleteAnnouncementFromSupabase(id) {
+  try {
+    const { error } = await supabaseClient
+      .from('announcement')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+    console.log('Announcement deleted from Supabase');
+    return true;
+  } catch (error) {
+    console.error('Error deleting announcement from Supabase:', error);
+    throw error;
+  }
+}
+
+/**
+ * News Supabase Functions
+ */
+
+/**
+ * Save news to Supabase (upsert by id)
+ */
+async function saveNewsToSupabase(data) {
+  try {
+    const { error } = await supabaseClient
+      .from('news')
+      .upsert({
+        id: data.id,
+        news_posts: data.text,
+        image: data.image,
+        timestamp: data.timestamp
+      });
+
+    if (error) throw error;
+    console.log('News saved to Supabase');
+    return true;
+  } catch (error) {
+    console.error('Error saving news to Supabase:', error);
+    throw error;
+  }
+}
+
+/**
+ * Load all news from Supabase
+ */
+async function loadNewsFromSupabase() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('news')
+      .select('*')
+      .order('id', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error('Error loading news from Supabase:', error);
+    return [];
+  }
+}
+
+/**
+ * Delete news from Supabase
+ */
+async function deleteNewsFromSupabase(id) {
+  try {
+    const { error } = await supabaseClient
+      .from('news')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+    console.log('News deleted from Supabase');
+    return true;
+  } catch (error) {
+    console.error('Error deleting news from Supabase:', error);
+    throw error;
+  }
+}
+
+/**
+ * Video Supabase Functions (Fixes ReferenceError)
+ */
+
+/**
+ * Save video to Supabase (upsert by id)
+ */
+async function saveVideoToSupabase(data) {
+  try {
+    const { error } = await supabaseClient
+      .from('featured_videos')
+      .upsert({
+        id: data.id,
+        title: data.title,
+        type: data.type,
+        url: data.url,
+        timestamp: data.timestamp
+      });
+
+    if (error) throw error;
+    console.log('Video saved to Supabase');
+    return true;
+  } catch (error) {
+    console.error('Error saving video to Supabase:', error);
+    throw error;
+  }
+}
+
+/**
+ * Load all videos from Supabase
+ */
+async function loadVideosFromSupabase() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('featured_videos')
+      .select('*')
+      .order('id', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error('Error loading videos from Supabase:', error);
+    return [];
+  }
+}
+
+/**
+ * Delete video from Supabase
+ */
+async function deleteVideoFromSupabase(id) {
+  try {
+    const { error } = await supabaseClient
+      .from('featured_videos')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+    console.log('Video deleted from Supabase');
+    return true;
+  } catch (error) {
+    console.error('Error deleting video from Supabase:', error);
+    throw error;
+  }
+}
+
+/**
  * Delete image from Supabase
  * @param {string} title - Department title
  */
@@ -115,3 +308,4 @@ async function deleteImageFromSupabase(title) {
     throw error;
   }
 }
+
