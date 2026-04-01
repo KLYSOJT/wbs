@@ -1,26 +1,29 @@
 -- announcement
 CREATE TABLE announcement (
-  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  image text NOT NULL,
+  id bigint PRIMARY KEY,
+  image text,
   announcement_posts text NOT NULL,
+  timestamp text NOT NULL,
   created_at timestamptz DEFAULT now()
 );
 
 -- news
 CREATE TABLE news (
-  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  image text NOT NULL,
+  id bigint PRIMARY KEY,
+  image text,
   news_posts text NOT NULL,
+  timestamp text NOT NULL,
   created_at timestamptz DEFAULT now()
 );
 
 -- featured_videos
 CREATE TABLE featured_videos (
-  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  id bigint PRIMARY KEY,
   title text NOT NULL,
-  description text,
-  filename text,
+  type text NOT NULL,
   url text,
+  fileName text,
+  timestamp text NOT NULL,
   created_at timestamptz DEFAULT now()
 );
 

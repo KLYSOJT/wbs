@@ -461,3 +461,220 @@
 .list-item {
   animation: slideIn 0.3s ease-out;
 }
+
+/* ========================================
+   ANNOUNCEMENT & NEWS CARD STYLES
+   ======================================== */
+.announcement-card,
+.news-card {
+  background-color: var(--accent-light);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  transition: var(--transition);
+  animation: slideIn 0.3s ease-out;
+}
+
+.announcement-card:hover,
+.news-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--primary-color);
+}
+
+.announcement-card-header,
+.news-card-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.announcement-card-image,
+.news-card-image {
+  width: 100%;
+  height: auto;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.announcement-card-body,
+.news-card-body {
+  margin: 12px 0;
+}
+
+.announcement-card-body p,
+.news-card-body p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-main);
+  margin: 0;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.announcement-card-footer,
+.news-card-footer {
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+.announcement-card-footer small,
+.news-card-footer small {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Responsive Announcement & News Cards */
+@media (max-width: 768px) {
+  .announcement-card,
+  .news-card {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .announcement-card-header,
+  .news-card-header {
+    margin-bottom: 8px;
+  }
+
+  .announcement-card-image,
+  .news-card-image {
+    max-height: 200px;
+    margin-bottom: 10px;
+  }
+
+  .announcement-card-body p,
+  .news-card-body p {
+    font-size: 13px;
+  }
+
+  .announcement-card-footer small,
+  .news-card-footer small {
+    font-size: 11px;
+  }
+}
+
+/* ========================================
+   VIDEO CARD STYLES
+   ======================================== */
+.video-card {
+  background-color: var(--accent-light);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  transition: var(--transition);
+  animation: slideIn 0.3s ease-out;
+}
+
+.video-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--primary-color);
+}
+
+.video-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.video-card-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+  word-break: break-word;
+}
+
+.delete-btn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.delete-btn:hover {
+  background-color: #dc2626;
+  transform: scale(1.05);
+}
+
+.delete-btn:active {
+  transform: scale(0.95);
+}
+
+.video-card-body {
+  width: 100%;
+  margin: 12px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #000;
+}
+
+.video-card-body video,
+.video-card-body iframe {
+  display: block;
+  border-radius: 6px;
+}
+
+.video-card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+.video-card-footer small {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Responsive Video Cards */
+@media (max-width: 768px) {
+  .video-card {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .video-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+  }
+
+  .video-card-header h3 {
+    font-size: 15px;
+    flex: 1;
+    width: 100%;
+  }
+
+  .delete-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .video-card-body {
+    margin: 10px 0;
+  }
+}
