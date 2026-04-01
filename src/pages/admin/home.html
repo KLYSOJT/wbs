@@ -91,6 +91,7 @@
       </a>
     </div>
 
+  </nav>
 
 
 
@@ -102,203 +103,73 @@
 
 
 
+<!-- MAIN CONTENT -->
+<div class="container">
 
+<h1>Dashboard</h1>
 
+<div class="grid-container">
 
+  <!-- ================= ANNOUNCEMENTS ================= -->
+  <div class="column">
+    <h2>Announcements</h2>
 
-<!-- Main Content -->
-<main class="admin-dashboard">
-  <div class="dashboard-header">
-    <h1>Dashboard</h1>
-    <p>Welcome to the RMNHS Admin Panel</p>
+    <form id="announcementForm">
+      <input type="file" id="announcementImage" accept="image/*">
+      <textarea id="announcementText" placeholder="Write announcement..."></textarea>
+      <button type="submit">Publish</button>
+    </form>
+
+    <div id="announcementList" class="list"></div>
   </div>
 
-  <!-- Top Section: 3-Column Upload Layout -->
-  <div class="upload-section">
-    <div class="upload-grid">
-      
-      <!-- Announcements Column -->
-      <div class="upload-column">
-        <div class="column-header">
-          <h3><i class="fas fa-bullhorn"></i> Announcements</h3>
-        </div>
-        <div class="card announcement-card">
-          <div class="card-body">
-            <form id="announcementForm" enctype="multipart/form-data">
-              <div class="upload-zone">
-                <div class="drag-drop-area" id="announcementDragDrop">
-                  <i class="fas fa-cloud-upload-alt"></i>
-                  <p class="primary-text">Drag & drop image</p>
-                  <p class="secondary-text">or click to select</p>
-                </div>
-                <input type="file" id="announcementImage" name="image" accept="image/*" style="display: none;">
-                <div id="announcementImagePreview" style="display: none; margin-top: 10px;">
-                  <img id="announcementImagePreviewImg" style="max-width: 100%; max-height: 150px; border-radius: 5px;">
-                  <button type="button" class="remove-btn" onclick="clearAnnouncementImage()">Remove</button>
-                </div>
-              </div>
-              <textarea class="form-input" name="announcement" placeholder="Write announcement..."></textarea>
-              <button type="submit" class="btn btn-primary btn-block">Publish</button>
-            </form>
-          </div>
-        </div>
-      </div>
 
-      <!-- News Column -->
-      <div class="upload-column">
-        <div class="column-header">
-          <h3><i class="fas fa-newspaper"></i> News</h3>
-        </div>
-        <div class="card news-card">
-          <div class="card-body">
-            <form id="newsForm" enctype="multipart/form-data">
-              <div class="upload-zone">
-                <div class="drag-drop-area" id="newsDragDrop">
-                  <i class="fas fa-cloud-upload-alt"></i>
-                  <p class="primary-text">Drag & drop image</p>
-                  <p class="secondary-text">or click to select</p>
-                </div>
-                <input type="file" id="newsImage" name="image" accept="image/*" style="display: none;">
-                <div id="newsImagePreview" style="display: none; margin-top: 10px;">
-                  <img id="newsImagePreviewImg" style="max-width: 100%; max-height: 150px; border-radius: 5px;">
-                  <button type="button" class="remove-btn" onclick="clearNewsImage()">Remove</button>
-                </div>
-              </div>
-              <textarea class="form-input" name="news" placeholder="Write news..."></textarea>
-              <button type="submit" class="btn btn-primary btn-block">Publish</button>
-            </form>
-          </div>
-        </div>
-      </div>
+  <!-- ================= NEWS ================= -->
+  <div class="column">
+    <h2>News</h2>
 
-      <!-- Videos Column -->
-      <div class="upload-column">
-        <div class="column-header">
-          <h3><i class="fas fa-video"></i> Upload Video</h3>
-        </div>
-        <div class="card video-card">
-          <div class="card-body">
-            <form id="videoForm" enctype="multipart/form-data">
-              <input type="text" class="form-input" name="title" placeholder="Video title">
-              <textarea class="form-input-description" name="description" placeholder="Description (optional)"></textarea>
-              
-              <div class="upload-method-selector">
-                <label><input type="radio" name="video_method" value="upload" checked> Upload File</label>
-                <label><input type="radio" name="video_method" value="url"> URL</label>
-              </div>
+    <form id="newsForm">
+      <input type="file" id="newsImage" accept="image/*">
+      <textarea id="newsText" placeholder="Write news..."></textarea>
+      <button type="submit">Publish</button>
+    </form>
 
-              <div id="fileUploadSection" class="upload-zone">
-                <div class="drag-drop-area" id="videoDragDrop">
-                  <i class="fas fa-cloud-upload-alt"></i>
-                  <p class="primary-text">Drag & drop video</p>
-                </div>
-                <input type="file" id="videoFile" name="video" accept="video/*" style="display: none;">
-              </div>
-
-              <div id="urlInputSection" style="display: none;">
-                <input type="url" class="form-input" id="videoUrl" name="video_url" placeholder="Video URL">
-              </div>
-
-              <button type="submit" class="btn btn-primary btn-block">Upload</button>
-            </form>
-          </div>
-        </div>
-      </div>
-
-    </div>
+    <div id="newsList" class="list"></div>
   </div>
 
-  <!-- Bottom Section: Published Items (Aligned with Upload Columns) -->
-  <div class="published-section">
-    <div class="published-grid">
-      
-      <!-- Published Announcements -->
-      <div class="published-column">
-        <div class="published-card announcements-list-card">
-          <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-list"></i> Published Announcements</h3>
-          </div>
-          <div class="card-body">
-            <div class="items-container">
-              <div class="published-item">
-                <div class="item-content">
-                  <div class="item-image">
-                    <img src="https://via.placeholder.com/80x60/4CAF50/ffffff?text=A1" alt="Ann">
-                  </div>
-                  <div class="item-text">
-                    <p class="item-content-text">Welcome back to school!...</p>
-                    <p class="item-date">Dec 15, 2024</p>
-                  </div>
-                </div>
-                <div class="item-actions">
-                  <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                  <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+
+  <!-- ================= VIDEOS ================= -->
+  <div class="column">
+    <h2>Upload Video</h2>
+
+    <form id="videoForm">
+      <input type="text" id="videoTitle" placeholder="Title">
+
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="videoType" value="file" checked> File
+        </label>
+        <label>
+          <input type="radio" name="videoType" value="url"> URL
+        </label>
       </div>
 
-      <!-- Published News -->
-      <div class="published-column">
-        <div class="published-card news-list-card">
-          <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-list"></i> Published News</h3>
-          </div>
-          <div class="card-body">
-            <div class="items-container">
-              <div class="published-item">
-                <div class="item-content">
-                  <div class="item-image">
-                    <img src="https://via.placeholder.com/80x60/2196F3/ffffff?text=N1" alt="News">
-                  </div>
-                  <div class="item-text">
-                    <p class="item-content-text">Science fair winners...</p>
-                    <p class="item-date">Dec 14, 2024</p>
-                  </div>
-                </div>
-                <div class="item-actions">
-                  <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                  <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <input type="file" id="videoFile" accept="video/*">
+      <input type="url" id="videoUrl" placeholder="Video URL" style="display:none;">
 
-      <!-- Featured Videos -->
-      <div class="published-column">
-        <div class="published-card videos-list-card">
-          <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-star"></i> Featured Videos</h3>
-          </div>
-          <div class="card-body">
-            <div class="items-container">
-              <div class="published-item">
-                <div class="item-content">
-                  <div class="item-text">
-                    <p class="item-content-text">Welcome Video</p>
-                    <p class="item-desc">Intro for new students</p>
-                    <p class="item-date">Dec 10, 2024</p>
-                  </div>
-                </div>
-                <div class="item-actions">
-                  <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                  <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <button type="submit">Upload</button>
+    </form>
 
-    </div>
+    <div id="videoList" class="list"></div>
   </div>
 
-        
-       
+</div>
 
-        </body>
+</div>
+
+</main>
+
+<script src="../../js/admin/home.js"></script>
+
+</body>
 </html>
