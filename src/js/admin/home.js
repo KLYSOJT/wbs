@@ -211,12 +211,29 @@ document.addEventListener('DOMContentLoaded', async function() {
   if (announcementForm && announcementImageInput && announcementTextInput && announcementList) {
     let announcements = [];
 
-    // Load announcements from IndexedDB
+    // Load announcements from IndexedDB and Supabase
     async function loadAnnouncements() {
       try {
         announcements = await getAllFromStore(STORES.announcements);
         announcements.forEach(announcementData => {
           displayAnnouncement(announcementData, announcementList);
+        });
+        
+        // Also load from Supabase
+        const supabaseAnnouncements = await loadAnnouncementsFromSupabase();
+        supabaseAnnouncements.forEach(announcementData => {
+          // Convert database field names to match frontend format
+          const data = {
+            id: announcementData.id,
+            text: announcementData.announcement_posts,
+            timestamp: announcementData.timestamp,
+            image: announcementData.image
+          };
+          // Only display if not already in IndexedDB
+          if (!announcements.find(a => a.id === data.id)) {
+            announcements.push(data);
+            displayAnnouncement(data, announcementList);
+          }
         });
       } catch (error) {
         console.error('Error loading announcements:', error);
@@ -254,6 +271,8 @@ document.addEventListener('DOMContentLoaded', async function() {
           
           try {
             await addToStore(STORES.announcements, announcementData);
+            // Supabase sync is optional - will work offline using local storage
+            await saveAnnouncementToSupabase(announcementData);
             displayAnnouncement(announcementData, announcementList);
             announcementForm.reset();
           } catch (error) {
@@ -269,6 +288,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         (async () => {
           try {
             await addToStore(STORES.announcements, announcementData);
+            // Supabase sync is optional
+            await saveAnnouncementToSupabase(announcementData);
             displayAnnouncement(announcementData, announcementList);
             announcementForm.reset();
           } catch (error) {
@@ -283,6 +304,8 @@ document.addEventListener('DOMContentLoaded', async function() {
       if (confirm('Are you sure you want to delete this announcement?')) {
         try {
           await deleteFromStore(STORES.announcements, announcementId);
+          // Supabase deletion is optional
+          await deleteAnnouncementFromSupabase(announcementId);
           const announcementCard = document.getElementById(`announcement-${announcementId}`);
           if (announcementCard) {
             announcementCard.remove();
@@ -306,12 +329,29 @@ document.addEventListener('DOMContentLoaded', async function() {
   if (newsForm && newsImageInput && newsTextInput && newsList) {
     let newsItems = [];
 
-    // Load news from IndexedDB
+    // Load news from IndexedDB and Supabase
     async function loadNews() {
       try {
         newsItems = await getAllFromStore(STORES.newsItems);
         newsItems.forEach(newsData => {
           displayNews(newsData, newsList);
+        });
+        
+        // Also load from Supabase
+        const supabaseNews = await loadNewsFromSupabase();
+        supabaseNews.forEach(newsData => {
+          // Convert database field names to match frontend format
+          const data = {
+            id: newsData.id,
+            text: newsData.news_posts,
+            timestamp: newsData.timestamp,
+            image: newsData.image
+          };
+          // Only display if not already in IndexedDB
+          if (!newsItems.find(n => n.id === data.id)) {
+            newsItems.push(data);
+            displayNews(data, newsList);
+          }
         });
       } catch (error) {
         console.error('Error loading news:', error);
@@ -349,6 +389,10 @@ document.addEventListener('DOMContentLoaded', async function() {
           
           try {
             await addToStore(STORES.newsItems, newsData);
+            // Supabase sync is optional - it will log errors but not block
+            saveNewsToSupabase(newsData).catch(err => {
+              console.warn('Supabase sync failed, but data saved locally');
+            });
             displayNews(newsData, newsList);
             newsForm.reset();
           } catch (error) {
@@ -364,6 +408,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         (async () => {
           try {
             await addToStore(STORES.newsItems, newsData);
+            // Supabase sync is optional - will work offline using local storage
+            await saveNewsToSupabase(newsData);
             displayNews(newsData, newsList);
             newsForm.reset();
           } catch (error) {
@@ -378,6 +424,8 @@ document.addEventListener('DOMContentLoaded', async function() {
       if (confirm('Are you sure you want to delete this news?')) {
         try {
           await deleteFromStore(STORES.newsItems, newsId);
+          // Supabase deletion is optional - will work offline using local storage
+          await deleteNewsFromSupabase(newsId);
           const newsCard = document.getElementById(`news-${newsId}`);
           if (newsCard) {
             newsCard.remove();
@@ -403,12 +451,22 @@ document.addEventListener('DOMContentLoaded', async function() {
   if (videoForm && videoTitleInput && videoFileInput && videoUrlInput && videoList) {
     let videos = [];
 
-    // Load videos from IndexedDB
+    // Load videos from IndexedDB and Supabase
     async function loadVideos() {
       try {
         videos = await getAllFromStore(STORES.videos);
         videos.forEach(videoData => {
           displayVideo(videoData, videoList);
+        });
+        
+        // Also load from Supabase
+        const supabaseVideos = await loadVideosFromSupabase();
+        supabaseVideos.forEach(videoData => {
+          // Only display if not already in IndexedDB
+          if (!videos.find(v => v.id === videoData.id)) {
+            videos.push(videoData);
+            displayVideo(videoData, videoList);
+          }
         });
       } catch (error) {
         console.error('Error loading videos:', error);
@@ -471,6 +529,8 @@ document.addEventListener('DOMContentLoaded', async function() {
           
           try {
             await addToStore(STORES.videos, videoData);
+            // Supabase sync is optional - will work offline using local storage
+            await saveVideoToSupabase(videoData);
             displayVideo(videoData, videoList);
             videoForm.reset();
             videoFileInput.style.display = 'block';
@@ -495,6 +555,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         (async () => {
           try {
             await addToStore(STORES.videos, videoData);
+            // Supabase sync is optional - will work offline using local storage
+            await saveVideoToSupabase(videoData);
             displayVideo(videoData, videoList);
             videoForm.reset();
             videoFileInput.style.display = 'block';
@@ -511,6 +573,8 @@ document.addEventListener('DOMContentLoaded', async function() {
       if (confirm('Are you sure you want to delete this video?')) {
         try {
           await deleteFromStore(STORES.videos, videoId);
+          // Supabase deletion is optional - will work offline using local storage
+          await deleteVideoFromSupabase(videoId);
           const videoCard = document.getElementById(`video-${videoId}`);
           if (videoCard) {
             videoCard.remove();
