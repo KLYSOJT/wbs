@@ -61,6 +61,14 @@
     object-fit: cover;
     border-radius: 12px;
     margin-bottom: 15px;
+    display: block;
+    background-color: #e9ecef;
+    background-image: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+  }
+  
+  /* Ensure images display properly even when empty */
+  .card img[src=""] {
+    content: "";
   }
 
   /* Card title */
