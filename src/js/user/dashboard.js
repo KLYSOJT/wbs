@@ -1,3 +1,48 @@
+  // Carousel Functions
+  let currentCarouselIndex = 1;
+  
+  function changeSlide(n) {
+    showSlide(currentCarouselIndex += n);
+  }
+  
+  function currentSlide(n) {
+    showSlide(currentCarouselIndex = n);
+  }
+  
+  function showSlide(n) {
+    const slides = document.querySelectorAll(".carousel-item");
+    const indicators = document.querySelectorAll(".indicator");
+    
+    // Add safety checks - return if no slides or indicators exist
+    if (slides.length === 0 || indicators.length === 0) {
+      return;
+    }
+    
+    if (n > slides.length) {
+      currentCarouselIndex = 1;
+    }
+    if (n < 1) {
+      currentCarouselIndex = slides.length;
+    }
+    
+    // Safety check - ensure index is within bounds
+    if (currentCarouselIndex < 1 || currentCarouselIndex > slides.length) {
+      return;
+    }
+    
+    slides.forEach(slide => slide.classList.remove("active"));
+    indicators.forEach(indicator => indicator.classList.remove("active"));
+    
+    slides[currentCarouselIndex - 1].classList.add("active");
+    indicators[currentCarouselIndex - 1].classList.add("active");
+  }
+  
+  // Auto-advance carousel every 5 seconds  
+  setInterval(() => {
+    changeSlide(1);
+  }, 5000);
+
+
 // User Dashboard - Load Announcements + News from Supabase
 document.addEventListener('DOMContentLoaded', async function() {
   // Announcements with Pagination

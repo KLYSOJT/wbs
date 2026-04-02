@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recto Memorial NHS | Admin Login</title>
+    <link rel="stylesheet" href="../../css/admin/login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="portal-wrapper">
+        <main class="login-card">
+            <div class="brand-section">
+                <div class="brand-content">
+                    
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-wrapper">
+                    <header class="header-content">
+                        <span class="badge">Secure Admin Access</span>
+                        <h2>Welcome Back</h2>
+                        <p>Enter your credentials to manage operations.</p>
+                    </header>
+
+                    <div id="errorBox" class="alert-box error" style="display:none;">
+                        Invalid security key or email address.
+                    </div>
+
+                    <form id="adminForm">
+                        <div class="input-group">
+                            <input type="email" id="email" required placeholder=" ">
+                            <label for="email">Email Address</label>
+                        </div>
+
+                        <div class="input-group">
+                            <input type="password" id="password" required placeholder=" ">
+                            <label for="password">Security Key</label>
+                        </div>
+
+                        <div class="utils">
+                            <label class="custom-checkbox">
+                                <input type="checkbox">
+                                <span class="box"></span>
+                                Remember this device
+                          
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            <span>Access Admin</span>
+                        </button>
+                    </form>
+
+                    <footer class="footer-note">
+                        <p>&copy; 2026 RMNS Digital Infrastructure</p>
+                    </footer>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
