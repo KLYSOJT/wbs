@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Example</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.5);
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .user-info {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .user-info h2 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .user-info p {
+            margin: 0.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .card h3 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+        }
+
+        .error {
+            background: #fee;
+            color: #c00;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .success {
+            background: #efe;
+            color: #0a0;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <h1>🔐 Admin Dashboard</h1>
+        <button onclick="adminAuth.logout()" class="logout-btn">Logout</button>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <p>🔐 Verifying admin access...</p>
+        </div>
+
+        <!-- Protected Content (hidden until auth verified) -->
+        <div id="protectedContent" style="display: none;">
+            <!-- User Information -->
+            <div class="user-info">
+                <h2>Welcome, Admin!</h2>
+                <p><strong>Email:</strong> <span id="userEmail">-</span></p>
+                <p><strong>Role:</strong> <span id="userRole">-</span></p>
+                <p><strong>User ID:</strong> <span id="userId" style="font-family: monospace; font-size: 0.85rem;">-</span></p>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <h2 style="margin-top: 2rem;">Dashboard Overview</h2>
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>👥 Users</h3>
+                    <p>Manage system users and permissions</p>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Analytics</h3>
+                    <p>View system usage and statistics</p>
+                </div>
+
+                <div class="card">
+                    <h3>⚙️ Settings</h3>
+                    <p>Configure system settings</p>
+                </div>
+
+                <div class="card">
+                    <h3>🔐 Security</h3>
+                    <p>Manage security and access control</p>
+                </div>
+
+                <div class="card">
+                    <h3>📝 Reports</h3>
+                    <p>Generate and view reports</p>
+                </div>
+
+                <div class="card">
+                    <h3>🛠️ Maintenance</h3>
+                    <p>System maintenance and updates</p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div style="margin-top: 2rem; padding: 1.5rem; background: #f9f9f9; border-radius: 8px;">
+                <h3>Quick Actions</h3>
+                <p style="margin-top: 1rem; color: #666;">
+                    This is an example protected admin page. Only users with <code>role = "admin"</code> can see this content.
+                </p>
+                <button onclick="testLogUserInfo()" style="
+                    margin-top: 1rem;
+                    padding: 0.5rem 1.5rem;
+                    background: #667eea;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                ">
+                    Log Current User Info
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase Auth Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-config.js"></script>
+    <script src="../../js/authAdmin.js"></script>
+
+    <!-- Page-specific Script -->
+    <script>
+        /**
+         * Listen for successful admin authentication
+         * This event is dispatched by authAdmin.js when auth is verified
+         */
+        window.addEventListener('adminAuthVerified', (event) => {
+            // Hide loading state
+            document.getElementById('loadingState').style.display = 'none';
+            
+            // Show protected content
+            document.getElementById('protectedContent').style.display = 'block';
+
+            // Display user information
+            const user = event.detail.user;
+            const role = event.detail.role;
+
+            document.getElementById('userEmail').textContent = user.email || 'Unknown';
+            document.getElementById('userRole').textContent = role || 'Unknown';
+            document.getElementById('userId').textContent = user.id || 'Unknown';
+
+            console.log('✅ Admin dashboard loaded for:', user.email);
+        });
+
+        /**
+         * Test function to display user information
+         */
+        function testLogUserInfo() {
+            const user = adminAuth.getCurrentUser();
+            const role = adminAuth.getUserRole();
+
+            alert(
+                `User Information:\n\n` +
+                `Email: ${user?.email}\n` +
+                `Role: ${role}\n` +
+                `Authenticated: ${adminAuth.isAuthenticated()}\n\n` +
+                `(See console for full details)`
+            );
+
+            console.log('Current User:', user);
+            console.log('User Role:', role);
+            console.log('Is Authenticated:', adminAuth.isAuthenticated());
+        }
+
+        /**
+         * Listen for auth state changes
+         * This helps detect if user logs out from another tab
+         */
+        window.supabaseClient.auth.onAuthStateChange((event, session) => {
+            console.log('Auth state changed:', event);
+            
+            if (event === 'SIGNED_OUT') {
+                console.log('User signed out - redirecting to login');
+                // authAdmin.js will handle the redirect
+            }
+        });
+    </script>
+</body>
+</html>

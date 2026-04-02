@@ -31,6 +31,36 @@ body {
   min-height: 100vh;
 }
 
+/* Back Button Styles */
+.back-button {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 16px;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-main);
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateX(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.back-button:active {
+  transform: translateX(-1px);
+}
+
 .portal-wrapper {
   width: 100%;
   max-width: 1000px;
