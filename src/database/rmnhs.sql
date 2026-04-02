@@ -52,6 +52,11 @@ CREATE TABLE school_memorandum (
   created_at timestamptz DEFAULT now()
 );
 
+-- RLS policies for school_memorandum table
+ALTER TABLE school_memorandum ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read school_memorandum" ON school_memorandum FOR SELECT USING (true);
+CREATE POLICY "Admin write school_memorandum" ON school_memorandum FOR ALL USING (true) WITH CHECK (true);
+
 -- division_memorandum
 CREATE TABLE division_memorandum (
   id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -62,6 +67,11 @@ CREATE TABLE division_memorandum (
   created_at timestamptz DEFAULT now()
 );
 
+-- RLS policies for division_memorandum table
+ALTER TABLE division_memorandum ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read division_memorandum" ON division_memorandum FOR SELECT USING (true);
+CREATE POLICY "Admin write division_memorandum" ON division_memorandum FOR ALL USING (true) WITH CHECK (true);
+
 -- deped_order
 CREATE TABLE deped_order (
   id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -71,6 +81,11 @@ CREATE TABLE deped_order (
   file text,
   created_at timestamptz DEFAULT now()
 );
+
+-- RLS policies for deped_order table
+ALTER TABLE deped_order ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read deped_order" ON deped_order FOR SELECT USING (true);
+CREATE POLICY "Admin write deped_order" ON deped_order FOR ALL USING (true) WITH CHECK (true);
 
 -- research
 CREATE TABLE research (
@@ -85,6 +100,11 @@ CREATE TABLE research (
   created_at timestamptz DEFAULT now()
 );
 
+-- RLS policies for research table
+ALTER TABLE research ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read research" ON research FOR SELECT USING (true);
+CREATE POLICY "Admin write research" ON research FOR ALL USING (true) WITH CHECK (true);
+
 -- transparency
 CREATE TABLE transparency (
   id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -95,6 +115,11 @@ CREATE TABLE transparency (
   file text,
   created_at timestamptz DEFAULT now()
 );
+
+-- RLS policies for transparency table
+ALTER TABLE transparency ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read transparency" ON transparency FOR SELECT USING (true);
+CREATE POLICY "Admin write transparency" ON transparency FOR ALL USING (true) WITH CHECK (true);
 
 -- learning_materials
 CREATE TABLE learning_materials (
@@ -107,6 +132,11 @@ CREATE TABLE learning_materials (
   created_at timestamptz DEFAULT now()
 );
 
+-- RLS policies for learning_materials table
+ALTER TABLE learning_materials ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read learning_materials" ON learning_materials FOR SELECT USING (true);
+CREATE POLICY "Admin write learning_materials" ON learning_materials FOR ALL USING (true) WITH CHECK (true);
+
 -- organizational_structure
 CREATE TABLE organizational_structure (
   id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -118,6 +148,11 @@ CREATE TABLE organizational_structure (
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
+
+-- RLS policies for organizational_structure table
+ALTER TABLE organizational_structure ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read organizational_structure" ON organizational_structure FOR SELECT USING (true);
+CREATE POLICY "Admin write organizational_structure" ON organizational_structure FOR ALL USING (true) WITH CHECK (true);
 
 -- recognized_organization
 CREATE TABLE recognized_organization (
@@ -132,3 +167,8 @@ CREATE TABLE recognized_organization (
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
+
+-- RLS policies for recognized_organization table
+ALTER TABLE recognized_organization ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read recognized_organization" ON recognized_organization FOR SELECT USING (true);
+CREATE POLICY "Admin write recognized_organization" ON recognized_organization FOR ALL USING (true) WITH CHECK (true);
