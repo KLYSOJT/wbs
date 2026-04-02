@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="../../css/admin/recognized-structure.css">
     <!-- Add Font Awesome if not already included -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Supabase Auth Scripts for Admin Protection -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-config.js"></script>
+    <script src="../../js/authAdmin.js"></script>
 </head>
 <body>
   <!-- Navigation Bar -->
@@ -86,9 +91,9 @@
     </ul>
 
     <div class="admin-icon-container">
-      <a href="/dashboard.html" title="Logout" class="admin-icon-link">
+      <button onclick="adminAuth.logout()" title="Logout" class="admin-icon-link" style="background: none; border: none; cursor: pointer; padding: 0;">
         <i class="fas fa-power-off logout-icon"></i>
-      </a>
+      </button>
     </div>
 
 
