@@ -148,6 +148,71 @@
 
 
 
+
+
+<!-- Main Content -->
+<main class="main-content">
+  <div class="container">
+
+    <div class="section-title-container">
+      <h1 class="section-title">Boy Scouts of the philippines</h1>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-section">
+      <div class="filter-controls">
+        <select class="filter-dropdown" id="yearFilter">
+          <option value="">Year</option>
+        </select>
+
+        <select class="filter-dropdown" id="monthFilter">
+          <option value="">Month</option>
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+          <option value="06">June</option>
+          <option value="07">July</option>
+          <option value="08">August</option>
+          <option value="09">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+      </div>
+
+      <div class="search-box">
+        <input type="text" class="search-input" placeholder="Search" id="searchInput">
+        <button class="search-btn"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <table class="memo-table">
+        <thead>
+          <tr>
+            <th>Date Added</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>File</th>
+          </tr>
+        </thead>
+
+        <tbody id="memoTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+      <div class="pagination" id="paginationControls"></div>
+    </div>
+
+  </div>
+</main>
+
+
 <!-- Footer -->
 <footer class="footer">
   <div class="footer-content">

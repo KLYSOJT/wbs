@@ -111,8 +111,7 @@
   </nav>
 
   <!-- JS -->
-  <script src="script.js"></script>
-  <script src="src/js/navbar.js"></script>
+  <script src="../../js/navbar.js"></script>
 
 
 <!-- NAVBAR (replace with your static navbar file if needed) -->
@@ -165,7 +164,7 @@
   <div class="container">
 
     <div class="section-title-container">
-      <h1 class="section-title">SCHOOL MEMORANDUM</h1>
+      <h1 class="section-title">DEPED MEMORANDUM</h1>
     </div>
 
     <!-- Filters -->
@@ -173,9 +172,6 @@
       <div class="filter-controls">
         <select class="filter-dropdown" id="yearFilter">
           <option value="">Year</option>
-          <option value="2026">2026</option>
-          <option value="2025">2025</option>
-          <option value="2024">2024</option>
         </select>
 
         <select class="filter-dropdown" id="monthFilter">
@@ -213,29 +209,7 @@
           </tr>
         </thead>
 
-        <tbody id="memoTableBody">
-          <!-- STATIC SAMPLE DATA -->
-          <tr>
-            <td>03-25-2026</td>
-            <td>Enrollment Guidelines</td>
-            <td>Guidelines for student enrollment for SY 2026...</td>
-            <td><a href="#" class="download-link">View</a></td>
-          </tr>
-
-          <tr>
-            <td>02-10-2025</td>
-            <td>Faculty Meeting</td>
-            <td>Meeting schedule for all teaching staff...</td>
-            <td><a href="#" class="download-link">View</a></td>
-          </tr>
-
-          <tr>
-            <td>01-15-2024</td>
-            <td>School Event</td>
-            <td>Upcoming school activities and events...</td>
-            <td><span style="color:#999;">No file</span></td>
-          </tr>
-        </tbody>
+        <tbody id="memoTableBody"></tbody>
       </table>
     </div>
 
@@ -248,7 +222,9 @@
 </main>
 
 <!-- External JS -->
-<script src="src/js/memo.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../js/supabase-config.js"></script>
+<script src="../../js/user/deped-memo.js"></script>
 
 <!-- Footer -->
 <footer class="footer">
@@ -257,10 +233,10 @@
     <!-- Logos -->
     <div class="footer-section footer-logos">
       <div class="logos-grid">
-        <img src="footer/rectologo.png" class="footer-logo">
-        <img src="footer/depedquezon.png" class="footer-logo">
-        <img src="footer/bagongpilipinas.png" class="footer-logo">
-        <img src="footer/schoolseal.png" class="footer-logo">
+        <img src="../../imgs/rectologo.png" class="footer-logo">
+        <img src="../../imgs/depedquezon.png" class="footer-logo">
+        <img src="../../imgs/bagongpilipinas.png" class="footer-logo">
+        <img src="../../imgs/schoolseal.png" class="footer-logo">
       </div>
     </div>
 
@@ -302,7 +278,5 @@
     <p>&copy;2026 All Rights Reserved</p>
   </div>
 </footer>
-</body>
-</html>
 </body>
 </html>

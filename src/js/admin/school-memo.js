@@ -1,8 +1,8 @@
 // ==================== INDEXEDDB SETUP FOR SCHOOL MEMORANDUM ====================
-const DB_NAME = 'WBSSDatabase';
+const DB_NAME = 'WBSSDatabase_SchoolMemo';
 const DB_VERSION = 2;
-const STORE_NAME = 'schoolMemorandum';
-const FILE_STORE_NAME = 'memoFiles';
+const STORE_NAME = 'schoolMemo';
+const FILE_STORE_NAME = 'schoolMemoFiles';
 
 let db = null;
 
@@ -10,22 +10,31 @@ function initIndexedDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
     
-    request.onerror = () => reject(request.error);
+    request.onerror = () => {
+      console.error('IndexedDB open error:', request.error);
+      reject(request.error);
+    };
+    
     request.onsuccess = () => {
       db = request.result;
+      console.log('✓ IndexedDB initialized:', DB_NAME);
       resolve(db);
     };
     
     request.onupgradeneeded = (event) => {
       const database = event.target.result;
+      console.log('IndexedDB upgrade needed, version:', event.oldVersion, '->', event.newVersion);
       
+      // Create school memorandum store
       if (!database.objectStoreNames.contains(STORE_NAME)) {
         database.createObjectStore(STORE_NAME, { keyPath: 'id' });
+        console.log('✓ Created object store:', STORE_NAME);
       }
       
       // Create file store for PDF blobs
       if (!database.objectStoreNames.contains(FILE_STORE_NAME)) {
         database.createObjectStore(FILE_STORE_NAME, { keyPath: 'id' });
+        console.log('✓ Created object store:', FILE_STORE_NAME);
       }
     };
   });
@@ -34,103 +43,172 @@ function initIndexedDB() {
 // Get all items from store
 async function getAllFromStore(storeName) {
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction([storeName], 'readonly');
-    const store = transaction.objectStore(storeName);
-    const request = store.getAll();
+    if (!db) {
+      reject(new Error('Database not initialized'));
+      return;
+    }
     
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => {
-      const items = request.result.sort((a, b) => new Date(b.date) - new Date(a.date));
-      resolve(items);
-    };
+    try {
+      const transaction = db.transaction([storeName], 'readonly');
+      const store = transaction.objectStore(storeName);
+      const request = store.getAll();
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const items = request.result.sort((a, b) => new Date(b.date) - new Date(a.date));
+        resolve(items);
+      };
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
 // Add item to store
 async function addToStore(storeName, item) {
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction([storeName], 'readwrite');
-    const store = transaction.objectStore(storeName);
-    const request = store.add(item);
+    if (!db) {
+      reject(new Error('Database not initialized'));
+      return;
+    }
     
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
+    try {
+      const transaction = db.transaction([storeName], 'readwrite');
+      const store = transaction.objectStore(storeName);
+      const request = store.add(item);
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result);
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
 // Update item in store
 async function updateInStore(storeName, item) {
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction([storeName], 'readwrite');
-    const store = transaction.objectStore(storeName);
-    const request = store.put(item);
+    if (!db) {
+      reject(new Error('Database not initialized'));
+      return;
+    }
     
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
+    try {
+      const transaction = db.transaction([storeName], 'readwrite');
+      const store = transaction.objectStore(storeName);
+      const request = store.put(item);
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result);
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
 // Delete item from store
 async function deleteFromStore(storeName, id) {
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction([storeName], 'readwrite');
-    const store = transaction.objectStore(storeName);
-    const request = store.delete(id);
+    if (!db) {
+      reject(new Error('Database not initialized'));
+      return;
+    }
     
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve();
+    try {
+      const transaction = db.transaction([storeName], 'readwrite');
+      const store = transaction.objectStore(storeName);
+      const request = store.delete(id);
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve();
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
 // Store PDF file in IndexedDB (fallback)
 async function storePdfInIndexedDB(file, memoId) {
   return new Promise((resolve, reject) => {
-    // Convert File to Blob if needed and ensure proper storage
-    const blobToStore = file instanceof Blob ? file : new Blob([file], { type: 'application/pdf' });
+    if (!db) {
+      reject(new Error('Database not initialized'));
+      return;
+    }
     
-    const transaction = db.transaction([FILE_STORE_NAME], 'readwrite');
-    const store = transaction.objectStore(FILE_STORE_NAME);
-    const request = store.put({
-      id: memoId,
-      fileName: file.name || 'document.pdf',
-      blob: blobToStore,
-      timestamp: Date.now()
-    });
-    
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
+    try {
+      // Convert File to Blob if needed and ensure proper storage
+      const blobToStore = file instanceof Blob ? file : new Blob([file], { type: 'application/pdf' });
+      
+      const transaction = db.transaction([FILE_STORE_NAME], 'readwrite');
+      const store = transaction.objectStore(FILE_STORE_NAME);
+      const request = store.put({
+        id: memoId,
+        fileName: file.name || 'document.pdf',
+        blob: blobToStore,
+        timestamp: Date.now()
+      });
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result);
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
 // Retrieve PDF file from IndexedDB
 async function getPdfFromIndexedDB(memoId) {
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction([FILE_STORE_NAME], 'readonly');
-    const store = transaction.objectStore(FILE_STORE_NAME);
-    const request = store.get(memoId);
+    if (!db) {
+      reject(new Error('Database not initialized'));
+      return;
+    }
     
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result || null);
+    try {
+      const transaction = db.transaction([FILE_STORE_NAME], 'readonly');
+      const store = transaction.objectStore(FILE_STORE_NAME);
+      const request = store.get(memoId);
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result || null);
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
 // Delete PDF from IndexedDB
 async function deletePdfFromIndexedDB(memoId) {
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction([FILE_STORE_NAME], 'readwrite');
-    const store = transaction.objectStore(FILE_STORE_NAME);
-    const request = store.delete(memoId);
+    if (!db) {
+      reject(new Error('Database not initialized'));
+      return;
+    }
     
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve();
+    try {
+      const transaction = db.transaction([FILE_STORE_NAME], 'readwrite');
+      const store = transaction.objectStore(FILE_STORE_NAME);
+      const request = store.delete(memoId);
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve();
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
 // ==================== SUPABASE STORAGE & HELPER FUNCTIONS ====================
+const SCHOOL_MEMO_BUCKET = 'school-memo-files';
 
 /**
- * Upload PDF file to IndexedDB (primary) or Supabase Storage (if available)
+ * Upload PDF file to Supabase Storage when available, otherwise fall back to IndexedDB
  */
+function getStorageFilePath(file, memoId) {
+  const safeName = (file?.name || 'document.pdf').replace(/[^a-zA-Z0-9._-]/g, '_');
+  return `school-memo/${memoId}-${Date.now()}-${safeName}`;
+}
+
 async function uploadPdfToStorage(file, memoId) {
   try {
     if (!file) return null;
@@ -146,12 +224,39 @@ async function uploadPdfToStorage(file, memoId) {
       throw new Error('File size must be less than 10MB');
     }
 
-    // Store in IndexedDB (primary method - always available)
-    console.log('Storing PDF in IndexedDB...');
+    if (window.supabaseClient?.storage) {
+      try {
+        const filePath = getStorageFilePath(file, memoId);
+        console.log('Uploading PDF to Supabase Storage...');
+
+        const { error: uploadError } = await window.supabaseClient.storage
+          .from(SCHOOL_MEMO_BUCKET)
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: true,
+            contentType: 'application/pdf'
+          });
+
+        if (uploadError) {
+          throw uploadError;
+        }
+
+        const { data: publicUrlData } = window.supabaseClient.storage
+          .from(SCHOOL_MEMO_BUCKET)
+          .getPublicUrl(filePath);
+
+        if (publicUrlData?.publicUrl) {
+          console.log('PDF uploaded to Supabase Storage');
+          return publicUrlData.publicUrl;
+        }
+      } catch (storageError) {
+        console.warn('Supabase Storage upload failed, falling back to IndexedDB:', storageError.message);
+      }
+    }
+
+    console.log('Storing PDF in IndexedDB fallback...');
     await storePdfInIndexedDB(file, memoId);
-    console.log('✓ PDF stored in IndexedDB');
-    
-    // Return special identifier for IndexedDB files
+    console.log('PDF stored in IndexedDB');
     return `idb://${memoId}`;
   } catch (error) {
     console.error('Error uploading PDF:', error.message);
@@ -177,11 +282,11 @@ async function deletePdfFromStorage(fileUrl, memoId) {
     if (fileUrl.startsWith('http')) {
       try {
         // Extract file path from URL
-        const urlParts = fileUrl.split('/documents/');
+        const urlParts = fileUrl.split(`/${SCHOOL_MEMO_BUCKET}/`);
         if (urlParts.length === 2) {
-          const filePath = urlParts[1];
+          const filePath = urlParts[1].split('?')[0];
           const { error } = await supabaseClient.storage
-            .from('documents')
+            .from(SCHOOL_MEMO_BUCKET)
             .remove([filePath]);
 
           if (!error) {
@@ -201,7 +306,7 @@ async function deletePdfFromStorage(fileUrl, memoId) {
 }
 
 /**
- * Save or update school memorandum to Supabase (with file)
+ * Save or update School Memorandum to Supabase (with file)
  */
 async function saveMemoToSupabase(data) {
   try {
@@ -214,7 +319,7 @@ async function saveMemoToSupabase(data) {
       throw new Error('PDF file is required');
     }
 
-    console.log('Saving memorandum:', data.title);
+    console.log('Saving School Memorandum:', data.title);
 
     let result;
     let error;
@@ -262,16 +367,16 @@ async function saveMemoToSupabase(data) {
       throw error;
     }
 
-    console.log('✓ Memorandum saved to Supabase:', data.title);
+    console.log('✓ School Memorandum saved to Supabase:', data.title);
     return result ? result[0] : data;
   } catch (error) {
-    console.error('Error saving memorandum to Supabase:', error.message);
+    console.error('Error saving School Memorandum to Supabase:', error.message);
     throw error;
   }
 }
 
 /**
- * Load all school memorandums from Supabase
+ * Load all School Memorandums from Supabase
  */
 async function loadMemosFromSupabase() {
   try {
@@ -287,13 +392,73 @@ async function loadMemosFromSupabase() {
 
     return data || [];
   } catch (error) {
-    console.error('Error loading memorandums from Supabase:', error.message);
+    console.error('Error loading School Memorandums from Supabase:', error.message);
     return [];
   }
 }
 
+async function migrateMemoFileToPublicUrl(memo) {
+  if (!memo?.id || !memo.file || !memo.file.startsWith('idb://')) {
+    return memo;
+  }
+
+  try {
+    const fileData = await getPdfFromIndexedDB(memo.id);
+    if (!fileData?.blob) {
+      return memo;
+    }
+
+    const uploadSource = new File(
+      [fileData.blob],
+      fileData.fileName || `school-memo-${memo.id}.pdf`,
+      { type: fileData.blob.type || 'application/pdf' }
+    );
+
+    const publicUrl = await uploadPdfToStorage(uploadSource, memo.id);
+    if (!publicUrl || publicUrl.startsWith('idb://')) {
+      return memo;
+    }
+
+    const { data, error } = await supabaseClient
+      .from('school_memorandum')
+      .update({ file: publicUrl })
+      .eq('id', memo.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.warn('Could not update migrated file URL in Supabase:', error.message);
+      return memo;
+    }
+
+    const migratedMemo = data || { ...memo, file: publicUrl };
+
+    try {
+      await updateInStore(STORE_NAME, migratedMemo);
+    } catch (storeError) {
+      console.log('Local store update skipped after migration');
+    }
+
+    console.log('Migrated School Memorandum file to public URL:', memo.id);
+    return migratedMemo;
+  } catch (error) {
+    console.warn(`Skipping migration for memo ${memo.id}:`, error.message);
+    return memo;
+  }
+}
+
+async function migrateMemosToPublicUrls(memos) {
+  const migratedMemos = [];
+
+  for (const memo of memos) {
+    migratedMemos.push(await migrateMemoFileToPublicUrl(memo));
+  }
+
+  return migratedMemos;
+}
+
 /**
- * Delete school memorandum from Supabase
+ * Delete School Memorandum from Supabase
  */
 async function deleteMemoFromSupabase(id, fileUrl) {
   try {
@@ -308,10 +473,10 @@ async function deleteMemoFromSupabase(id, fileUrl) {
       .eq('id', id);
 
     if (error) throw error;
-    console.log('✓ Memorandum deleted from Supabase');
+    console.log('✓ School Memorandum deleted from Supabase');
     return true;
   } catch (error) {
-    console.error('Error deleting memorandum from Supabase:', error.message);
+    console.error('Error deleting School Memorandum from Supabase:', error.message);
     return false;
   }
 }
@@ -520,11 +685,12 @@ async function loadMemos() {
   try {
     // Try loading from Supabase first
     const supabaseMemos = await loadMemosFromSupabase();
+    const normalizedMemos = await migrateMemosToPublicUrls(supabaseMemos);
     
-    if (supabaseMemos.length > 0) {
-      allMemos = supabaseMemos;
+    if (normalizedMemos.length > 0) {
+      allMemos = normalizedMemos;
       // Sync to local storage
-      for (const memo of supabaseMemos) {
+      for (const memo of normalizedMemos) {
         try {
           await updateInStore(STORE_NAME, memo);
         } catch (e) {
@@ -683,7 +849,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const savedMemo = await saveMemoToSupabase(memoData);
 
         // If new memo (not editing), update file ID to match the saved memo's ID
-        if (!editingId && savedMemo && savedMemo.id) {
+        if (!editingId && savedMemo && savedMemo.id && fileUrl.startsWith('idb://')) {
           const fileData = await getPdfFromIndexedDB(tempId);
           if (fileData) {
             // Store the file with the correct memo ID
@@ -824,8 +990,9 @@ document.addEventListener('DOMContentLoaded', async function() {
   setInterval(async () => {
     try {
       const supabaseMemos = await loadMemosFromSupabase();
-      if (supabaseMemos.length > 0 && JSON.stringify(supabaseMemos) !== JSON.stringify(allMemos)) {
-        allMemos = supabaseMemos;
+      const normalizedMemos = await migrateMemosToPublicUrls(supabaseMemos);
+      if (normalizedMemos.length > 0 && JSON.stringify(normalizedMemos) !== JSON.stringify(allMemos)) {
+        allMemos = normalizedMemos;
         renderTable(allMemos);
         console.log('✓ Synced from Supabase');
       }

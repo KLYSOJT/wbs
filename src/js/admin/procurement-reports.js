@@ -1,8 +1,8 @@
-// ==================== INDEXEDDB SETUP FOR DIVISION MEMORANDUM ====================
-const DB_NAME = 'WBSSDatabase_DivisionMemo';
+// ==================== INDEXEDDB SETUP FOR PROCUREMENT REPORTS ====================
+const DB_NAME = 'WBSSDatabase_ProcurementReports';
 const DB_VERSION = 2;
-const STORE_NAME = 'divisionMemo';
-const FILE_STORE_NAME = 'divisionMemoFiles';
+const STORE_NAME = 'procurementReports';
+const FILE_STORE_NAME = 'procurementReportsFiles';
 
 let db = null;
 
@@ -25,7 +25,7 @@ function initIndexedDB() {
       const database = event.target.result;
       console.log('IndexedDB upgrade needed, version:', event.oldVersion, '->', event.newVersion);
       
-      // Create division memorandum store
+      // Create procurement report store
       if (!database.objectStoreNames.contains(STORE_NAME)) {
         database.createObjectStore(STORE_NAME, { keyPath: 'id' });
         console.log('✓ Created object store:', STORE_NAME);
@@ -199,14 +199,14 @@ async function deletePdfFromIndexedDB(memoId) {
 }
 
 // ==================== SUPABASE STORAGE & HELPER FUNCTIONS ====================
-const DIVISION_MEMO_BUCKET = 'divsion-memo-files';
+const PROCUREMENT_REPORTS_BUCKET = 'procurement-reports-files';
 
 /**
  * Upload PDF file to Supabase Storage when available, otherwise fall back to IndexedDB
  */
 function getStorageFilePath(file, memoId) {
   const safeName = (file?.name || 'document.pdf').replace(/[^a-zA-Z0-9._-]/g, '_');
-  return `division-memo/${memoId}-${Date.now()}-${safeName}`;
+  return `procurement-reports/${memoId}-${Date.now()}-${safeName}`;
 }
 
 async function uploadPdfToStorage(file, memoId) {
@@ -230,7 +230,7 @@ async function uploadPdfToStorage(file, memoId) {
         console.log('Uploading PDF to Supabase Storage...');
 
         const { error: uploadError } = await window.supabaseClient.storage
-          .from(DIVISION_MEMO_BUCKET)
+          .from(PROCUREMENT_REPORTS_BUCKET)
           .upload(filePath, file, {
             cacheControl: '3600',
             upsert: true,
@@ -242,7 +242,7 @@ async function uploadPdfToStorage(file, memoId) {
         }
 
         const { data: publicUrlData } = window.supabaseClient.storage
-          .from(DIVISION_MEMO_BUCKET)
+          .from(PROCUREMENT_REPORTS_BUCKET)
           .getPublicUrl(filePath);
 
         if (publicUrlData?.publicUrl) {
@@ -282,11 +282,11 @@ async function deletePdfFromStorage(fileUrl, memoId) {
     if (fileUrl.startsWith('http')) {
       try {
         // Extract file path from URL
-        const urlParts = fileUrl.split(`/${DIVISION_MEMO_BUCKET}/`);
+        const urlParts = fileUrl.split(`/${PROCUREMENT_REPORTS_BUCKET}/`);
         if (urlParts.length === 2) {
           const filePath = urlParts[1].split('?')[0];
           const { error } = await supabaseClient.storage
-            .from(DIVISION_MEMO_BUCKET)
+            .from(PROCUREMENT_REPORTS_BUCKET)
             .remove([filePath]);
 
           if (!error) {
@@ -306,7 +306,7 @@ async function deletePdfFromStorage(fileUrl, memoId) {
 }
 
 /**
- * Save or update Division Memorandum to Supabase (with file)
+ * Save or update Procurement Report to Supabase (with file)
  */
 async function saveMemoToSupabase(data) {
   try {
@@ -319,7 +319,7 @@ async function saveMemoToSupabase(data) {
       throw new Error('PDF file is required');
     }
 
-    console.log('Saving Division Memorandum:', data.title);
+    console.log('Saving Procurement Report:', data.title);
 
     let result;
     let error;
@@ -328,7 +328,7 @@ async function saveMemoToSupabase(data) {
       // UPDATE existing record
       console.log('Updating record with id:', data.id);
       const { data: updateData, error: updateError } = await supabaseClient
-        .from('division_memorandum')
+        .from('procurement_report')
         .update({
           title: data.title,
           date: data.date,
@@ -344,7 +344,7 @@ async function saveMemoToSupabase(data) {
       // INSERT new record (omit id, let database generate it)
       console.log('Inserting new record');
       const { data: insertData, error: insertError } = await supabaseClient
-        .from('division_memorandum')
+        .from('procurement_report')
         .insert({
           title: data.title,
           date: data.date,
@@ -367,21 +367,21 @@ async function saveMemoToSupabase(data) {
       throw error;
     }
 
-    console.log('✓ Division Memorandum saved to Supabase:', data.title);
+    console.log('✓ Procurement Report saved to Supabase:', data.title);
     return result ? result[0] : data;
   } catch (error) {
-    console.error('Error saving Division Memorandum to Supabase:', error.message);
+    console.error('Error saving Procurement Report to Supabase:', error.message);
     throw error;
   }
 }
 
 /**
- * Load all Division Memorandums from Supabase
+ * Load all Procurement Reports from Supabase
  */
 async function loadMemosFromSupabase() {
   try {
     const { data, error } = await supabaseClient
-      .from('division_memorandum')
+      .from('procurement_report')
       .select('*')
       .order('date', { ascending: false });
 
@@ -392,7 +392,7 @@ async function loadMemosFromSupabase() {
 
     return data || [];
   } catch (error) {
-    console.error('Error loading Division Memorandums from Supabase:', error.message);
+    console.error('Error loading Procurement Reports from Supabase:', error.message);
     return [];
   }
 }
@@ -410,7 +410,7 @@ async function migrateMemoFileToPublicUrl(memo) {
 
     const uploadSource = new File(
       [fileData.blob],
-      fileData.fileName || `division-memo-${memo.id}.pdf`,
+      fileData.fileName || `procurement-reports-${memo.id}.pdf`,
       { type: fileData.blob.type || 'application/pdf' }
     );
 
@@ -420,7 +420,7 @@ async function migrateMemoFileToPublicUrl(memo) {
     }
 
     const { data, error } = await supabaseClient
-      .from('division_memorandum')
+      .from('procurement_report')
       .update({ file: publicUrl })
       .eq('id', memo.id)
       .select()
@@ -439,7 +439,7 @@ async function migrateMemoFileToPublicUrl(memo) {
       console.log('Local store update skipped after migration');
     }
 
-    console.log('Migrated Division Memorandum file to public URL:', memo.id);
+    console.log('Migrated Procurement Report file to public URL:', memo.id);
     return migratedMemo;
   } catch (error) {
     console.warn(`Skipping migration for memo ${memo.id}:`, error.message);
@@ -458,7 +458,7 @@ async function migrateMemosToPublicUrls(memos) {
 }
 
 /**
- * Delete Division Memorandum from Supabase
+ * Delete Procurement Report from Supabase
  */
 async function deleteMemoFromSupabase(id, fileUrl) {
   try {
@@ -468,15 +468,15 @@ async function deleteMemoFromSupabase(id, fileUrl) {
     }
 
     const { error } = await supabaseClient
-      .from('division_memorandum')
+      .from('procurement_report')
       .delete()
       .eq('id', id);
 
     if (error) throw error;
-    console.log('✓ Division Memorandum deleted from Supabase');
+    console.log('✓ Procurement Report deleted from Supabase');
     return true;
   } catch (error) {
-    console.error('Error deleting Division Memorandum from Supabase:', error.message);
+    console.error('Error deleting Procurement Report from Supabase:', error.message);
     return false;
   }
 }
@@ -863,7 +863,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             
             // Update in Supabase with correct file reference
             const { error } = await supabaseClient
-              .from('division_memorandum')
+              .from('procurement_report')
               .update({ file: correctedFileUrl })
               .eq('id', savedMemo.id);
             
@@ -1001,3 +1001,4 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
   }, 30000);
 });
+
