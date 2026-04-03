@@ -87,6 +87,21 @@ ALTER TABLE deped_order ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public read deped_order" ON deped_order FOR SELECT USING (true);
 CREATE POLICY "Admin write deped_order" ON deped_order FOR ALL USING (true) WITH CHECK (true);
 
+-- deped_memo
+CREATE TABLE deped_memorandum (
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  title text NOT NULL,
+  date date NOT NULL,
+  description text,
+  file text,
+  created_at timestamptz DEFAULT now()
+);
+
+-- RLS policies for deped_memorandum table
+ALTER TABLE deped_memorandum ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read deped_memorandum" ON deped_memorandum FOR SELECT USING (true);
+CREATE POLICY "Admin write deped_memorandum" ON deped_memorandum FOR ALL USING (true) WITH CHECK (true);
+
 -- research
 CREATE TABLE research (
   id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

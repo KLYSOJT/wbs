@@ -44,6 +44,7 @@
         <ul class="dropdown-menu">
           <li><a href="school-memo.html">School Memorandum</a></li>
           <li><a href="division-memo.html"class="active">Division Memorandum</a></li>
+          <li><a href="deped-memo.html">DepEd Memorandum</a></li>
           <li><a href="deped-order.html">DepEd Order</a></li>
 
           <li class="dropdown-submenu">
@@ -98,8 +99,9 @@
 
 
   <!-- JS -->
-  <script src="script.js"></script>
-  <script src="src/js/navbar.js"></script>
+  <script src="../../js/supabase-helpers.js"></script>
+  <script src="../../js/navbar.js"></script>
+  <script src="../../js/admin/division-memo.js"></script>
 
   
 
@@ -122,17 +124,17 @@
         <form id="uploadForm" class="upload-form">
           <div class="form-group">
             <label>Title</label>
-            <input type="text" placeholder="Enter title" required>
+            <input type="text" id="memoTitle" placeholder="Enter title" required>
           </div>
 
           <div class="form-group">
             <label>Date</label>
-            <input type="date" required>
+            <input type="date" id="memoDate" required>
           </div>
 
           <div class="form-group">
             <label>Description</label>
-            <textarea rows="4" placeholder="Enter description"></textarea>
+            <textarea rows="4" id="memoDescription" placeholder="Enter description"></textarea>
           </div>
 
           <div class="form-group">
@@ -171,16 +173,7 @@
           </thead>
 
           <tbody>
-            <tr>
-              <td>03-31-2026</td>
-              <td>Sample DepEd Order</td>
-              <td>This is a sample description.</td>
-              <td><a href="#">View</a></td>
-              <td>
-                <button class="btn-edit">Edit</button>
-                <button class="btn-delete">Delete</button>
-              </td>
-            </tr>
+            <!-- Table rows will be rendered here by JavaScript -->
           </tbody>
 
         </table>
@@ -191,6 +184,60 @@
   </div>
 </main>
 
+  <!-- Edit Modal -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Edit Document</h2>
+        <button class="modal-close" onclick="closeEditModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="editForm" class="edit-form">
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" id="editTitle" required>
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="editDate" required>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="editDescription" rows="4"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Upload New File (PDF Only)</label>
+            <div class="file-input-wrapper">
+              <input type="file" id="editDocFile" class="file-input-hidden" accept=".pdf,application/pdf">
+              <label for="editDocFile" class="file-label">Choose PDF File (Optional)</label>
+              <span class="file-name" id="editFileName">No file chosen</span>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+        <button class="btn-save" onclick="submitEditForm()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content modal-confirmation">
+      <div class="modal-header">
+        <h2>Delete Document</h2>
+        <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="deleteMessage">Are you sure you want to delete this document? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+        <button class="btn-delete-confirm" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>
