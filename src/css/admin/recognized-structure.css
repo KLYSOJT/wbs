@@ -1,14 +1,12 @@
 /* Recognized Structure CSS - Admin Page */
 /* Styling matches organizational-structure.css design */
 
-/* Main Content Container */
 .main-content {
   max-width: 1400px;
   margin: 20px auto;
   padding: 0 20px;
 }
 
-/* Dashboard Header */
 .dashboard-header {
   background: white;
   border-radius: 15px;
@@ -31,16 +29,14 @@
   margin: 0;
 }
 
-/* Content Card */
 .content-card {
   background: white;
   border-radius: 15px;
-    padding: 40px 50px;
+  padding: 40px 50px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   min-height: calc(100vh - 300px);
 }
 
-/* Notice Messages */
 .notice {
   padding: 15px 20px;
   border-radius: 8px;
@@ -61,7 +57,6 @@
   border-left-color: #dc3545;
 }
 
-/* Form Group */
 .form-group {
   margin-bottom: 25px;
 }
@@ -93,7 +88,6 @@
   box-shadow: 0 0 0 3px rgba(88, 0, 0, 0.1);
 }
 
-/* Upload Zone */
 .upload-zone {
   margin-bottom: 30px;
 }
@@ -148,12 +142,10 @@
   margin: 0;
 }
 
-/* Hidden file input */
 .upload-zone input[type="file"] {
   display: none;
 }
 
-/* Submit Button */
 .btn {
   padding: 12px 30px;
   border: none;
@@ -225,7 +217,6 @@
   transform: scale(1.05);
 }
 
-/* Section Title for Uploaded Items */
 .section-title {
   font-weight: 700;
   font-size: 1.5rem;
@@ -236,14 +227,12 @@
   padding-bottom: 15px;
 }
 
-/* Uploaded Grid */
 .uploaded-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 30px;
 }
 
-/* Responsive grid for desktop - 4 columns on large screens */
 @media (min-width: 1200px) {
   .uploaded-grid {
     grid-template-columns: repeat(4, 1fr);
@@ -256,7 +245,6 @@
   }
 }
 
-/* Uploaded Item */
 .uploaded-item {
   border: 1px solid #dee2e6;
   border-radius: 15px;
@@ -272,17 +260,38 @@
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Item Image */
+.item-media {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 15px;
+}
+
+.item-logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff8f8;
+  border: 1px solid #eadbdb;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.item-logo {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: #fff;
+}
+
 .item-image {
   width: 100%;
-  height: 200px;
+  height: 220px;
   object-fit: cover;
   border-radius: 12px;
-  margin-bottom: 15px;
   background-color: #f8f9fa;
 }
 
-/* Item Metadata */
 .meta {
   font-weight: 700;
   font-size: 1.1rem;
@@ -299,18 +308,16 @@
   margin-bottom: 8px;
 }
 
-/* PDF Link Section */
 .pdf-link {
   margin-bottom: 15px;
   margin-top: 15px;
 }
 
 .pdf-link .btn-pdf {
-  width: 100%;
+  width: 85%;
   justify-content: center;
 }
 
-/* Replace Form */
 .replace-form {
   margin-top: auto;
   padding-top: 15px;
@@ -320,7 +327,6 @@
   gap: 10px;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .dashboard-header {
     padding: 30px 20px;
@@ -391,11 +397,6 @@
     padding: 12px 15px;
   }
 }
-
-.btn-delete:hover {
-  background: #fecaca;
-}
-
 
 #statusMessage[hidden] {
   display: none;

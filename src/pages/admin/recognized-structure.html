@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recognized Organization Admin</title>
+  <link rel="icon" type="image/png" href="../../imgs/rectologo.png">
   <link rel="stylesheet" href="../../css/admin/navbar.css">
   <link rel="stylesheet" href="../../css/admin/recognized-structure.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -73,7 +74,7 @@
   <main class="main-content">
     <div class="dashboard-header">
       <h1>Recognized Organization</h1>
-      <p>Upload organization records, images, and supporting PDFs to Supabase.</p>
+      <p>Upload organization records, logo images, organization charts, and supporting PDFs to Supabase.</p>
     </div>
 
     <div class="content-card">
@@ -96,13 +97,23 @@
         </div>
 
         <div class="upload-zone">
-          <label for="orgImage">Upload Image *</label>
-          <div class="drag-drop-area" id="imageDragDrop">
-            <i class="fas fa-cloud-upload-alt"></i>
-            <p class="primary-text">Upload Image</p>
-            <p class="secondary-text" id="imageFileLabel">Drag and drop or click to browse</p>
+          <label for="orgLogo">Upload Logo *</label>
+          <div class="drag-drop-area" id="logoDragDrop">
+            <i class="fas fa-image"></i>
+            <p class="primary-text">Upload Logo</p>
+            <p class="secondary-text" id="logoFileLabel">Drag and drop or click to browse</p>
           </div>
-          <input type="file" id="orgImage" name="image" accept="image/*" required>
+          <input type="file" id="orgLogo" name="logo" accept="image/*" required>
+        </div>
+
+        <div class="upload-zone">
+          <label for="orgChart">Upload Recognized Organization Chart *</label>
+          <div class="drag-drop-area" id="chartDragDrop">
+            <i class="fas fa-sitemap"></i>
+            <p class="primary-text">Upload Organization Chart</p>
+            <p class="secondary-text" id="chartFileLabel">Drag and drop or click to browse</p>
+          </div>
+          <input type="file" id="orgChart" name="chart" accept="image/*" required>
         </div>
 
         <div class="upload-zone">

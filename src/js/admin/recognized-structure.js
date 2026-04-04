@@ -18,20 +18,25 @@ function cacheElements() {
   elements.form = document.getElementById('recognizedForm');
   elements.grid = document.getElementById('recognizedGrid');
   elements.status = document.getElementById('statusMessage');
-  elements.imageInput = document.getElementById('orgImage');
+  elements.logoInput = document.getElementById('orgLogo');
+  elements.chartInput = document.getElementById('orgChart');
   elements.pdfInput = document.getElementById('orgPdf');
-  elements.imageDrop = document.getElementById('imageDragDrop');
+  elements.logoDrop = document.getElementById('logoDragDrop');
+  elements.chartDrop = document.getElementById('chartDragDrop');
   elements.pdfDrop = document.getElementById('pdfDragDrop');
-  elements.imageLabel = document.getElementById('imageFileLabel');
+  elements.logoLabel = document.getElementById('logoFileLabel');
+  elements.chartLabel = document.getElementById('chartFileLabel');
   elements.pdfLabel = document.getElementById('pdfFileLabel');
   elements.saveButton = document.getElementById('saveButton');
 }
 
 function bindEvents() {
   elements.form?.addEventListener('submit', handleSubmit);
-  setupDropZone(elements.imageDrop, elements.imageInput, updateFileLabels, ['image/']);
+  setupDropZone(elements.logoDrop, elements.logoInput, updateFileLabels, ['image/']);
+  setupDropZone(elements.chartDrop, elements.chartInput, updateFileLabels, ['image/']);
   setupDropZone(elements.pdfDrop, elements.pdfInput, updateFileLabels, ['application/pdf']);
-  elements.imageInput?.addEventListener('change', updateFileLabels);
+  elements.logoInput?.addEventListener('change', updateFileLabels);
+  elements.chartInput?.addEventListener('change', updateFileLabels);
   elements.pdfInput?.addEventListener('change', updateFileLabels);
 }
 
@@ -79,7 +84,8 @@ function setupDropZone(dropZone, input, onChange, allowedPrefixes) {
 }
 
 function updateFileLabels() {
-  elements.imageLabel.textContent = elements.imageInput?.files?.[0]?.name || 'Drag and drop or click to browse';
+  elements.logoLabel.textContent = elements.logoInput?.files?.[0]?.name || 'Drag and drop or click to browse';
+  elements.chartLabel.textContent = elements.chartInput?.files?.[0]?.name || 'Drag and drop or click to browse';
   elements.pdfLabel.textContent = elements.pdfInput?.files?.[0]?.name || 'Drag and drop or click to browse';
 }
 
@@ -94,16 +100,17 @@ async function handleSubmit(event) {
   const orgName = document.getElementById('org_name').value.trim();
   const dateEstablished = document.getElementById('date_established').value || null;
   const adviserName = document.getElementById('adviser_name').value.trim() || null;
-  const imageFile = elements.imageInput.files[0];
+  const logoFile = elements.logoInput.files[0];
+  const chartFile = elements.chartInput.files[0];
   const pdfFile = elements.pdfInput.files[0] || null;
 
-  if (!orgName || !imageFile) {
-    showStatus('Organization name and image are required.', true);
+  if (!orgName || !logoFile || !chartFile) {
+    showStatus('Organization name, logo, and organization chart are required.', true);
     return;
   }
 
-  if (!isValidImage(imageFile)) {
-    showStatus('Please upload a valid image file under 10 MB.', true);
+  if (!isValidImage(logoFile) || !isValidImage(chartFile)) {
+    showStatus('Please upload valid image files under 10 MB for the logo and chart.', true);
     return;
   }
 
@@ -118,8 +125,11 @@ async function handleSubmit(event) {
   const uploadedPaths = [];
 
   try {
-    const imageUpload = await uploadFile(imageFile, 'images');
-    uploadedPaths.push(imageUpload.path);
+    const logoUpload = await uploadFile(logoFile, 'logos');
+    uploadedPaths.push(logoUpload.path);
+
+    const chartUpload = await uploadFile(chartFile, 'charts');
+    uploadedPaths.push(chartUpload.path);
 
     let pdfUpload = null;
     if (pdfFile) {
@@ -131,9 +141,15 @@ async function handleSubmit(event) {
       org_name: orgName,
       date_established: dateEstablished,
       adviser_name: adviserName,
-      image_url: imageUpload.publicUrl,
-      image_path: imageUpload.path,
-      image_mime: imageFile.type || null,
+      logo_url: logoUpload.publicUrl,
+      logo_path: logoUpload.path,
+      logo_mime: logoFile.type || null,
+      chart_url: chartUpload.publicUrl,
+      chart_path: chartUpload.path,
+      chart_mime: chartFile.type || null,
+      image_url: chartUpload.publicUrl,
+      image_path: chartUpload.path,
+      image_mime: chartFile.type || null,
       pdf_url: pdfUpload?.publicUrl || null,
       pdf_path: pdfUpload?.path || null,
       pdf_mime: pdfFile?.type || null
@@ -197,6 +213,7 @@ function renderOrganizations() {
   }
 
   elements.grid.innerHTML = state.records.map((record) => {
+    const chartUrl = record.chart_url || record.image_url || '';
     const established = record.date_established ? formatDate(record.date_established) : 'N/A';
     const adviser = escapeHtml(record.adviser_name || 'N/A');
     const updated = record.updated_at ? formatDateTime(record.updated_at) : 'N/A';
@@ -206,7 +223,12 @@ function renderOrganizations() {
 
     return `
       <article class="uploaded-item">
-        <img src="${escapeHtml(record.image_url || '')}" alt="${escapeHtml(record.org_name)}" class="item-image">
+        <div class="item-media">
+          <div class="item-logo-wrap">
+            <img src="${escapeHtml(record.logo_url || '')}" alt="${escapeHtml(record.org_name)} logo" class="item-logo">
+          </div>
+          <img src="${escapeHtml(chartUrl)}" alt="${escapeHtml(record.org_name)} organization chart" class="item-image">
+        </div>
         <div class="meta">${escapeHtml(record.org_name)}</div>
         <div class="established">Established: ${escapeHtml(established)}</div>
         <div class="adviser">Adviser: ${adviser}</div>
@@ -234,7 +256,10 @@ async function deleteOrganization(id) {
   showStatus('Deleting organization...');
 
   try {
-    const pathsToDelete = [record.image_path, record.pdf_path].filter(Boolean);
+    const pathsToDelete = [record.logo_path, record.chart_path, record.image_path, record.pdf_path]
+      .filter(Boolean)
+      .filter((value, index, array) => array.indexOf(value) === index);
+
     if (pathsToDelete.length > 0) {
       const { error: storageError } = await window.supabaseClient.storage
         .from(RECOGNIZED_BUCKET)
