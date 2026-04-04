@@ -3,29 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RMNHS History Profile</title>
+  <title>SSLG</title>
 
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-  <!-- Your CSS -->
   <link rel="stylesheet" href="../../css/user/navbar.css">
   <link rel="stylesheet" href="../../css/user/footer.css">
   <link rel="stylesheet" href="../../css/user/header.css">
-
-
+  <link rel="stylesheet" href="../../css/user/memorandum.css">
 </head>
-
 <body>
-
-  <!-- Navigation Bar -->
   <nav class="navbar">
     <div class="logo-container">
       <img src="../../imgs/rectologo.png" alt="RMNHS Logo" class="logo-img">
       <span class="logo-text">RMNHS</span>
     </div>
 
-    <!-- Static Search (no backend) -->
     <form class="search-container">
       <input type="text" placeholder="Search">
       <button type="button"><i class="fa fa-search"></i></button>
@@ -36,14 +28,14 @@
     </button>
 
     <ul class="nav-links">
-      <li><a href="/dashboard.html" >Home</a></li>
+      <li><a href="/dashboard.html">Home</a></li>
 
       <li class="dropdown mobile-open">
-        <a href="#" onclick="return false" ">About <i class="arrow down"></i></a>
+        <a href="#" onclick="return false">About <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
           <li><a href="organizational-structure.html">Organizational Structure</a></li>
           <li><a href="recognized-structure.html">Recognized Organization</a></li>
-          <li><a href="history.html" class=>History Profile</a></li>
+          <li><a href="history.html">History Profile</a></li>
           <li><a href="mvc.html">VMC</a></li>
         </ul>
       </li>
@@ -71,7 +63,7 @@
       </li>
 
       <li class="dropdown">
-        <a href="#" onclick="return false"class="active">Transparency <i class="arrow down"></i></a>
+        <a href="#" onclick="return false" class="active">Transparency <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
           <li><a href="transparency-info.html">Transparency Information</a></li>
 
@@ -109,98 +101,137 @@
     </div>
   </nav>
 
-  <!-- JS -->
-  <script src="script.js"></script>
-  <script src="src/js/navbar.js"></script>
-
-
-<!-- NAVBAR (replace with your static navbar file if needed) -->
-<!-- Example: -->
-<!-- <script src="navbar.js"></script> -->
-
-<!-- Main Header Section -->
-<header class="main-header">
-  <div class="header-content">
-    <div class="brand-section">
-      <div class="vertical-divider"></div>
-      <h1 class="school-name">Recto Memorial National High School</h1>
-    </div>
-
-    <div class="contact-info">
-      <div class="contact-item">
-        <div class="icon-circle"><i class="fa fa-phone"></i></div>
-        <div class="contact-text">
-          <span class="label">Phone Number :</span>
-          <span class="value">0949-995-1769</span>
-        </div>
+  <header class="main-header">
+    <div class="header-content">
+      <div class="brand-section">
+        <div class="vertical-divider"></div>
+        <h1 class="school-name">Recto Memorial National High School</h1>
       </div>
 
-      <div class="contact-item">
-        <div class="icon-circle"><i class="fa fa-envelope"></i></div>
-        <div class="contact-text">
-          <span class="label">Email Address :</span>
-          <span class="value">rectomns301380@gmail.com</span>
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="icon-circle"><i class="fa fa-phone"></i></div>
+          <div class="contact-text">
+            <span class="label">Phone Number :</span>
+            <span class="value">0949-995-1769</span>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="icon-circle"><i class="fa fa-envelope"></i></div>
+          <div class="contact-text">
+            <span class="label">Email Address :</span>
+            <span class="value">rectomns301380@gmail.com</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</header>
+  </header>
 
+  <main class="main-content">
+    <div class="container">
+      <div class="section-title-container">
+        <h1 class="section-title">SSLG</h1>
+      </div>
 
+      <div class="filter-section">
+        <div class="filter-controls">
+          <select class="filter-dropdown" id="yearFilter">
+            <option value="">Year</option>
+          </select>
 
-<!-- Footer -->
-<footer class="footer">
-  <div class="footer-content">
+          <select class="filter-dropdown" id="monthFilter">
+            <option value="">Month</option>
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+        </div>
 
-    <!-- Logos -->
-    <div class="footer-section footer-logos">
-      <div class="logos-grid">
-        <img src="footer/rectologo.png" class="footer-logo">
-        <img src="footer/depedquezon.png" class="footer-logo">
-        <img src="footer/bagongpilipinas.png" class="footer-logo">
-        <img src="footer/schoolseal.png" class="footer-logo">
+        <div class="search-box">
+          <input type="text" class="search-input" placeholder="Search" id="searchInput">
+          <button class="search-btn"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="memo-table">
+          <thead>
+            <tr>
+              <th>Date Added</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>File</th>
+            </tr>
+          </thead>
+          <tbody id="memoTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="pagination-container">
+        <div class="pagination" id="paginationControls"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/supabase-config.js"></script>
+  <script src="../../js/user/sslg.js"></script>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section footer-logos">
+        <div class="logos-grid">
+          <img src="../../imgs/rectologo.png" class="footer-logo">
+          <img src="../../imgs/depedquezon.png" class="footer-logo">
+          <img src="../../imgs/bagongpilipinas.png" class="footer-logo">
+          <img src="../../imgs/schoolseal.png" class="footer-logo">
+        </div>
+      </div>
+
+      <div class="footer-section footer-facilities">
+        <h3>Our facilities</h3>
+        <ul>
+          <li><a href="#">Libraries</a></li>
+          <li><a href="#">Conferences</a></li>
+          <li><a href="#">Research</a></li>
+          <li><a href="#">IT support</a></li>
+          <li><a href="#">Sport</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section footer-contact">
+        <h3>Contact Us</h3>
+        <h4>RECTO MEMORIAL NATIONAL HIGH SCHOOL</h4>
+        <p class="address">X85C+R5C, Tiaong, Quezon Province</p>
+        <p class="phone">0949 995 1769</p>
+
+        <div class="social-icons">
+          <a href="https://www.facebook.com/TheRectorianPress" target="_blank">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://mail.google.com" target="_blank">
+            <i class="fas fa-envelope"></i>
+          </a>
+          <a href="https://maps.google.com/?q=X85C+R5C,+Tiaong,+Quezon+Province" target="_blank">
+            <i class="fas fa-location-dot"></i>
+          </a>
+        </div>
       </div>
     </div>
 
-    <!-- Facilities -->
-    <div class="footer-section footer-facilities">
-      <h3>Our facilities</h3>
-      <ul>
-        <li><a href="#">Libraries</a></li>
-        <li><a href="#">Conferences</a></li>
-        <li><a href="#">Research</a></li>
-        <li><a href="#">IT support</a></li>
-        <li><a href="#">Sport</a></li>
-      </ul>
+    <div class="footer-bottom">
+      <p>&copy;2026 All Rights Reserved</p>
     </div>
-
-    <!-- Contact -->
-    <div class="footer-section footer-contact">
-      <h3>Contact Us</h3>
-      <h4>RECTO MEMORIAL NATIONAL HIGH SCHOOL</h4>
-      <p class="address">X85C+R5C, Tiaong, Quezon Province</p>
-      <p class="phone">0949 995 1769</p>
-
-      <div class="social-icons">
-        <a href="https://www.facebook.com/TheRectorianPress" target="_blank">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="https://mail.google.com" target="_blank">
-          <i class="fas fa-envelope"></i>
-        </a>
-        <a href="https://maps.google.com/?q=X85C+R5C,+Tiaong,+Quezon+Province" target="_blank">
-          <i class="fas fa-location-dot"></i>
-        </a>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="footer-bottom">
-    <p>&copy;2026 All Rights Reserved</p>
-  </div>
-</footer>
-</body>
-</html>
+  </footer>
 </body>
 </html>

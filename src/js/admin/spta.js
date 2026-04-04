@@ -1,7 +1,6 @@
-
 // ==================== INDEXEDDB SETUP FOR SPTA ====================
 const DB_NAME = 'WBSSDatabase_SPTA';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STORE_NAME = 'spta';
 const FILE_STORE_NAME = 'sptaFiles';
 
@@ -9,7 +8,6 @@ let db = null;
 
 function initIndexedDB() {
   return new Promise((resolve, reject) => {
-    console.log('Initializing IndexedDB:', DB_NAME);
     const request = indexedDB.open(DB_NAME, DB_VERSION);
     
     request.onerror = () => {
@@ -20,8 +18,6 @@ function initIndexedDB() {
     request.onsuccess = () => {
       db = request.result;
       console.log('✓ IndexedDB initialized:', DB_NAME);
-      console.log('Database version:', db.version);
-      console.log('Object stores:', Array.from(db.objectStoreNames));
       resolve(db);
     };
     
@@ -29,7 +25,7 @@ function initIndexedDB() {
       const database = event.target.result;
       console.log('IndexedDB upgrade needed, version:', event.oldVersion, '->', event.newVersion);
       
-      // Create SPTA store
+      // Create spta store
       if (!database.objectStoreNames.contains(STORE_NAME)) {
         database.createObjectStore(STORE_NAME, { keyPath: 'id' });
         console.log('✓ Created object store:', STORE_NAME);
@@ -41,38 +37,7 @@ function initIndexedDB() {
         console.log('✓ Created object store:', FILE_STORE_NAME);
       }
     };
-    
-    request.onblocked = () => {
-      console.warn('⚠️ IndexedDB open blocked - other tabs may be using the database');
-    };
   });
-}
-
-// Diagnostic function to check IndexedDB status
-async function diagnoseIndexedDB() {
-  console.log('=== IndexedDB Diagnostics ===');
-  console.log('Database initialized:', db !== null);
-  if (db) {
-    console.log('Database name:', db.name);
-    console.log('Database version:', db.version);
-    console.log('Object stores:', Array.from(db.objectStoreNames));
-    
-    // Count files in file store
-    try {
-      const transaction = db.transaction([FILE_STORE_NAME], 'readonly');
-      const store = transaction.objectStore(FILE_STORE_NAME);
-      const countRequest = store.count();
-      countRequest.onsuccess = () => {
-        console.log('Files in IndexedDB:', countRequest.result);
-      };
-      countRequest.onerror = () => {
-        console.error('Error counting files:', countRequest.error);
-      };
-    } catch (e) {
-      console.error('Error accessing file store:', e);
-    }
-  }
-  console.log('=== End Diagnostics ===');
 }
 
 // Get all items from store
@@ -176,42 +141,16 @@ async function storePdfInIndexedDB(file, memoId) {
       
       const transaction = db.transaction([FILE_STORE_NAME], 'readwrite');
       const store = transaction.objectStore(FILE_STORE_NAME);
-      
-      // Determine file name
-      let fileName = 'document.pdf';
-      if (file && file.name) {
-        fileName = file.name;
-      }
-      
-      const storeData = {
+      const request = store.put({
         id: memoId,
-        fileName: fileName,
+        fileName: file.name || 'document.pdf',
         blob: blobToStore,
-        timestamp: Date.now(),
-        size: blobToStore.size,
-        type: blobToStore.type
-      };
+        timestamp: Date.now()
+      });
       
-      console.log('Storing file in IndexedDB:', storeData);
-      
-      const request = store.put(storeData);
-      
-      request.onerror = () => {
-        console.error('IndexedDB store error:', request.error);
-        reject(request.error);
-      };
-      
-      request.onsuccess = () => {
-        console.log('✓ File successfully stored in IndexedDB with ID:', memoId);
-        resolve(request.result);
-      };
-      
-      transaction.onerror = () => {
-        console.error('Transaction error:', transaction.error);
-        reject(transaction.error);
-      };
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result);
     } catch (error) {
-      console.error('Error in storePdfInIndexedDB:', error);
       reject(error);
     }
   });
@@ -221,7 +160,6 @@ async function storePdfInIndexedDB(file, memoId) {
 async function getPdfFromIndexedDB(memoId) {
   return new Promise((resolve, reject) => {
     if (!db) {
-      console.error('Database not initialized when trying to retrieve file ID:', memoId);
       reject(new Error('Database not initialized'));
       return;
     }
@@ -231,27 +169,9 @@ async function getPdfFromIndexedDB(memoId) {
       const store = transaction.objectStore(FILE_STORE_NAME);
       const request = store.get(memoId);
       
-      request.onerror = () => {
-        console.error('Error retrieving file from IndexedDB for ID:', memoId, request.error);
-        reject(request.error);
-      };
-      
-      request.onsuccess = () => {
-        const result = request.result;
-        if (!result) {
-          console.warn('No file found in IndexedDB for ID:', memoId);
-        } else {
-          console.log('✓ Retrieved file from IndexedDB for ID:', memoId, 'Size:', result.size, 'Name:', result.fileName);
-        }
-        resolve(result || null);
-      };
-      
-      transaction.onerror = () => {
-        console.error('Transaction error when retrieving file ID:', memoId, transaction.error);
-        reject(transaction.error);
-      };
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result || null);
     } catch (error) {
-      console.error('Error in getPdfFromIndexedDB:', error);
       reject(error);
     }
   });
@@ -279,10 +199,16 @@ async function deletePdfFromIndexedDB(memoId) {
 }
 
 // ==================== SUPABASE STORAGE & HELPER FUNCTIONS ====================
+const SPTA_BUCKET = 'spta-files';
 
 /**
- * Upload PDF file to IndexedDB (primary) or Supabase Storage (if available)
+ * Upload PDF file to Supabase Storage when available, otherwise fall back to IndexedDB
  */
+function getStorageFilePath(file, memoId) {
+  const safeName = (file?.name || 'document.pdf').replace(/[^a-zA-Z0-9._-]/g, '_');
+  return `spta/${memoId}-${Date.now()}-${safeName}`;
+}
+
 async function uploadPdfToStorage(file, memoId) {
   try {
     if (!file) return null;
@@ -298,12 +224,39 @@ async function uploadPdfToStorage(file, memoId) {
       throw new Error('File size must be less than 10MB');
     }
 
-    // Store in IndexedDB (primary method - always available)
-    console.log('Storing PDF in IndexedDB...');
+    if (window.supabaseClient?.storage) {
+      try {
+        const filePath = getStorageFilePath(file, memoId);
+        console.log('Uploading PDF to Supabase Storage...');
+
+        const { error: uploadError } = await window.supabaseClient.storage
+          .from(SPTA_BUCKET)
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: true,
+            contentType: 'application/pdf'
+          });
+
+        if (uploadError) {
+          throw uploadError;
+        }
+
+        const { data: publicUrlData } = window.supabaseClient.storage
+          .from(SPTA_BUCKET)
+          .getPublicUrl(filePath);
+
+        if (publicUrlData?.publicUrl) {
+          console.log('PDF uploaded to Supabase Storage');
+          return publicUrlData.publicUrl;
+        }
+      } catch (storageError) {
+        console.warn('Supabase Storage upload failed, falling back to IndexedDB:', storageError.message);
+      }
+    }
+
+    console.log('Storing PDF in IndexedDB fallback...');
     await storePdfInIndexedDB(file, memoId);
-    console.log('✓ PDF stored in IndexedDB');
-    
-    // Return special identifier for IndexedDB files
+    console.log('PDF stored in IndexedDB');
     return `idb://${memoId}`;
   } catch (error) {
     console.error('Error uploading PDF:', error.message);
@@ -329,11 +282,11 @@ async function deletePdfFromStorage(fileUrl, memoId) {
     if (fileUrl.startsWith('http')) {
       try {
         // Extract file path from URL
-        const urlParts = fileUrl.split('/documents/');
+        const urlParts = fileUrl.split(`/${SPTA_BUCKET}/`);
         if (urlParts.length === 2) {
-          const filePath = urlParts[1];
+          const filePath = urlParts[1].split('?')[0];
           const { error } = await supabaseClient.storage
-            .from('documents')
+            .from(SPTA_BUCKET)
             .remove([filePath]);
 
           if (!error) {
@@ -423,7 +376,7 @@ async function saveMemoToSupabase(data) {
 }
 
 /**
- * Load all SPTA from Supabase
+ * Load all SPTAs from Supabase
  */
 async function loadMemosFromSupabase() {
   try {
@@ -439,9 +392,69 @@ async function loadMemosFromSupabase() {
 
     return data || [];
   } catch (error) {
-    console.error('Error loading SPTA from Supabase:', error.message);
+    console.error('Error loading SPTAs from Supabase:', error.message);
     return [];
   }
+}
+
+async function migrateMemoFileToPublicUrl(memo) {
+  if (!memo?.id || !memo.file || !memo.file.startsWith('idb://')) {
+    return memo;
+  }
+
+  try {
+    const fileData = await getPdfFromIndexedDB(memo.id);
+    if (!fileData?.blob) {
+      return memo;
+    }
+
+    const uploadSource = new File(
+      [fileData.blob],
+      fileData.fileName || `spta-${memo.id}.pdf`,
+      { type: fileData.blob.type || 'application/pdf' }
+    );
+
+    const publicUrl = await uploadPdfToStorage(uploadSource, memo.id);
+    if (!publicUrl || publicUrl.startsWith('idb://')) {
+      return memo;
+    }
+
+    const { data, error } = await supabaseClient
+      .from('spta')
+      .update({ file: publicUrl })
+      .eq('id', memo.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.warn('Could not update migrated file URL in Supabase:', error.message);
+      return memo;
+    }
+
+    const migratedMemo = data || { ...memo, file: publicUrl };
+
+    try {
+      await updateInStore(STORE_NAME, migratedMemo);
+    } catch (storeError) {
+      console.log('Local store update skipped after migration');
+    }
+
+    console.log('Migrated SPTA file to public URL:', memo.id);
+    return migratedMemo;
+  } catch (error) {
+    console.warn(`Skipping migration for memo ${memo.id}:`, error.message);
+    return memo;
+  }
+}
+
+async function migrateMemosToPublicUrls(memos) {
+  const migratedMemos = [];
+
+  for (const memo of memos) {
+    migratedMemos.push(await migrateMemoFileToPublicUrl(memo));
+  }
+
+  return migratedMemos;
 }
 
 /**
@@ -496,26 +509,11 @@ function generateId() {
 async function downloadIdbFile(memoId, memoTitle) {
   try {
     console.log('Fetching file with ID:', memoId);
-    let fileData = await getPdfFromIndexedDB(memoId);
+    const fileData = await getPdfFromIndexedDB(memoId);
     
-    // If not found, try to search for temp files or fallback
     if (!fileData) {
-      console.warn('File not found with ID:', memoId, '- attempting fallback lookup');
-      
-      // Try to fetch from Supabase if available
-      try {
-        const memo = allMemos.find(m => m.id === memoId);
-        if (memo && memo.file && memo.file.startsWith('http')) {
-          console.log('Opening file from Supabase URL');
-          window.open(memo.file, '_blank');
-          return;
-        }
-      } catch (e) {
-        console.warn('Supabase fallback failed:', e);
-      }
-      
       console.error('File data not found for ID:', memoId);
-      alert('File not found in storage. It may have been deleted or not uploaded yet.');
+      alert('File not found');
       return;
     }
     
@@ -687,11 +685,12 @@ async function loadMemos() {
   try {
     // Try loading from Supabase first
     const supabaseMemos = await loadMemosFromSupabase();
+    const normalizedMemos = await migrateMemosToPublicUrls(supabaseMemos);
     
-    if (supabaseMemos.length > 0) {
-      allMemos = supabaseMemos;
+    if (normalizedMemos.length > 0) {
+      allMemos = normalizedMemos;
       // Sync to local storage
-      for (const memo of supabaseMemos) {
+      for (const memo of normalizedMemos) {
         try {
           await updateInStore(STORE_NAME, memo);
         } catch (e) {
@@ -782,16 +781,12 @@ function resetForm() {
 // ==================== FILE HANDLING ====================
 
 document.addEventListener('DOMContentLoaded', async function() {
-  console.log('Page loaded, initializing SPTA module...');
-  
   // Initialize IndexedDB
   try {
     await initIndexedDB();
-    diagnoseIndexedDB();
     await loadMemos();
   } catch (error) {
     console.error('IndexedDB initialization error:', error);
-    alert('Error initializing file storage. Some features may not work.');
   }
 
   // Form submission
@@ -836,7 +831,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.log('Uploading PDF file...');
         const tempId = editingId || `temp_${Date.now()}`;
         const fileUrl = await uploadPdfToStorage(file, tempId);
-        console.log('✓ File uploaded with tempId:', tempId, 'URL:', fileUrl);
 
         const memoData = {
           title,
@@ -853,47 +847,31 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Save to Supabase
         console.log('Saving to database...');
         const savedMemo = await saveMemoToSupabase(memoData);
-        console.log('✓ Memo saved to Supabase:', savedMemo);
 
         // If new memo (not editing), update file ID to match the saved memo's ID
-        if (!editingId && savedMemo && savedMemo.id) {
-          console.log('Remapping file from tempId:', tempId, 'to memoId:', savedMemo.id);
-          
-          try {
-            const fileData = await getPdfFromIndexedDB(tempId);
-            if (fileData && fileData.blob) {
-              console.log('✓ Retrieved file data from IndexedDB, blob size:', fileData.blob.size);
-              
-              // Store the file with the correct memo ID
-              await storePdfInIndexedDB(fileData.blob, savedMemo.id);
-              console.log('✓ File stored with correct memo ID:', savedMemo.id);
-              
-              // Delete the temp file
-              await deletePdfFromIndexedDB(tempId);
-              console.log('✓ Temp file deleted');
-              
-              // Update the saved memo's file reference to use the correct ID
-              const correctedFileUrl = `idb://${savedMemo.id}`;
-              console.log('Updating Supabase with file reference:', correctedFileUrl);
-              
-              const { error } = await supabaseClient
-                .from('spta')
-                .update({ file: correctedFileUrl })
-                .eq('id', savedMemo.id);
-              
-              if (!error) {
-                console.log('✓ File remapped to memo ID:', savedMemo.id);
-              } else {
-                console.warn('⚠️ Could not update file reference in Supabase:', error);
-                console.warn('File is stored locally but Supabase reference may not be updated');
-              }
+        if (!editingId && savedMemo && savedMemo.id && fileUrl.startsWith('idb://')) {
+          const fileData = await getPdfFromIndexedDB(tempId);
+          if (fileData) {
+            // Store the file with the correct memo ID
+            await storePdfInIndexedDB(fileData.blob, savedMemo.id);
+            // Delete the temp file
+            await deletePdfFromIndexedDB(tempId);
+            
+            // Update the saved memo's file reference to use the correct ID
+            const correctedFileUrl = `idb://${savedMemo.id}`;
+            const updatedMemo = { ...savedMemo, file: correctedFileUrl };
+            
+            // Update in Supabase with correct file reference
+            const { error } = await supabaseClient
+              .from('spta')
+              .update({ file: correctedFileUrl })
+              .eq('id', savedMemo.id);
+            
+            if (!error) {
+              console.log('✓ File remapped to memo ID:', savedMemo.id);
             } else {
-              console.warn('⚠️ Could not retrieve file data from IndexedDB for tempId:', tempId);
-              // File might be stored directly with Supabase URL - continue anyway
+              console.warn('Could not update file reference in Supabase:', error);
             }
-          } catch (remapError) {
-            console.error('Error during file remapping:', remapError);
-            console.warn('File may not be retrievable. Continuing with upload.');
           }
         }
 
@@ -1012,8 +990,9 @@ document.addEventListener('DOMContentLoaded', async function() {
   setInterval(async () => {
     try {
       const supabaseMemos = await loadMemosFromSupabase();
-      if (supabaseMemos.length > 0 && JSON.stringify(supabaseMemos) !== JSON.stringify(allMemos)) {
-        allMemos = supabaseMemos;
+      const normalizedMemos = await migrateMemosToPublicUrls(supabaseMemos);
+      if (normalizedMemos.length > 0 && JSON.stringify(normalizedMemos) !== JSON.stringify(allMemos)) {
+        allMemos = normalizedMemos;
         renderTable(allMemos);
         console.log('✓ Synced from Supabase');
       }
@@ -1022,3 +1001,4 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
   }, 30000);
 });
+

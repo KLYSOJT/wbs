@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RMNHS History Profile</title>
+  <title>SPTA</title>
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../../css/user/navbar.css">
   <link rel="stylesheet" href="../../css/user/footer.css">
   <link rel="stylesheet" href="../../css/user/header.css">
+    <link rel="stylesheet" href="../../css/user/memorandum.css">
 
 
 </head>
@@ -109,10 +110,6 @@
     </div>
   </nav>
 
-  <!-- JS -->
-  <script src="script.js"></script>
-  <script src="src/js/navbar.js"></script>
-
 
 <!-- NAVBAR (replace with your static navbar file if needed) -->
 <!-- Example: -->
@@ -148,6 +145,81 @@
 
 
 
+
+
+
+
+<!-- Main Content -->
+<main class="main-content">
+  <div class="container">
+
+    <div class="section-title-container">
+      <h1 class="section-title">SPTA</h1>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-section">
+      <div class="filter-controls">
+        <select class="filter-dropdown" id="yearFilter">
+          <option value="">Year</option>
+        </select>
+
+        <select class="filter-dropdown" id="monthFilter">
+          <option value="">Month</option>
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+          <option value="06">June</option>
+          <option value="07">July</option>
+          <option value="08">August</option>
+          <option value="09">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+      </div>
+
+      <div class="search-box">
+        <input type="text" class="search-input" placeholder="Search" id="searchInput">
+        <button class="search-btn"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <table class="memo-table">
+        <thead>
+          <tr>
+            <th>Date Added</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>File</th>
+          </tr>
+        </thead>
+
+        <tbody id="memoTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+      <div class="pagination" id="paginationControls"></div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../js/supabase-config.js"></script>
+<script src="../../js/user/spta.js"></script>
+
+
+
+
+
+
 <!-- Footer -->
 <footer class="footer">
   <div class="footer-content">
@@ -155,10 +227,10 @@
     <!-- Logos -->
     <div class="footer-section footer-logos">
       <div class="logos-grid">
-        <img src="footer/rectologo.png" class="footer-logo">
-        <img src="footer/depedquezon.png" class="footer-logo">
-        <img src="footer/bagongpilipinas.png" class="footer-logo">
-        <img src="footer/schoolseal.png" class="footer-logo">
+        <img src="../../imgs/rectologo.png" class="footer-logo">
+        <img src="../../imgs/depedquezon.png" class="footer-logo">
+        <img src="../../imgs/bagongpilipinas.png" class="footer-logo">
+        <img src="../../imgs/schoolseal.png" class="footer-logo">
       </div>
     </div>
 
@@ -200,7 +272,5 @@
     <p>&copy;2026 All Rights Reserved</p>
   </div>
 </footer>
-</body>
-</html>
 </body>
 </html>
