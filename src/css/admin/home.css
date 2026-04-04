@@ -103,6 +103,20 @@
   margin-bottom: 25px;
 }
 
+.container form label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: -6px;
+}
+
+.input-help {
+  display: block;
+  margin-top: -8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
 /* File Inputs (SCOPED TO CONTAINER) */
 .container input[type="file"],
 .container input[type="text"],
@@ -527,6 +541,8 @@
 .news-card-footer small {
   font-size: 12px;
   color: var(--text-muted);
+  display: block;
+  margin-bottom: 4px;
 }
 
 /* Responsive Announcement & News Cards */
@@ -645,6 +661,7 @@
 .video-card-footer small {
   font-size: 12px;
   color: var(--text-muted);
+  display: block;
 }
 
 /* Responsive Video Cards */

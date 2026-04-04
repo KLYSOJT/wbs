@@ -121,7 +121,10 @@
     <h2>Announcements</h2>
 
     <form id="announcementForm">
+      <label for="announcementImage">Upload Image</label>
       <input type="file" id="announcementImage" accept="image/*">
+      <span class="input-help" id="announcementImageDetails">No file chosen</span>
+      <label for="announcementText">Announcement Text</label>
       <textarea id="announcementText" placeholder="Write announcement..."></textarea>
       <button type="submit">Publish</button>
     </form>
@@ -135,7 +138,10 @@
     <h2>News</h2>
 
     <form id="newsForm">
+      <label for="newsImage">Upload Image</label>
       <input type="file" id="newsImage" accept="image/*">
+      <span class="input-help" id="newsImageDetails">No file chosen</span>
+      <label for="newsText">News Text</label>
       <textarea id="newsText" placeholder="Write news..."></textarea>
       <button type="submit">Publish</button>
     </form>
@@ -149,6 +155,7 @@
     <h2>Upload Video</h2>
 
     <form id="videoForm">
+      <label for="videoTitle">Title</label>
       <input type="text" id="videoTitle" placeholder="Title">
 
       <div class="radio-group">
@@ -160,8 +167,11 @@
         </label>
       </div>
 
+      <label for="videoFile">Upload Video File</label>
       <input type="file" id="videoFile" accept="video/*">
-      <input type="url" id="videoUrl" placeholder="Video URL" style="display:none;">
+      <span class="input-help" id="videoFileDetails">No file chosen</span>
+      <label for="videoUrl">Video URL</label>
+      <input type="url" id="videoUrl" placeholder="Paste YouTube, Google Drive, or other video URL" style="display:none;">
 
       <button type="submit">Upload</button>
     </form>
@@ -175,7 +185,8 @@
 
 </main>
 
-
+<script src="../../js/supabase-helpers.js"></script>
+<script src="../../js/admin/home.js"></script>
 
 </body>
 </html>

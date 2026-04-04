@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   if (announcementsGrid) {
     announcementsGrid.innerHTML = '<div class="loading">Loading announcements...</div>';
     try {
-      const announcements = await loadAnnouncementsFromSupabase();
+      const announcements = await loadAnnouncementsFromSupabase({ limit: 24, includeImage: false });
       announcementsGrid.innerHTML = '';
       paginationContainer.innerHTML = '';
 
@@ -61,13 +61,21 @@ document.addEventListener('DOMContentLoaded', async function() {
       const totalPages = Math.ceil(announcements.length / itemsPerPage);
 
       // Function to display announcements for current page
-      function displayPage(page) {
+      async function displayPage(page) {
         announcementsGrid.innerHTML = '';
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         const pageAnnouncements = announcements.slice(startIndex, endIndex);
+        const imageRows = await loadAnnouncementImagesFromSupabase(pageAnnouncements.map((item) => item.id));
+        const imageMap = new Map(imageRows.map((item) => [item.id, item.image]));
 
         pageAnnouncements.forEach(announcement => {
+          const resolvedImage = normalizeDashboardImage(imageMap.get(announcement.id));
+          const announcementWithImage = {
+            ...announcement,
+            image: resolvedImage
+          };
+
           // Extract title (first line or first 50 chars)
           const fullText = announcement.announcement_posts || '';
           const lines = fullText.split('\n');
@@ -89,7 +97,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           
           // Set image
           const imgElement = card.querySelector('.announcement-image img');
-          imgElement.src = announcement.image || 'https://via.placeholder.com/400x250?text=Announcement';
+          imgElement.src = resolvedImage || buildContentPlaceholder('Announcement', 400, 250);
           
           // Set content
           card.querySelector('.announcement-date').textContent = date;
@@ -97,13 +105,13 @@ document.addEventListener('DOMContentLoaded', async function() {
           card.querySelector('.announcement-description').textContent = description;
           card.querySelector('.read-more-btn').onclick = (e) => {
             e.stopPropagation();
-            openAnnouncementModal(announcement);
+            openAnnouncementModal(announcementWithImage);
           };
           
           // Get the card element (first child of template result)
           const cardElement = card.querySelector('.announcement-card');
           cardElement.style.cursor = 'pointer';
-          cardElement.onclick = () => openAnnouncementModal(announcement);
+          cardElement.onclick = () => openAnnouncementModal(announcementWithImage);
           
           announcementsGrid.appendChild(card);
         });
@@ -120,10 +128,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         prevBtn.className = 'pagination-btn prev-btn';
         prevBtn.innerHTML = '&lt;&lt;';
         prevBtn.disabled = currentPage === 1;
-        prevBtn.onclick = () => {
+        prevBtn.onclick = async () => {
           if (currentPage > 1) {
             currentPage--;
-            displayPage(currentPage);
+            await displayPage(currentPage);
             updatePagination();
           }
         };
@@ -134,9 +142,9 @@ document.addEventListener('DOMContentLoaded', async function() {
           const pageBtn = document.createElement('button');
           pageBtn.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
           pageBtn.textContent = i;
-          pageBtn.onclick = () => {
+          pageBtn.onclick = async () => {
             currentPage = i;
-            displayPage(currentPage);
+            await displayPage(currentPage);
             updatePagination();
           };
           paginationContainer.appendChild(pageBtn);
@@ -147,10 +155,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         nextBtn.className = 'pagination-btn next-btn';
         nextBtn.innerHTML = '&gt;&gt;';
         nextBtn.disabled = currentPage === totalPages;
-        nextBtn.onclick = () => {
+        nextBtn.onclick = async () => {
           if (currentPage < totalPages) {
             currentPage++;
-            displayPage(currentPage);
+            await displayPage(currentPage);
             updatePagination();
           }
         };
@@ -160,7 +168,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       if (announcements.length === 0) {
         announcementsGrid.innerHTML = '<p class="no-announcements">No announcements available.</p>';
       } else {
-        displayPage(currentPage);
+        await displayPage(currentPage);
         updatePagination();
       }
     } catch (error) {
@@ -176,7 +184,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   if (newsGrid) {
     newsGrid.innerHTML = '<div class="loading">Loading news...</div>';
     try {
-      const news = await loadNewsFromSupabase();
+      const news = await loadNewsFromSupabase({ limit: 24, includeImage: false });
       newsGrid.innerHTML = '';
       newsPaginationContainer.innerHTML = '';
 
@@ -185,13 +193,21 @@ document.addEventListener('DOMContentLoaded', async function() {
       const newsTotalPages = Math.ceil(news.length / newsItemsPerPage);
 
       // Function to display news for current page
-      function displayNewsPage(page) {
+      async function displayNewsPage(page) {
         newsGrid.innerHTML = '';
         const startIndex = (page - 1) * newsItemsPerPage;
         const endIndex = startIndex + newsItemsPerPage;
         const pageNews = news.slice(startIndex, endIndex);
+        const imageRows = await loadNewsImagesFromSupabase(pageNews.map((item) => item.id));
+        const imageMap = new Map(imageRows.map((item) => [item.id, item.image]));
 
         pageNews.forEach(item => {
+          const resolvedImage = normalizeDashboardImage(imageMap.get(item.id));
+          const newsItemWithImage = {
+            ...item,
+            image: resolvedImage
+          };
+
           // Extract title (first line or first 50 chars)
           const fullText = item.news_posts || '';
           const lines = fullText.split('\n');
@@ -213,7 +229,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           
           // Set image
           const imgElement = card.querySelector('.news-image img');
-          imgElement.src = item.image || 'https://via.placeholder.com/400x250?text=News';
+          imgElement.src = resolvedImage || buildContentPlaceholder('News', 400, 250);
           
           // Set content
           card.querySelector('.news-date').textContent = date;
@@ -221,13 +237,13 @@ document.addEventListener('DOMContentLoaded', async function() {
           card.querySelector('.news-description').textContent = description;
           card.querySelector('.read-more-btn').onclick = (e) => {
             e.stopPropagation();
-            openNewsModal(item);
+            openNewsModal(newsItemWithImage);
           };
           
           // Get the card element
           const cardElement = card.querySelector('.news-card');
           cardElement.style.cursor = 'pointer';
-          cardElement.onclick = () => openNewsModal(item);
+          cardElement.onclick = () => openNewsModal(newsItemWithImage);
           
           newsGrid.appendChild(card);
         });
@@ -244,10 +260,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         prevBtn.className = 'pagination-btn prev-btn';
         prevBtn.innerHTML = '&lt;&lt;';
         prevBtn.disabled = newsCurrentPage === 1;
-        prevBtn.onclick = () => {
+        prevBtn.onclick = async () => {
           if (newsCurrentPage > 1) {
             newsCurrentPage--;
-            displayNewsPage(newsCurrentPage);
+            await displayNewsPage(newsCurrentPage);
             updateNewsPagination();
           }
         };
@@ -258,9 +274,9 @@ document.addEventListener('DOMContentLoaded', async function() {
           const pageBtn = document.createElement('button');
           pageBtn.className = 'pagination-btn' + (i === newsCurrentPage ? ' active' : '');
           pageBtn.textContent = i;
-          pageBtn.onclick = () => {
+          pageBtn.onclick = async () => {
             newsCurrentPage = i;
-            displayNewsPage(newsCurrentPage);
+            await displayNewsPage(newsCurrentPage);
             updateNewsPagination();
           };
           newsPaginationContainer.appendChild(pageBtn);
@@ -271,10 +287,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         nextBtn.className = 'pagination-btn next-btn';
         nextBtn.innerHTML = '&gt;&gt;';
         nextBtn.disabled = newsCurrentPage === newsTotalPages;
-        nextBtn.onclick = () => {
+        nextBtn.onclick = async () => {
           if (newsCurrentPage < newsTotalPages) {
             newsCurrentPage++;
-            displayNewsPage(newsCurrentPage);
+            await displayNewsPage(newsCurrentPage);
             updateNewsPagination();
           }
         };
@@ -284,7 +300,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       if (news.length === 0) {
         newsGrid.innerHTML = '<p class="no-news">No news available.</p>';
       } else {
-        displayNewsPage(newsCurrentPage);
+        await displayNewsPage(newsCurrentPage);
         updateNewsPagination();
       }
     } catch (error) {
@@ -297,96 +313,38 @@ document.addEventListener('DOMContentLoaded', async function() {
   const videoList = document.getElementById('videoList');
   const mainVideo = document.getElementById('mainVideo');
   const mainTitle = document.getElementById('mainTitle');
+  const mainDesc = document.getElementById('mainDesc');
+  const mainDate = document.getElementById('mainDate');
 
   if (videoList && mainVideo) {
     try {
       const videos = await loadVideosFromSupabase();
-      console.log('Loaded videos:', videos); // Debug log
       videoList.innerHTML = '';
 
       if (videos.length > 0) {
-        // Set first video as main
         const firstVideo = videos[0];
-        console.log('First video:', firstVideo); // Debug log
-        mainTitle.textContent = firstVideo.title || 'Untitled Video';
-        const videoWrapper = document.querySelector('.video-wrapper');
-        
-        // Determine if it's a URL (YouTube) or file video
-        const isUrlVideo = firstVideo.type === 'url' || (firstVideo.url && firstVideo.url.includes('youtube'));
-        
-        if (isUrlVideo) {
-          // YouTube URL
-          console.log('Playing as YouTube video:', firstVideo.url);
-          const embedUrl = embedYouTubeUrl(firstVideo.url);
-          videoWrapper.innerHTML = `
-            <iframe id="mainVideo"
-              src="${embedUrl}"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen></iframe>
-          `;
-        } else {
-          // File video - use video tag instead of iframe
-          console.log('Playing as file video:', firstVideo.url);
-          videoWrapper.innerHTML = `
-            <video controls>
-              <source src="${firstVideo.url}" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-          `;
-        }
+        renderMainVideo(firstVideo, { mainTitle, mainDesc, mainDate });
 
-        // Display other videos as thumbnails
         videos.forEach((video, index) => {
-          let thumbnailSrc = '';
-          if (video.type === 'url') {
-            // Generate YouTube thumbnail
-            const videoId = video.url.includes('youtube.com/watch?v=') 
-              ? video.url.split('v=')[1].split('&')[0]
-              : video.url.includes('youtu.be/') 
-              ? video.url.split('youtu.be/')[1].split('?')[0]
-              : '';
-            thumbnailSrc = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-          } else {
-            // For file videos, show a placeholder or first frame
-            thumbnailSrc = 'https://via.placeholder.com/150x85?text=Video';
-          }
-
-          // Clone template
           const template = document.getElementById('videoCardTemplate');
           const cardNode = template.content.cloneNode(true);
+          const thumbnailSrc = getVideoThumbnailUrl(video);
           
-          // Set thumbnail and title
           const imgElement = cardNode.querySelector('img');
           imgElement.src = thumbnailSrc;
-          imgElement.alt = video.title;
+          imgElement.alt = video.title || 'Video thumbnail';
           cardNode.querySelector('p').textContent = video.title;
           
-          // Get the card element
           const cardElement = cardNode.querySelector('.video-card-user');
-          cardElement.style.cursor = 'pointer';
+          if (index === 0) {
+            cardElement.classList.add('is-active');
+          }
           cardElement.onclick = function() {
-            mainTitle.textContent = video.title || 'Untitled Video';
-            const videoWrapper = document.querySelector('.video-wrapper');
-            const isUrlVideo = video.type === 'url' || (video.url && video.url.includes('youtube'));
-            
-            if (isUrlVideo) {
-              console.log('Switching to YouTube video:', video.url);
-              const embedUrl = embedYouTubeUrl(video.url);
-              videoWrapper.innerHTML = `
-                <iframe id="mainVideo"
-                  src="${embedUrl}"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen></iframe>
-              `;
-            } else {
-              console.log('Switching to file video:', video.url);
-              videoWrapper.innerHTML = `
-                <video controls>
-                  <source src="${video.url}" type="video/mp4">
-                  Your browser does not support the video tag.
-                </video>
-              `;
-            }
+            renderMainVideo(video, { mainTitle, mainDesc, mainDate });
+            videoList.querySelectorAll('.video-card-user').forEach((item) => {
+              item.classList.remove('is-active');
+            });
+            cardElement.classList.add('is-active');
           };
 
           videoList.appendChild(cardNode);
@@ -399,22 +357,244 @@ document.addEventListener('DOMContentLoaded', async function() {
       videoList.innerHTML = '<p>Failed to load videos: ' + error.message + '</p>';
     }
   }
-
-  // Helper function to convert YouTube URL to embed URL
-  function embedYouTubeUrl(url) {
-    let videoId = '';
-    
-    if (url.includes('youtube.com/watch?v=')) {
-      videoId = url.split('v=')[1].split('&')[0];
-    } else if (url.includes('youtu.be/')) {
-      videoId = url.split('youtu.be/')[1].split('?')[0];
-    }
-    
-    const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : url;
-    console.log('Converted to embed URL:', embedUrl); // Debug
-    return embedUrl;
-  }
 });
+
+function renderMainVideo(video, elements) {
+  const videoWrapper = document.querySelector('.video-wrapper');
+  if (!videoWrapper) return;
+
+  const source = resolveVideoSource(video);
+
+  if (elements?.mainTitle) {
+    elements.mainTitle.textContent = video.title || 'Untitled Video';
+  }
+
+  if (elements?.mainDesc) {
+    elements.mainDesc.textContent = getVideoDescription(video, source);
+  }
+
+  if (elements?.mainDate) {
+    elements.mainDate.textContent = formatVideoDate(video.timestamp);
+  }
+
+  if (source.kind === 'embed') {
+    videoWrapper.innerHTML = `
+      <iframe id="mainVideo"
+        src="${source.url}"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    `;
+    return;
+  }
+
+  videoWrapper.innerHTML = `
+    <video controls>
+      <source src="${source.url}" type="${source.mimeType}">
+      Your browser does not support the video tag.
+    </video>
+  `;
+}
+
+function resolveVideoSource(video) {
+  const rawUrl = (video?.url || '').trim();
+
+  if (!rawUrl) {
+    return {
+      kind: 'embed',
+      url: 'about:blank',
+      label: 'Unavailable'
+    };
+  }
+
+  const youtubeId = extractYouTubeVideoId(rawUrl);
+  if (youtubeId) {
+    return {
+      kind: 'embed',
+      url: `https://www.youtube.com/embed/${youtubeId}`,
+      label: 'YouTube'
+    };
+  }
+
+  const driveId = extractGoogleDriveFileId(rawUrl);
+  if (driveId) {
+    return {
+      kind: 'embed',
+      url: `https://drive.google.com/file/d/${driveId}/preview`,
+      label: 'Google Drive'
+    };
+  }
+
+  if (video?.type === 'file' || isDirectVideoUrl(rawUrl) || rawUrl.startsWith('data:video/')) {
+    return {
+      kind: 'video',
+      url: rawUrl,
+      mimeType: guessVideoMimeType(rawUrl),
+      label: 'Video File'
+    };
+  }
+
+  return {
+    kind: 'embed',
+    url: rawUrl,
+    label: 'External Video'
+  };
+}
+
+function getVideoThumbnailUrl(video) {
+  const rawUrl = (video?.url || '').trim();
+  const youtubeId = extractYouTubeVideoId(rawUrl);
+
+  if (youtubeId) {
+    return `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+  }
+
+  const driveId = extractGoogleDriveFileId(rawUrl);
+  if (driveId) {
+    return buildVideoPlaceholder('Google Drive');
+  }
+
+  if (video?.type === 'file' || isDirectVideoUrl(rawUrl) || rawUrl.startsWith('data:video/')) {
+    return buildVideoPlaceholder('Video File');
+  }
+
+  return buildVideoPlaceholder('Featured Video');
+}
+
+function getVideoDescription(video, source) {
+  if (source.label === 'Google Drive') {
+    return 'Playing from Google Drive preview.';
+  }
+
+  if (source.label === 'YouTube') {
+    return 'Playing from YouTube.';
+  }
+
+  if (source.label === 'Video File') {
+    return video.fileName ? `Uploaded file: ${video.fileName}` : 'Playing uploaded video file.';
+  }
+
+  return 'Playing external video source.';
+}
+
+function formatVideoDate(timestamp) {
+  if (!timestamp) {
+    return 'Date unavailable';
+  }
+
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) {
+    return String(timestamp);
+  }
+
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+function extractYouTubeVideoId(url) {
+  if (!url) return '';
+
+  const watchMatch = url.match(/[?&]v=([^&#]+)/i);
+  if (watchMatch?.[1]) {
+    return watchMatch[1];
+  }
+
+  const shortMatch = url.match(/youtu\.be\/([^?&#/]+)/i);
+  if (shortMatch?.[1]) {
+    return shortMatch[1];
+  }
+
+  const embedMatch = url.match(/youtube\.com\/embed\/([^?&#/]+)/i);
+  if (embedMatch?.[1]) {
+    return embedMatch[1];
+  }
+
+  return '';
+}
+
+function extractGoogleDriveFileId(url) {
+  if (!url || !/drive\.google\.com/i.test(url)) {
+    return '';
+  }
+
+  const fileMatch = url.match(/\/file\/d\/([^/]+)/i);
+  if (fileMatch?.[1]) {
+    return fileMatch[1];
+  }
+
+  const ucMatch = url.match(/[?&]id=([^&#]+)/i);
+  if (ucMatch?.[1]) {
+    return ucMatch[1];
+  }
+
+  return '';
+}
+
+function isDirectVideoUrl(url) {
+  return /\.(mp4|webm|ogg|mov)(\?|#|$)/i.test(url || '');
+}
+
+function guessVideoMimeType(url) {
+  const normalizedUrl = (url || '').toLowerCase();
+
+  if (normalizedUrl.includes('.webm')) return 'video/webm';
+  if (normalizedUrl.includes('.ogg')) return 'video/ogg';
+  if (normalizedUrl.includes('.mov')) return 'video/quicktime';
+  return 'video/mp4';
+}
+
+function buildVideoPlaceholder(label) {
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="480" height="270" viewBox="0 0 480 270">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#5d0000"/>
+          <stop offset="100%" stop-color="#b45309"/>
+        </linearGradient>
+      </defs>
+      <rect width="480" height="270" rx="24" fill="url(#g)"/>
+      <circle cx="240" cy="110" r="42" fill="rgba(255,255,255,0.18)"/>
+      <polygon points="228,88 228,132 266,110" fill="#ffffff"/>
+      <text x="240" y="188" text-anchor="middle" fill="#ffffff" font-size="24" font-family="Arial, sans-serif" font-weight="700">${label}</text>
+    </svg>
+  `;
+
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+function buildContentPlaceholder(label, width = 800, height = 400) {
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+      <defs>
+        <linearGradient id="content-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f6ede4"/>
+          <stop offset="100%" stop-color="#ead7c6"/>
+        </linearGradient>
+      </defs>
+      <rect width="${width}" height="${height}" rx="28" fill="url(#content-gradient)"/>
+      <circle cx="${width / 2}" cy="${height / 2 - 26}" r="42" fill="rgba(133, 77, 14, 0.12)"/>
+      <path d="M ${width / 2 - 22} ${height / 2 + 8} L ${width / 2 - 4} ${height / 2 - 14} L ${width / 2 + 18} ${height / 2 + 12}" fill="none" stroke="#8a4b14" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="${width / 2}" y="${height - 56}" text-anchor="middle" fill="#7c2d12" font-size="28" font-family="Arial, sans-serif" font-weight="700">${label}</text>
+    </svg>
+  `;
+
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+function normalizeDashboardImage(imageValue) {
+  if (!imageValue || typeof imageValue !== 'string') {
+    return '';
+  }
+
+  const trimmedValue = imageValue.trim();
+  if (!trimmedValue || trimmedValue.startsWith('data:text/html')) {
+    return '';
+  }
+
+  return trimmedValue;
+}
 
 // Global function to open announcement modal
 function openAnnouncementModal(announcement) {
@@ -445,7 +625,7 @@ function openAnnouncementModal(announcement) {
   modalDiv.id = 'announcementModal';
   
   const imgElement = modal.querySelector('.modal-announcement-image img');
-  imgElement.src = announcement.image || 'https://via.placeholder.com/800x400?text=Announcement';
+  imgElement.src = normalizeDashboardImage(announcement.image) || buildContentPlaceholder('Announcement');
   
   // Set modal content
   modal.querySelector('.modal-announcement-date').textContent = date;
@@ -510,7 +690,7 @@ function openNewsModal(newsItem) {
   modalDiv.id = 'newsModal';
   
   const imgElement = modal.querySelector('.modal-announcement-image img');
-  imgElement.src = newsItem.image || 'https://via.placeholder.com/800x400?text=News';
+  imgElement.src = normalizeDashboardImage(newsItem.image) || buildContentPlaceholder('News');
   
   // Set modal content
   modal.querySelector('.modal-announcement-label').textContent = 'NEWS';
@@ -547,5 +727,3 @@ function handleNewsEscapeKey(event) {
     document.removeEventListener('keydown', handleNewsEscapeKey);
   }
 }
-
-

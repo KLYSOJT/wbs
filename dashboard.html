@@ -117,7 +117,7 @@
   <script src="src/js/user/dashboard.js"></script>
   
   <!-- Navbar -->
-  <script src="src/js/navbar.js"></script>
+
 
 <!-- Main Header Section -->
 <header class="main-header">
@@ -202,7 +202,11 @@
 <!-- Featured Video (STATIC PLACEHOLDER) -->
 <section class="featured-video">
   <div class="featured-video-container">
-    <h2>Featured Video</h2>
+    <div class="featured-video-heading">
+      <span class="featured-video-kicker">School Media</span>
+      <h2 class="featured-video-title">Featured Videos</h2>
+      <p class="featured-video-copy">Watch the latest featured clips, school highlights, and official uploads in one place.</p>
+    </div>
 
     <div class="featured-video-grid">
       <div class="featured-main">
@@ -219,7 +223,13 @@
         </div>
       </div>
 
-      <div class="video-list" id="videoList"></div>
+      <div class="video-list-panel">
+        <div class="video-list-panel-header">
+          <h3>Playlist</h3>
+          <span>Tap a card to switch videos</span>
+        </div>
+        <div class="video-list" id="videoList"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -260,8 +270,13 @@
   <!-- Video Card Template -->
   <template id="videoCardTemplate">
     <div class="video-card-user">
-      <img src="" alt="Video" style="width: 100%; height: auto;">
-      <p style="margin-top: 5px; font-size: 14px;"></p>
+      <div class="video-card-user-thumb">
+        <img src="" alt="Video">
+        <span class="video-card-user-badge"><i class="fas fa-play"></i></span>
+      </div>
+      <div class="video-card-user-body">
+        <p></p>
+      </div>
     </div>
   </template>
 

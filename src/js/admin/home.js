@@ -1,564 +1,667 @@
-// ==================== INDEXEDDB SETUP ====================
-const DB_NAME = 'WBSSDatabase';
-const DB_VERSION = 1;
-const STORES = {
-  newsItems: 'newsItems',
-  videos: 'videos'
+const ANV_BUCKET = 'anv-files';
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
+const MAX_VIDEO_SIZE = 20 * 1024 * 1024;
+const ADMIN_FEED_LIMIT = 24;
+
+document.addEventListener('DOMContentLoaded', () => {
+  initAdminHome().catch((error) => {
+    console.error('Admin home initialization failed:', error);
+  });
+});
+
+async function initAdminHome() {
+  if (!window.supabaseClient) {
+    window.alert('Supabase is not available right now.');
+    return;
+  }
+
+  cacheInputDetails();
+  bindAnnouncementHandlers();
+  bindNewsHandlers();
+  bindVideoHandlers();
+
+  await Promise.all([
+    loadAnnouncements(),
+    loadNews(),
+    loadVideos()
+  ]);
+}
+
+function cacheInputDetails() {
+  const announcementInput = document.getElementById('announcementImage');
+  const newsInput = document.getElementById('newsImage');
+  const videoInput = document.getElementById('videoFile');
+
+  announcementInput?.addEventListener('change', () => {
+    updateFileDetails('announcementImage', 'announcementImageDetails');
+  });
+
+  newsInput?.addEventListener('change', () => {
+    updateFileDetails('newsImage', 'newsImageDetails');
+  });
+
+  videoInput?.addEventListener('change', () => {
+    updateFileDetails('videoFile', 'videoFileDetails');
+  });
+}
+
+function updateFileDetails(inputId, targetId) {
+  const input = document.getElementById(inputId);
+  const target = document.getElementById(targetId);
+  if (!input || !target) return;
+
+  const file = input.files?.[0];
+  if (!file) {
+    target.textContent = 'No file chosen';
+    return;
+  }
+
+  const sizeMb = (file.size / 1024 / 1024).toFixed(2);
+  target.textContent = `${file.name} (${sizeMb} MB)`;
+}
+
+function bindAnnouncementHandlers() {
+  const form = document.getElementById('announcementForm');
+  const fileInput = document.getElementById('announcementImage');
+  const textInput = document.getElementById('announcementText');
+  const list = document.getElementById('announcementList');
+
+  if (!form || !fileInput || !textInput || !list) return;
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const text = textInput.value.trim();
+    const file = fileInput.files?.[0] || null;
+
+    if (!text) {
+      window.alert('Please enter announcement text.');
+      return;
+    }
+
+    if (file && !isValidImage(file)) {
+      window.alert('Please upload a valid image file under 10 MB.');
+      return;
+    }
+
+    const submitButton = form.querySelector('button[type="submit"]');
+    setSubmitState(submitButton, true, 'Publishing...');
+
+    let uploadResult = null;
+
+    try {
+      if (file) {
+        uploadResult = await uploadBucketFile(file, 'announcements');
+      }
+
+      await saveAnnouncementToSupabase({
+        id: Date.now(),
+        text,
+        image: uploadResult?.publicUrl || null,
+        timestamp: new Date().toISOString()
+      });
+
+      form.reset();
+      updateFileDetails('announcementImage', 'announcementImageDetails');
+      await loadAnnouncements();
+    } catch (error) {
+      if (uploadResult?.path) {
+        await deleteStorageObject(uploadResult.path).catch(() => {});
+      }
+      console.error('Error saving announcement:', error);
+      window.alert(`Failed to save announcement: ${error.message}`);
+    } finally {
+      setSubmitState(submitButton, false);
+    }
+  });
+}
+
+function bindNewsHandlers() {
+  const form = document.getElementById('newsForm');
+  const fileInput = document.getElementById('newsImage');
+  const textInput = document.getElementById('newsText');
+  const list = document.getElementById('newsList');
+
+  if (!form || !fileInput || !textInput || !list) return;
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const text = textInput.value.trim();
+    const file = fileInput.files?.[0] || null;
+
+    if (!text) {
+      window.alert('Please enter news text.');
+      return;
+    }
+
+    if (file && !isValidImage(file)) {
+      window.alert('Please upload a valid image file under 10 MB.');
+      return;
+    }
+
+    const submitButton = form.querySelector('button[type="submit"]');
+    setSubmitState(submitButton, true, 'Publishing...');
+
+    let uploadResult = null;
+
+    try {
+      if (file) {
+        uploadResult = await uploadBucketFile(file, 'news');
+      }
+
+      await saveNewsToSupabase({
+        id: Date.now(),
+        text,
+        image: uploadResult?.publicUrl || null,
+        timestamp: new Date().toISOString()
+      });
+
+      form.reset();
+      updateFileDetails('newsImage', 'newsImageDetails');
+      await loadNews();
+    } catch (error) {
+      if (uploadResult?.path) {
+        await deleteStorageObject(uploadResult.path).catch(() => {});
+      }
+      console.error('Error saving news:', error);
+      window.alert(`Failed to save news: ${error.message}`);
+    } finally {
+      setSubmitState(submitButton, false);
+    }
+  });
+}
+
+function bindVideoHandlers() {
+  const form = document.getElementById('videoForm');
+  const titleInput = document.getElementById('videoTitle');
+  const typeRadios = document.querySelectorAll('input[name="videoType"]');
+  const fileInput = document.getElementById('videoFile');
+  const fileDetails = document.getElementById('videoFileDetails');
+  const urlInput = document.getElementById('videoUrl');
+  const list = document.getElementById('videoList');
+
+  if (!form || !titleInput || !fileInput || !fileDetails || !urlInput || !list) return;
+
+  const syncVideoSourceFields = () => {
+    const selectedType = document.querySelector('input[name="videoType"]:checked')?.value || 'file';
+    const isFile = selectedType === 'file';
+    fileInput.style.display = isFile ? 'block' : 'none';
+    fileDetails.style.display = isFile ? 'block' : 'none';
+    urlInput.style.display = isFile ? 'none' : 'block';
+    fileInput.required = isFile;
+    urlInput.required = !isFile;
+  };
+
+  typeRadios.forEach((radio) => {
+    radio.addEventListener('change', syncVideoSourceFields);
+  });
+
+  syncVideoSourceFields();
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const title = titleInput.value.trim();
+    const selectedType = document.querySelector('input[name="videoType"]:checked')?.value || 'file';
+
+    if (!title) {
+      window.alert('Please enter a video title.');
+      return;
+    }
+
+    const submitButton = form.querySelector('button[type="submit"]');
+    setSubmitState(submitButton, true, 'Uploading...');
+
+    let uploadResult = null;
+
+    try {
+      const payload = {
+        id: Date.now(),
+        title,
+        type: selectedType,
+        timestamp: new Date().toISOString(),
+        url: '',
+        fileName: null
+      };
+
+      if (selectedType === 'file') {
+        const file = fileInput.files?.[0];
+        if (!file) {
+          throw new Error('Please select a video file.');
+        }
+
+        if (!isValidVideo(file)) {
+          throw new Error('Please upload a valid video file under 20 MB. For larger videos, use the Video URL option instead.');
+        }
+
+        uploadResult = await uploadBucketFile(file, 'videos');
+        payload.url = uploadResult.publicUrl;
+        payload.fileName = file.name;
+      } else {
+        const url = urlInput.value.trim();
+        if (!url) {
+          throw new Error('Please enter a video URL.');
+        }
+        payload.url = url;
+      }
+
+      await saveVideoToSupabase(payload);
+
+      form.reset();
+      document.querySelector('input[name="videoType"][value="file"]').checked = true;
+      syncVideoSourceFields();
+      updateFileDetails('videoFile', 'videoFileDetails');
+      await loadVideos();
+    } catch (error) {
+      if (uploadResult?.path) {
+        await deleteStorageObject(uploadResult.path).catch(() => {});
+      }
+      console.error('Error saving video:', error);
+      window.alert(`Failed to save video: ${error.message}`);
+    } finally {
+      setSubmitState(submitButton, false);
+    }
+  });
+}
+
+async function loadAnnouncements() {
+  const list = document.getElementById('announcementList');
+  if (!list) return;
+
+  list.innerHTML = '<div class="loading">Loading announcements...</div>';
+
+  try {
+    const records = await loadAnnouncementsFromSupabase({
+      limit: ADMIN_FEED_LIMIT,
+      includeImage: false
+    });
+    if (records.length === 0) {
+      list.innerHTML = '<div class="empty-state">No announcements uploaded yet.</div>';
+      return;
+    }
+
+    list.innerHTML = '';
+    records.forEach((record) => {
+      displayAnnouncement({
+        id: record.id,
+        text: record.announcement_posts,
+        image: null,
+        timestamp: record.timestamp
+      }, list);
+    });
+  } catch (error) {
+    console.error('Error loading announcements:', error);
+    list.innerHTML = '<div class="error">Failed to load announcements. Please refresh.</div>';
+  }
+}
+
+async function loadNews() {
+  const list = document.getElementById('newsList');
+  if (!list) return;
+
+  list.innerHTML = '<div class="loading">Loading news...</div>';
+
+  try {
+    const records = await loadNewsFromSupabase({
+      limit: ADMIN_FEED_LIMIT,
+      includeImage: false
+    });
+    if (records.length === 0) {
+      list.innerHTML = '<div class="empty-state">No news uploaded yet.</div>';
+      return;
+    }
+
+    list.innerHTML = '';
+    records.forEach((record) => {
+      displayNews({
+        id: record.id,
+        text: record.news_posts,
+        image: null,
+        timestamp: record.timestamp
+      }, list);
+    });
+  } catch (error) {
+    console.error('Error loading news:', error);
+    list.innerHTML = '<div class="error">Failed to load news. Please refresh.</div>';
+  }
+}
+
+async function loadVideos() {
+  const list = document.getElementById('videoList');
+  if (!list) return;
+
+  list.innerHTML = '<div class="loading">Loading videos...</div>';
+
+  try {
+    const records = await loadVideosFromSupabase();
+    if (records.length === 0) {
+      list.innerHTML = '<div class="empty-state">No videos uploaded yet.</div>';
+      return;
+    }
+
+    list.innerHTML = '';
+    records.forEach((record) => {
+      displayVideo(record, list);
+    });
+  } catch (error) {
+    console.error('Error loading videos:', error);
+    list.innerHTML = '<div class="error">Failed to load videos. Please refresh.</div>';
+  }
+}
+
+function displayAnnouncement(announcementData, announcementList) {
+  const announcementCard = document.createElement('div');
+  announcementCard.className = 'announcement-card';
+  announcementCard.id = `announcement-${announcementData.id}`;
+
+  const fileDetails = announcementData.image
+    ? `<small>Image: ${escapeHtml(extractFileNameFromUrl(announcementData.image))}</small>`
+    : '<small>Image preview unavailable in feed</small>';
+
+  announcementCard.innerHTML = `
+    <div class="announcement-card-header">
+      <button type="button" class="delete-btn" onclick="deleteAnnouncement(${announcementData.id}, '${escapeHtmlJs(announcementData.image || '')}')">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+    ${announcementData.image ? `<img src="${announcementData.image}" alt="Announcement" class="announcement-card-image">` : ''}
+    <div class="announcement-card-body">
+      <p>${escapeHtml(announcementData.text)}</p>
+    </div>
+    <div class="announcement-card-footer">
+      <small>Published: ${escapeHtml(formatAdminDate(announcementData.timestamp))}</small>
+      ${fileDetails}
+    </div>
+  `;
+
+  announcementList.appendChild(announcementCard);
+}
+
+function displayNews(newsData, newsList) {
+  const newsCard = document.createElement('div');
+  newsCard.className = 'news-card';
+  newsCard.id = `news-${newsData.id}`;
+
+  const fileDetails = newsData.image
+    ? `<small>Image: ${escapeHtml(extractFileNameFromUrl(newsData.image))}</small>`
+    : '<small>Image preview unavailable in feed</small>';
+
+  newsCard.innerHTML = `
+    <div class="news-card-header">
+      <button type="button" class="delete-btn" onclick="deleteNews(${newsData.id}, '${escapeHtmlJs(newsData.image || '')}')">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+    ${newsData.image ? `<img src="${newsData.image}" alt="News" class="news-card-image">` : ''}
+    <div class="news-card-body">
+      <p>${escapeHtml(newsData.text)}</p>
+    </div>
+    <div class="news-card-footer">
+      <small>Published: ${escapeHtml(formatAdminDate(newsData.timestamp))}</small>
+      ${fileDetails}
+    </div>
+  `;
+
+  newsList.appendChild(newsCard);
+}
+
+function displayVideo(videoData, videoList) {
+  const videoCard = document.createElement('div');
+  videoCard.className = 'video-card';
+  videoCard.id = `video-${videoData.id}`;
+
+  const previewMarkup = buildAdminVideoPreview(videoData);
+  const fileDetail = videoData.type === 'file'
+    ? `<small>File: ${escapeHtml(videoData.fileName || extractFileNameFromUrl(videoData.url || ''))}</small>`
+    : `<small>URL: ${escapeHtml(videoData.url || 'N/A')}</small>`;
+
+  videoCard.innerHTML = `
+    <div class="video-card-header">
+      <h3>${escapeHtml(videoData.title || 'Untitled Video')}</h3>
+      <button type="button" class="delete-btn" onclick="deleteVideo(${videoData.id}, '${escapeHtmlJs(videoData.url || '')}', '${escapeHtmlJs(videoData.type || '')}')">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+    <div class="video-card-body">${previewMarkup}</div>
+    <div class="video-card-footer">
+      <small>Uploaded: ${escapeHtml(formatAdminDate(videoData.timestamp))}</small>
+      ${fileDetail}
+      <small>Source: ${escapeHtml(videoData.type || 'file')}</small>
+    </div>
+  `;
+
+  videoList.appendChild(videoCard);
+}
+
+function buildAdminVideoPreview(videoData) {
+  const source = resolveAdminVideoSource(videoData);
+
+  if (source.kind === 'embed') {
+    return `
+      <iframe width="100%" height="250" src="${source.url}"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    `;
+  }
+
+  return `
+    <video width="100%" height="auto" controls>
+      <source src="${source.url}" type="${source.mimeType}">
+      Your browser does not support the video tag.
+    </video>
+  `;
+}
+
+function resolveAdminVideoSource(videoData) {
+  const url = (videoData?.url || '').trim();
+  const youtubeId = extractYouTubeVideoId(url);
+
+  if (youtubeId) {
+    return {
+      kind: 'embed',
+      url: `https://www.youtube.com/embed/${youtubeId}`
+    };
+  }
+
+  const driveId = extractGoogleDriveFileId(url);
+  if (driveId) {
+    return {
+      kind: 'embed',
+      url: `https://drive.google.com/file/d/${driveId}/preview`
+    };
+  }
+
+  return {
+    kind: 'video',
+    url,
+    mimeType: guessVideoMimeType(url)
+  };
+}
+
+window.deleteAnnouncement = async function deleteAnnouncement(id, imageUrl) {
+  if (!window.confirm('Are you sure you want to delete this announcement?')) return;
+
+  try {
+    if (imageUrl) {
+      await deleteStorageUrl(imageUrl);
+    }
+    await deleteAnnouncementFromSupabase(id);
+    await loadAnnouncements();
+  } catch (error) {
+    console.error('Error deleting announcement:', error);
+    window.alert(`Failed to delete announcement: ${error.message}`);
+  }
 };
 
+window.deleteNews = async function deleteNews(id, imageUrl) {
+  if (!window.confirm('Are you sure you want to delete this news?')) return;
 
-let db = null;
+  try {
+    if (imageUrl) {
+      await deleteStorageUrl(imageUrl);
+    }
+    await deleteNewsFromSupabase(id);
+    await loadNews();
+  } catch (error) {
+    console.error('Error deleting news:', error);
+    window.alert(`Failed to delete news: ${error.message}`);
+  }
+};
 
-function initIndexedDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => {
-      db = request.result;
-      resolve(db);
-    };
-    
-    request.onupgradeneeded = (event) => {
-      const database = event.target.result;
-      
-      // Create object stores for announcements, news, and videos
+window.deleteVideo = async function deleteVideo(id, url, type) {
+  if (!window.confirm('Are you sure you want to delete this video?')) return;
 
-      if (!database.objectStoreNames.contains(STORES.newsItems)) {
-        database.createObjectStore(STORES.newsItems, { keyPath: 'id' });
-      }
-      if (!database.objectStoreNames.contains(STORES.videos)) {
-        database.createObjectStore(STORES.videos, { keyPath: 'id' });
-      }
-    };
+  try {
+    if (type === 'file' && url) {
+      await deleteStorageUrl(url);
+    }
+    await deleteVideoFromSupabase(id);
+    await loadVideos();
+  } catch (error) {
+    console.error('Error deleting video:', error);
+    window.alert(`Failed to delete video: ${error.message}`);
+  }
+};
+
+async function uploadBucketFile(file, folder) {
+  const safeName = (file.name || 'file').replace(/[^a-zA-Z0-9._-]/g, '_');
+  const filePath = `${folder}/${Date.now()}-${safeName}`;
+
+  const { error } = await window.supabaseClient.storage
+    .from(ANV_BUCKET)
+    .upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: file.type || undefined
+    });
+
+  if (error) {
+    throw error;
+  }
+
+  const { data } = window.supabaseClient.storage
+    .from(ANV_BUCKET)
+    .getPublicUrl(filePath);
+
+  return {
+    path: filePath,
+    publicUrl: data?.publicUrl || ''
+  };
+}
+
+async function deleteStorageUrl(publicUrl) {
+  const path = extractBucketPath(publicUrl);
+  if (!path) return;
+  await deleteStorageObject(path);
+}
+
+async function deleteStorageObject(path) {
+  const { error } = await window.supabaseClient.storage
+    .from(ANV_BUCKET)
+    .remove([path]);
+
+  if (error) {
+    throw error;
+  }
+}
+
+function extractBucketPath(publicUrl) {
+  if (!publicUrl || !publicUrl.includes(`/${ANV_BUCKET}/`)) {
+    return '';
+  }
+
+  return publicUrl.split(`/${ANV_BUCKET}/`)[1]?.split('?')[0] || '';
+}
+
+function isValidImage(file) {
+  return Boolean(file && file.type.startsWith('image/') && file.size <= MAX_IMAGE_SIZE);
+}
+
+function isValidVideo(file) {
+  return Boolean(file && file.type.startsWith('video/') && file.size <= MAX_VIDEO_SIZE);
+}
+
+function setSubmitState(button, isBusy, busyText = '') {
+  if (!button) return;
+  if (!button.dataset.defaultText) {
+    button.dataset.defaultText = button.textContent;
+  }
+  button.disabled = isBusy;
+  button.textContent = isBusy ? busyText : button.dataset.defaultText;
+}
+
+function formatAdminDate(value) {
+  if (!value) return 'Date unavailable';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return String(value);
+  }
+
+  return date.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit'
   });
 }
 
-// Get all items from a store
-async function getAllFromStore(storeName) {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction([storeName], 'readonly');
-    const store = transaction.objectStore(storeName);
-    const request = store.getAll();
-    
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => {
-      // Sort by id descending (newest first)
-      const items = request.result.sort((a, b) => b.id - a.id);
-      resolve(items);
-    };
-  });
+function extractFileNameFromUrl(url) {
+  if (!url) return 'Unknown file';
+
+  try {
+    const cleanUrl = url.split('?')[0];
+    const lastSegment = cleanUrl.split('/').pop() || 'Unknown file';
+    return decodeURIComponent(lastSegment);
+  } catch (error) {
+    return 'Unknown file';
+  }
 }
 
-// Add item to store
-async function addToStore(storeName, item) {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction([storeName], 'readwrite');
-    const store = transaction.objectStore(storeName);
-    const request = store.add(item);
-    
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
-  });
+function extractYouTubeVideoId(url) {
+  if (!url) return '';
+
+  const watchMatch = url.match(/[?&]v=([^&#]+)/i);
+  if (watchMatch?.[1]) return watchMatch[1];
+
+  const shortMatch = url.match(/youtu\.be\/([^?&#/]+)/i);
+  if (shortMatch?.[1]) return shortMatch[1];
+
+  const embedMatch = url.match(/youtube\.com\/embed\/([^?&#/]+)/i);
+  if (embedMatch?.[1]) return embedMatch[1];
+
+  return '';
 }
 
-// Update item in store
-async function updateInStore(storeName, item) {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction([storeName], 'readwrite');
-    const store = transaction.objectStore(storeName);
-    const request = store.put(item);
-    
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
-  });
+function extractGoogleDriveFileId(url) {
+  if (!url || !/drive\.google\.com/i.test(url)) return '';
+
+  const fileMatch = url.match(/\/file\/d\/([^/]+)/i);
+  if (fileMatch?.[1]) return fileMatch[1];
+
+  const idMatch = url.match(/[?&]id=([^&#]+)/i);
+  if (idMatch?.[1]) return idMatch[1];
+
+  return '';
 }
 
-// Delete item from store
-async function deleteFromStore(storeName, id) {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction([storeName], 'readwrite');
-    const store = transaction.objectStore(storeName);
-    const request = store.delete(id);
-    
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve();
-  });
+function guessVideoMimeType(url) {
+  const normalized = (url || '').toLowerCase();
+  if (normalized.includes('.webm')) return 'video/webm';
+  if (normalized.includes('.ogg')) return 'video/ogg';
+  if (normalized.includes('.mov')) return 'video/quicktime';
+  return 'video/mp4';
 }
 
-// ==================== SHARED UTILITY FUNCTIONS ====================
-
-// Escape HTML to prevent XSS
 function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
 }
 
-document.addEventListener('DOMContentLoaded', async function() {
-  // Initialize IndexedDB
-  try {
-    await initIndexedDB();
-  } catch (error) {
-    console.error('Failed to initialize IndexedDB:', error);
-    alert('Storage initialization failed. Some features may not work properly.');
-  }
-
-  // Display announcement card
-  function displayAnnouncement(announcementData, announcementList) {
-    const announcementCard = document.createElement('div');
-    announcementCard.className = 'announcement-card';
-    announcementCard.id = `announcement-${announcementData.id}`;
-
-    const announcementContent = `
-      <div class="announcement-card-header">
-        <button type="button" class="delete-btn" onclick="deleteAnnouncement(${announcementData.id})">
-          <i class="fas fa-trash"></i>
-        </button>
-      </div>
-      ${announcementData.image ? `<img src="${announcementData.image}" alt="Announcement" class="announcement-card-image">` : ''}
-      <div class="announcement-card-body">
-        <p>${escapeHtml(announcementData.text)}</p>
-      </div>
-      <div class="announcement-card-footer">
-        <small>${announcementData.timestamp}</small>
-      </div>
-    `;
-
-    announcementCard.innerHTML = announcementContent;
-    announcementList.insertBefore(announcementCard, announcementList.firstChild);
-  }
-
-  // Display news card
-  function displayNews(newsData, newsList) {
-    const newsCard = document.createElement('div');
-    newsCard.className = 'news-card';
-    newsCard.id = `news-${newsData.id}`;
-
-    const newsContent = `
-      <div class="news-card-header">
-        <button type="button" class="delete-btn" onclick="deleteNews(${newsData.id})">
-          <i class="fas fa-trash"></i>
-        </button>
-      </div>
-      ${newsData.image ? `<img src="${newsData.image}" alt="News" class="news-card-image">` : ''}
-      <div class="news-card-body">
-        <p>${escapeHtml(newsData.text)}</p>
-      </div>
-      <div class="news-card-footer">
-        <small>${newsData.timestamp}</small>
-      </div>
-    `;
-
-    newsCard.innerHTML = newsContent;
-    newsList.insertBefore(newsCard, newsList.firstChild);
-  }
-
-  // Display video card
-  function displayVideo(videoData, videoList) {
-    const videoCard = document.createElement('div');
-    videoCard.className = 'video-card';
-    videoCard.id = `video-${videoData.id}`;
-
-    const videoContent = `
-      <div class="video-card-header">
-        <h3>${escapeHtml(videoData.title)}</h3>
-        <button type="button" class="delete-btn" onclick="deleteVideo(${videoData.id})">
-          <i class="fas fa-trash"></i>
-        </button>
-      </div>
-      <div class="video-card-body">
-        ${videoData.type === 'file' 
-          ? `<video width="100%" height="auto" controls>
-               <source src="${videoData.url}" type="video/mp4">
-               Your browser does not support the video tag.
-             </video>`
-          : `<iframe width="100%" height="250" src="${embedYouTubeUrl(videoData.url)}" 
-              frameborder="0" allowfullscreen></iframe>`
-        }
-      </div>
-      <div class="video-card-footer">
-        <small>Uploaded: ${videoData.timestamp}</small>
-        ${videoData.fileName ? `<small>File: ${videoData.fileName}</small>` : ''}
-      </div>
-    `;
-
-    videoCard.innerHTML = videoContent;
-    videoList.insertBefore(videoCard, videoList.firstChild);
-  }
-
-  // Convert YouTube URL to embed URL
-  function embedYouTubeUrl(url) {
-    let videoId = '';
-    
-    if (url.includes('youtube.com/watch?v=')) {
-      videoId = url.split('v=')[1].split('&')[0];
-    } else if (url.includes('youtu.be/')) {
-      videoId = url.split('youtu.be/')[1].split('?')[0];
-    }
-    
-    return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
-  }
-
-  // ==================== ANNOUNCEMENTS ====================
-  const announcementForm = document.getElementById('announcementForm');
-  const announcementImageInput = document.getElementById('announcementImage');
-  const announcementTextInput = document.getElementById('announcementText');
-  const announcementList = document.getElementById('announcementList');
-
-  if (announcementForm && announcementImageInput && announcementTextInput && announcementList) {
-    // Show loading
-    announcementList.innerHTML = '<div class="loading">Loading announcements...</div>';
-
-    // Load announcements from Supabase ONLY
-    async function loadAnnouncements() {
-      try {
-        const supabaseAnnouncements = await loadAnnouncementsFromSupabase();
-        announcementList.innerHTML = ''; // Clear loading
-
-        supabaseAnnouncements.forEach(announcementData => {
-          // Convert database fields to frontend format
-          const data = {
-            id: announcementData.id,
-            text: announcementData.announcement_posts,
-            timestamp: announcementData.timestamp,
-            image: announcementData.image
-          };
-          displayAnnouncement(data, announcementList);
-        });
-      } catch (error) {
-        console.error('Error loading announcements:', error);
-        announcementList.innerHTML = '<div class="error">Failed to load announcements. Please refresh.</div>';
-      }
-    }
-
-    announcementForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      const image = announcementImageInput.files[0];
-      const text = announcementTextInput.value.trim();
-
-      if (!text) {
-        alert('Please enter announcement text');
-        return;
-      }
-
-      // Disable form during upload
-      const submitBtn = announcementForm.querySelector('button[type="submit"]');
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Uploading...';
-
-      const announcementData = {
-        id: Date.now(),
-        text: text,
-        timestamp: new Date().toLocaleString(),
-        image: null
-      };
-
-      try {
-        if (image) {
-          // Check file size (max 50MB)
-          if (image.size > 50 * 1024 * 1024) {
-            alert('Image is too large. Please use an image smaller than 50MB.');
-            return;
-          }
-
-          // Read file as base64
-          announcementData.image = await new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(image);
-          });
-        }
-
-        // Save to Supabase
-        await saveAnnouncementToSupabase(announcementData);
-        
-        // Refresh list
-        await loadAnnouncements();
-        announcementForm.reset();
-      } catch (error) {
-        console.error('Error saving announcement:', error);
-        alert('Failed to save announcement: ' + error.message);
-      } finally {
-        // Re-enable form
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Publish';
-      }
-    });
-
-    window.deleteAnnouncement = async function(announcementId) {
-      if (confirm('Are you sure you want to delete this announcement?')) {
-        try {
-          await deleteAnnouncementFromSupabase(announcementId);
-          const announcementCard = document.getElementById(`announcement-${announcementId}`);
-          if (announcementCard) {
-            announcementCard.remove();
-          }
-        } catch (error) {
-          console.error('Error deleting announcement:', error);
-          alert('Failed to delete announcement: ' + error.message);
-        }
-      }
-    };
-
-    // Initial load
-    loadAnnouncements();
-  }
-
-  // ==================== NEWS ====================
-  const newsForm = document.getElementById('newsForm');
-  const newsImageInput = document.getElementById('newsImage');
-  const newsTextInput = document.getElementById('newsText');
-  const newsList = document.getElementById('newsList');
-
-  if (newsForm && newsImageInput && newsTextInput && newsList) {
-    let newsItems = [];
-
-    // Load news from Supabase ONLY
-    async function loadNews() {
-      try {
-        const supabaseNews = await loadNewsFromSupabase();
-        newsList.innerHTML = ''; // Clear list
-
-        supabaseNews.forEach(newsData => {
-          // Convert database fields to frontend format
-          const data = {
-            id: newsData.id,
-            text: newsData.news_posts,
-            timestamp: newsData.timestamp,
-            image: newsData.image
-          };
-          displayNews(data, newsList);
-        });
-      } catch (error) {
-        console.error('Error loading news:', error);
-        newsList.innerHTML = '<div class="error">Failed to load news. Please refresh.</div>';
-      }
-    }
-
-    newsForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      const image = newsImageInput.files[0];
-      const text = newsTextInput.value.trim();
-
-      if (!text) {
-        alert('Please enter news text');
-        return;
-      }
-
-      const newsData = {
-        id: Date.now(),
-        text: text,
-        timestamp: new Date().toLocaleString(),
-        image: null
-      };
-
-      if (image) {
-        // Check file size (max 50MB for images)
-        if (image.size > 50 * 1024 * 1024) {
-          alert('Image is too large. Please use an image smaller than 50MB.');
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = async function(event) {
-          newsData.image = event.target.result;
-          
-          // Disable form during upload
-          const submitBtn = newsForm.querySelector('button[type="submit"]');
-          submitBtn.disabled = true;
-          submitBtn.textContent = 'Uploading...';
-          
-          try {
-            await saveNewsToSupabase(newsData);
-            await loadNews(); // Refresh
-            newsForm.reset();
-          } catch (error) {
-            console.error('Error saving news:', error);
-            alert('Failed to save news: ' + error.message);
-          } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Publish';
-          }
-        };
-        reader.onerror = function() {
-          alert('Error reading image file');
-        };
-        reader.readAsDataURL(image);
-      } else {
-        // No image - direct save
-        const submitBtn = newsForm.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Uploading...';
-        
-        try {
-          await saveNewsToSupabase(newsData);
-          await loadNews(); // Refresh
-          newsForm.reset();
-        } catch (error) {
-          console.error('Error saving news:', error);
-          alert('Failed to save news: ' + error.message);
-        } finally {
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Publish';
-        }
-      }
-    });
-
-    window.deleteNews = async function(newsId) {
-      if (confirm('Are you sure you want to delete this news?')) {
-        try {
-          await deleteNewsFromSupabase(newsId);
-          const newsCard = document.getElementById(`news-${newsId}`);
-          if (newsCard) {
-            newsCard.remove();
-          }
-        } catch (error) {
-          console.error('Error deleting news:', error);
-          alert('Failed to delete news: ' + error.message);
-        }
-      }
-    };
-
-    loadNews(); // Initial load
-  }
-
-  // ==================== VIDEO UPLOAD ====================
-  const videoForm = document.getElementById('videoForm');
-  const videoTitleInput = document.getElementById('videoTitle');
-  const videoTypeRadios = document.querySelectorAll('input[name="videoType"]');
-  const videoFileInput = document.getElementById('videoFile');
-  const videoUrlInput = document.getElementById('videoUrl');
-  const videoList = document.getElementById('videoList');
-
-  if (videoForm && videoTitleInput && videoFileInput && videoUrlInput && videoList) {
-    let videos = [];
-
-    // Load videos from Supabase only
-    async function loadVideos() {
-      try {
-        videoList.innerHTML = '<div class="loading">Loading videos...</div>';
-        videos = await loadVideosFromSupabase();
-        videoList.innerHTML = ''; // Clear loading
-        videos.forEach(videoData => {
-          displayVideo(videoData, videoList);
-        });
-      } catch (error) {
-        console.error('Error loading videos:', error);
-        videoList.innerHTML = '<div class="error">Failed to load videos. Please refresh.</div>';
-      }
-    }
-
-    videoTypeRadios.forEach(radio => {
-      radio.addEventListener('change', function() {
-        if (this.value === 'file') {
-          videoFileInput.style.display = 'block';
-          videoUrlInput.style.display = 'none';
-          videoFileInput.required = true;
-          videoUrlInput.required = false;
-        } else {
-          videoFileInput.style.display = 'none';
-          videoUrlInput.style.display = 'block';
-          videoFileInput.required = false;
-          videoUrlInput.required = true;
-        }
-      });
-    });
-
-    videoForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const title = videoTitleInput.value.trim();
-      const type = document.querySelector('input[name="videoType"]:checked').value;
-      
-      if (!title) {
-        alert('Please enter a video title');
-        return;
-      }
-
-      let videoData = {
-        id: Date.now(),
-        title: title,
-        type: type,
-        timestamp: new Date().toLocaleString(),
-        url: null,
-        fileName: null
-      };
-
-      if (type === 'file') {
-        const file = videoFileInput.files[0];
-        if (!file) {
-          alert('Please select a video file');
-          return;
-        }
-
-        // Check file size (max 2GB for videos)
-        if (file.size > 2 * 1024 * 1024 * 1024) {
-          alert('Video file is too large. Please use a video smaller than 2GB.');
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = async function(event) {
-          videoData.url = event.target.result;
-          videoData.fileName = file.name;
-          
-          try {
-            await saveVideoToSupabase(videoData);
-            await loadVideos(); // Refresh from Supabase
-            videoForm.reset();
-            videoFileInput.style.display = 'block';
-            videoUrlInput.style.display = 'none';
-          } catch (error) {
-            console.error('Error saving video:', error);
-            alert('Failed to save video.');
-          }
-        };
-        reader.onerror = function() {
-          alert('Error reading video file');
-        };
-        reader.readAsDataURL(file);
-      } else {
-        const url = videoUrlInput.value.trim();
-        if (!url) {
-          alert('Please enter a video URL');
-          return;
-        }
-
-        videoData.url = url;
-        (async () => {
-          try {
-            await saveVideoToSupabase(videoData);
-            await loadVideos(); // Refresh from Supabase
-            videoForm.reset();
-            videoFileInput.style.display = 'block';
-            videoUrlInput.style.display = 'none';
-          } catch (error) {
-            console.error('Error saving video:', error);
-            alert('Failed to save video.');
-          }
-        })();
-      }
-    });
-
-    window.deleteVideo = async function(videoId) {
-      if (confirm('Are you sure you want to delete this video?')) {
-        try {
-          await deleteVideoFromSupabase(videoId);
-          const videoCard = document.getElementById(`video-${videoId}`);
-          if (videoCard) {
-            videoCard.remove();
-          }
-        } catch (error) {
-          console.error('Error deleting video:', error);
-          alert('Failed to delete video.');
-        }
-      }
-    };
-
-    loadVideos();
-  }
-});
+function escapeHtmlJs(value) {
+  return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}

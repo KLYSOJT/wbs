@@ -127,17 +127,46 @@ async function saveAnnouncementToSupabase(data) {
 /**
  * Load all announcements from Supabase
  */
-async function loadAnnouncementsFromSupabase() {
+async function loadAnnouncementsFromSupabase(options = {}) {
   try {
-    const { data, error } = await supabaseClient
+    const selectColumns = options.includeImage === false
+      ? 'id, announcement_posts, timestamp, created_at'
+      : 'id, announcement_posts, image, timestamp, created_at';
+
+    let query = supabaseClient
       .from('announcement')
-      .select('*')
+      .select(selectColumns)
       .order('id', { ascending: false });
+
+    if (typeof options.limit === 'number' && options.limit > 0) {
+      query = query.limit(options.limit);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
     return data || [];
   } catch (error) {
     console.error('Error loading announcements from Supabase:', error);
+    return [];
+  }
+}
+
+async function loadAnnouncementImagesFromSupabase(ids = []) {
+  try {
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return [];
+    }
+
+    const { data, error } = await supabaseClient
+      .from('announcement')
+      .select('id, image')
+      .in('id', ids);
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error('Error loading announcement images from Supabase:', error);
     return [];
   }
 }
@@ -191,17 +220,46 @@ async function saveNewsToSupabase(data) {
 /**
  * Load all news from Supabase
  */
-async function loadNewsFromSupabase() {
+async function loadNewsFromSupabase(options = {}) {
   try {
-    const { data, error } = await supabaseClient
+    const selectColumns = options.includeImage === false
+      ? 'id, news_posts, timestamp, created_at'
+      : 'id, news_posts, image, timestamp, created_at';
+
+    let query = supabaseClient
       .from('news')
-      .select('*')
+      .select(selectColumns)
       .order('id', { ascending: false });
+
+    if (typeof options.limit === 'number' && options.limit > 0) {
+      query = query.limit(options.limit);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
     return data || [];
   } catch (error) {
     console.error('Error loading news from Supabase:', error);
+    return [];
+  }
+}
+
+async function loadNewsImagesFromSupabase(ids = []) {
+  try {
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return [];
+    }
+
+    const { data, error } = await supabaseClient
+      .from('news')
+      .select('id, image')
+      .in('id', ids);
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error('Error loading news images from Supabase:', error);
     return [];
   }
 }
