@@ -336,6 +336,14 @@ document.addEventListener('DOMContentLoaded', () => {
   applyPageSearchFromUrl();
 });
 
+function resolveUserPageHref(relativePath) {
+  if (!relativePath) return relativePath;
+  if (/^(https?:|\/)/i.test(relativePath)) return relativePath;
+
+  const pathname = window.location.pathname.replace(/\\/g, '/').toLowerCase();
+  return pathname.includes('/src/pages/user/') ? relativePath : `src/pages/user/${relativePath}`;
+}
+
 function initUserNavbarNavigation() {
   const navbar = document.querySelector('.navbar');
   if (!navbar) return;
@@ -480,7 +488,7 @@ async function runNavbarSearch(rawQuery, shouldNavigateToFirstResult = false) {
   renderNavbarResults(results, query);
 
   if (shouldNavigateToFirstResult) {
-    window.location.href = withSearchParam('search.html', rawQuery);
+    window.location.href = withSearchParam(resolveUserPageHref('search.html'), rawQuery);
   }
 }
 
@@ -548,7 +556,7 @@ function createStaticResult(item) {
   return {
     title: item.title,
     description: item.description,
-    href: item.href,
+    href: resolveUserPageHref(item.href),
     section: item.section,
     sourceLabel: 'Page',
     meta: '',
@@ -566,7 +574,7 @@ function createDynamicResult(source, mappedRecord, id) {
     id,
     title: safeText(mappedRecord.title, 'Untitled'),
     description: safeText(mappedRecord.description),
-    href: source.href,
+    href: resolveUserPageHref(source.href),
     section: source.section,
     sourceLabel: source.sourceLabel,
     meta: safeText(mappedRecord.meta),

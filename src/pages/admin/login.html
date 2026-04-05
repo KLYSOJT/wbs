@@ -17,7 +17,7 @@
             <div class="brand-section">
                  <!-- Back Button -->
         <a href="../../pages/user/app.html" class="back-button">
-            <span>← Back to Dashboard</span>
+            <span>←</span>
         </a>
                 <div class="brand-content">
                     
@@ -38,21 +38,37 @@
 
                     <form id="adminForm">
                         <div class="input-group">
-                            <input type="email" id="email" required placeholder=" ">
+                            <input type="email" id="email" name="email" autocomplete="email" required placeholder=" ">
                             <label for="email">Email Address</label>
                         </div>
 
                         <div class="input-group">
-                            <input type="password" id="password" required placeholder=" ">
+                            <input type="password" id="password" name="password" autocomplete="current-password" required placeholder=" ">
+                            <button type="button" class="password-toggle" id="passwordToggle" aria-label="Show password" aria-pressed="false">
+                                <span class="eye-open" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" focusable="false">
+                                        <path d="M1.5 12S5.5 5.25 12 5.25 22.5 12 22.5 12 18.5 18.75 12 18.75 1.5 12 1.5 12Z"></path>
+                                        <circle cx="12" cy="12" r="3.25"></circle>
+                                    </svg>
+                                </span>
+                                <span class="eye-closed" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" focusable="false">
+                                        <path d="M3 3 21 21"></path>
+                                        <path d="M10.58 10.58A2 2 0 0 0 10 12a2 2 0 0 0 3.42 1.42"></path>
+                                        <path d="M9.88 5.09A10.94 10.94 0 0 1 12 4.88c6.5 0 10.5 7.12 10.5 7.12a17.55 17.55 0 0 1-4.04 4.78"></path>
+                                        <path d="M6.61 6.61A17.73 17.73 0 0 0 1.5 12s4 7.12 10.5 7.12a10.8 10.8 0 0 0 4.09-.8"></path>
+                                    </svg>
+                                </span>
+                            </button>
                             <label for="password">Security Key</label>
                         </div>
 
                         <div class="utils">
-                            <label class="custom-checkbox">
-                                <input type="checkbox">
+                            <label class="custom-checkbox" for="rememberDevice">
+                                <input type="checkbox" id="rememberDevice" name="rememberDevice">
                                 <span class="box"></span>
                                 Remember this device
-                          
+                            </label>
                         </div>
 
                         <button type="submit" class="btn-primary">

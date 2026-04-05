@@ -33,11 +33,13 @@ body {
 
 /* Back Button Styles */
 .back-button {
-  display: flex;
-  align-items: flex-start;
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  margin-bottom: 20px;
   background: rgba(255, 255, 255, 0.9);
   color: var(--text-main);
   text-decoration: none;
@@ -83,7 +85,7 @@ body {
 /* Brand Side */
 .brand-section {
   flex: 1;
-
+  position: relative;
   background-image: url('../../imgs/adminportal.png');
   background-size: cover;
   display: flex;
@@ -155,6 +157,10 @@ body {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
+.input-group:has(.password-toggle) input {
+  padding-right: 52px;
+}
+
 .input-group label {
   position: absolute;
   left: 16px;
@@ -171,8 +177,8 @@ body {
   box-shadow: 0 4px 12px rgba(93, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.input-group input:focus + label,
-.input-group input:not(:placeholder-shown) + label {
+.input-group input:focus ~ label,
+.input-group input:not(:placeholder-shown) ~ label {
   top: 0;
   left: 12px;
   font-size: 0.75rem;
@@ -180,6 +186,62 @@ body {
   color: var(--primary-color);
   background: white;
   padding: 0 6px;
+}
+
+#password:focus ~ label,
+#password:not(:placeholder-shown) ~ label {
+  opacity: 0;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+  z-index: 2;
+}
+
+.password-toggle:hover {
+  color: var(--primary-color);
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid rgba(93, 0, 0, 0.22);
+  outline-offset: 2px;
+  border-radius: 999px;
+}
+
+.password-toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.password-toggle .eye-closed {
+  display: none;
+}
+
+.password-toggle[aria-pressed="true"] .eye-open {
+  display: none;
+}
+
+.password-toggle[aria-pressed="true"] .eye-closed {
+  display: inline-flex;
 }
 
 /* Utilities */
@@ -281,4 +343,8 @@ body {
   .login-card { flex-direction: column; }
   .brand-section { padding: 40px; }
   .form-section { padding: 40px 24px; }
+  .back-button {
+    top: 16px;
+    left: 16px;
+  }
 }

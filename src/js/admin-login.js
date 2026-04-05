@@ -15,11 +15,22 @@ class AdminLogin {
     this.form = document.getElementById('adminForm');
     this.emailInput = document.getElementById('email');
     this.passwordInput = document.getElementById('password');
+    this.passwordToggle = document.getElementById('passwordToggle');
     this.errorBox = document.getElementById('errorBox');
     this.isLoading = false;
 
+    if (!this.form || !this.emailInput || !this.passwordInput) {
+      console.error('Admin login form elements are missing.');
+      return;
+    }
+
+    if (!this.supabase?.auth) {
+      console.error('Supabase client is not available on the login page.');
+      this.showError('Authentication is unavailable right now. Please refresh and try again.');
+      return;
+    }
+
     this.setupEventListeners();
-    this.checkExistingSession();
   }
 
   /**
@@ -37,26 +48,22 @@ class AdminLogin {
     if (this.passwordInput) {
       this.passwordInput.addEventListener('input', () => this.hideError());
     }
+
+    if (this.passwordToggle) {
+      this.passwordToggle.addEventListener('click', () => this.togglePasswordVisibility());
+    }
   }
 
-  /**
-   * Check if user already has a valid session
-   * If yes, redirect to dashboard
-   */
-  async checkExistingSession() {
-    try {
-      const { data: { session } } = await this.supabase.auth.getSession();
-      
-      if (session) {
-        // Session exists - verify admin role
-        const isAdmin = await this.verifyAdminRole(session.user.id);
-        if (isAdmin) {
-          console.log('User already logged in, redirecting to dashboard');
-          window.location.href = 'home.html';
-        }
-      }
-    } catch (error) {
-      console.error('Session check error:', error);
+  togglePasswordVisibility() {
+    const isPasswordVisible = this.passwordInput.type === 'text';
+    this.passwordInput.type = isPasswordVisible ? 'password' : 'text';
+
+    if (this.passwordToggle) {
+      this.passwordToggle.setAttribute('aria-pressed', String(!isPasswordVisible));
+      this.passwordToggle.setAttribute(
+        'aria-label',
+        isPasswordVisible ? 'Show password' : 'Hide password'
+      );
     }
   }
 
@@ -78,6 +85,7 @@ class AdminLogin {
     }
 
     this.setLoading(true);
+    this.hideError();
 
     try {
       // Sign in with Supabase Auth
@@ -102,7 +110,13 @@ class AdminLogin {
       }
 
       // Login successful - now verify admin role
-      const session = data.session;
+      const session = data?.session;
+      if (!session?.user?.id) {
+        this.showError('Login succeeded but no active session was returned.');
+        this.setLoading(false);
+        return;
+      }
+
       const isAdmin = await this.verifyAdminRole(session.user.id);
 
       if (!isAdmin) {
@@ -118,10 +132,12 @@ class AdminLogin {
       
       // Redirect to admin dashboard
       window.location.href = 'home.html';
+      return;
 
     } catch (error) {
       console.error('Unexpected login error:', error);
       this.showError('An unexpected error occurred. Please try again.');
+    } finally {
       this.setLoading(false);
     }
   }

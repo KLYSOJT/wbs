@@ -191,7 +191,7 @@ if (window.supabaseClient) {
     
     if (event === 'SIGNED_OUT') {
       console.log('User signed out');
-      window.location.href = '../login.html';
+      window.location.href = './login.html';
     }
   });
 }
