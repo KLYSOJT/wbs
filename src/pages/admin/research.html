@@ -1,28 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Home</title>
-    <link rel="stylesheet" href="../../css/admin/navbar.css">
-    <link rel="stylesheet" href="../../css/admin/research.css">
-    <!-- Add Font Awesome if not already included -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Supabase Auth Scripts for Admin Protection -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../../js/supabase-config.js"></script>
-    <script src="../../js/authAdmin.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Research Bulletin</title>
+  <link rel="stylesheet" href="../../css/admin/navbar.css">
+  <link rel="stylesheet" href="../../css/admin/research.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/supabase-config.js"></script>
+  <script src="../../js/authAdmin.js"></script>
 </head>
 <body>
-  <!-- Navigation Bar -->
   <nav class="navbar">
     <div class="logo-container">
       <img src="../../imgs/rectologo.png" alt="RMNHS Logo" class="logo-img">
       <span class="logo-text">RMNHS</span>
     </div>
 
-    <!-- Static Search (no backend) -->
     <form class="search-container">
       <input type="text" placeholder="Search">
       <button type="button"><i class="fa fa-search"></i></button>
@@ -88,7 +83,6 @@
       </li>
 
       <li><a href="research.html" class="active">Research</a></li>
-
     </ul>
 
     <div class="admin-icon-container">
@@ -96,29 +90,17 @@
         <i class="fas fa-power-off logout-icon"></i>
       </button>
     </div>
+  </nav>
 
-
-  <!-- JS -->
-  <script src="script.js"></script>
-  <script src="src/js/navbar.js"></script>
-
-  
-
-
-
-
-
-
-
-
-    <!-- Main Content -->
   <main class="main-content">
     <div class="research-container">
       <h1 class="section-title">Research Bulletin</h1>
-      
-      <div class="search-section">
-        <h2 class="search-title">Create New Research</h2>
-        
+
+      <div id="statusMessage" class="status-message" aria-live="polite"></div>
+
+      <section class="search-section">
+        <h2 class="search-title">Create Or Update Research</h2>
+
         <form class="search-form" id="researchForm">
           <div class="form-group">
             <label for="research-title">Title of the Research</label>
@@ -166,38 +148,48 @@
 
           <div class="form-group">
             <label for="research-category">Research Category / Field</label>
-            <input type="text" id="research-category" name="research_category" placeholder="Enter category (e.g., Game, STEM, etc.)" required>
+            <input type="text" id="research-category" name="research_category" placeholder="Enter category (e.g., STEM, Robotics, Reading)" required>
           </div>
 
           <div class="form-group">
             <label for="research-image">Upload Picture</label>
             <div class="file-upload-container">
-              <div class="drag-drop-area" id="dragDropImageArea">
-                <button type="button" class="browse-btn" onclick="document.getElementById('research-image').click()"></button>
-                <span id="imageNameDisplay">| No file chosen</span>
+              <div class="drag-drop-area" id="dragDropImageArea" tabindex="0" role="button">
+                <span id="imageNameDisplay">Drag and drop or click to browse an image</span>
               </div>
-              <input type="file" id="research-image" name="image" accept=".jpg,.jpeg,.png,.gif" style="display: none;">
+              <input type="file" id="research-image" name="image" accept=".jpg,.jpeg,.png,.gif,.webp" style="display: none;">
             </div>
           </div>
 
           <div class="form-group">
-            <label for="research-file">Upload File</label>
+            <label for="research-file">Upload PDF File</label>
             <div class="file-upload-container">
-              <div class="drag-drop-area" id="dragDropArea">
-                <button type="button" class="browse-btn" onclick="document.getElementById('research-file').click()"></button>
-                <span id="fileNameDisplay">| No file chosen</span>
+              <div class="drag-drop-area" id="dragDropArea" tabindex="0" role="button">
+                <span id="fileNameDisplay">Drag and drop or click to browse a PDF</span>
               </div>
-              <input type="file" id="research-file" name="file" style="display: none;" accept=".pdf">
+              <input type="file" id="research-file" name="file" style="display: none;" accept=".pdf,application/pdf">
             </div>
           </div>
 
           <div class="form-actions">
             <button type="submit" class="btn-search" id="submitBtn">Create New</button>
             <button type="reset" class="btn-reset" id="resetBtn">Reset</button>
-            <button type="button" class="btn-reset" id="cancelEditBtn" style="display: none;" onclick="cancelEdit()">Cancel Edit</button>
+            <button type="button" class="btn-reset" id="cancelEditBtn" style="display: none;">Cancel Edit</button>
           </div>
         </form>
-      </div>
+      </section>
 
+      <section class="records-section">
+        <div class="records-toolbar">
+          <h2 class="search-title">Uploaded Research</h2>
+          <input type="search" id="adminResearchSearch" class="records-search" placeholder="Search uploaded research">
+        </div>
+
+        <div class="research-items" id="researchItems"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../../js/admin/research.js"></script>
 </body>
 </html>

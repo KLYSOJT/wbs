@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SSLG</title>
+  <title>Search Results</title>
   <link rel="icon" type="image/png" href="../../imgs/rectologo.png">
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="../../css/user/navbar.css">
   <link rel="stylesheet" href="../../css/user/footer.css">
   <link rel="stylesheet" href="../../css/user/header.css">
-  <link rel="stylesheet" href="../../css/user/memorandum.css">
+  <link rel="stylesheet" href="../../css/user/search.css">
 </head>
 <body>
   <nav class="navbar">
@@ -64,7 +63,7 @@
       </li>
 
       <li class="dropdown">
-        <a href="#" onclick="return false" class="active">Transparency <i class="arrow down"></i></a>
+        <a href="#" onclick="return false">Transparency <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
           <li><a href="transparency-info.html">Transparency Information</a></li>
 
@@ -82,7 +81,7 @@
           </li>
 
           <li><a href="spta.html">SPTA</a></li>
-          <li><a href="sslg.html" class="active">SSLG</a></li>
+          <li><a href="sslg.html">SSLG</a></li>
           <li><a href="bsp.html">BSP</a></li>
           <li><a href="gsp.html">GSP</a></li>
           <li><a href="tr.html">TR</a></li>
@@ -129,74 +128,33 @@
     </div>
   </header>
 
-  <main class="main-content">
-    <div class="container">
-      <div class="section-title-container">
-        <h1 class="section-title">SSLG</h1>
-      </div>
+  <main class="search-page">
+    <section class="search-hero">
+      <p class="search-eyebrow">User Search</p>
+      <h1 id="searchTitle">Search Results</h1>
+  
+      </form>
+      <p id="searchSummary" class="search-summary">Enter a search term above to begin.</p>
+    </section>
 
-      <div class="filter-section">
-        <div class="filter-controls">
-          <select class="filter-dropdown" id="yearFilter">
-            <option value="">Year</option>
-          </select>
-
-          <select class="filter-dropdown" id="monthFilter">
-            <option value="">Month</option>
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-          </select>
-        </div>
-
-        <div class="search-box">
-          <input type="text" class="search-input" placeholder="Search" id="searchInput">
-          <button class="search-btn"><i class="fas fa-search"></i></button>
-        </div>
-      </div>
-
-      <div class="table-container">
-        <table class="memo-table">
-          <thead>
-            <tr>
-              <th>Date Added</th>
-              <th>Title</th>
-              <th>Description</th>
-              <th>File</th>
-            </tr>
-          </thead>
-          <tbody id="memoTableBody"></tbody>
-        </table>
-      </div>
-
-      <div class="pagination-container">
-        <div class="pagination" id="paginationControls"></div>
-      </div>
-    </div>
+    <section class="search-results" aria-live="polite">
+      <div id="resultsContainer"></div>
+    </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../../js/supabase-config.js"></script>
-  <script src="../../js/user/sslg.js"></script>
+  <script src="../../js/user/search.js"></script>
   <script src="../../js/navbar.js"></script>
 
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-section footer-logos">
         <div class="logos-grid">
-          <img src="../../imgs/rectologo.png" class="footer-logo">
-          <img src="../../imgs/depedquezon.png" class="footer-logo">
-          <img src="../../imgs/bagongpilipinas.png" class="footer-logo">
-          <img src="../../imgs/schoolseal.png" class="footer-logo">
+          <img src="../../imgs/rectologo.png" class="footer-logo" alt="RMNHS logo">
+          <img src="../../imgs/depedquezon.png" class="footer-logo" alt="DepEd Quezon logo">
+          <img src="../../imgs/bagongpilipinas.png" class="footer-logo" alt="Bagong Pilipinas logo">
+          <img src="../../imgs/schoolseal.png" class="footer-logo" alt="School seal">
         </div>
       </div>
 
@@ -218,13 +176,13 @@
         <p class="phone">0949 995 1769</p>
 
         <div class="social-icons">
-          <a href="https://www.facebook.com/TheRectorianPress" target="_blank">
+          <a href="https://www.facebook.com/TheRectorianPress" target="_blank" rel="noopener noreferrer">
             <i class="fab fa-facebook-f"></i>
           </a>
-          <a href="https://mail.google.com" target="_blank">
+          <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer">
             <i class="fas fa-envelope"></i>
           </a>
-          <a href="https://maps.google.com/?q=X85C+R5C,+Tiaong,+Quezon+Province" target="_blank">
+          <a href="https://maps.google.com/?q=X85C+R5C,+Tiaong,+Quezon+Province" target="_blank" rel="noopener noreferrer">
             <i class="fas fa-location-dot"></i>
           </a>
         </div>
@@ -237,5 +195,3 @@
   </footer>
 </body>
 </html>
-
-
