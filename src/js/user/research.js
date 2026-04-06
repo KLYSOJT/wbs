@@ -1,4 +1,4 @@
-<<<<<<< Updated upstream
+
 document.addEventListener('DOMContentLoaded', initResearchPage);
 
 const RESEARCH_BUCKET = 'research-files';
@@ -227,7 +227,7 @@ function debounce(callback, delay) {
     timeoutId = window.setTimeout(() => callback(...args), delay);
   };
 }
-=======
+
 // research.js - Handles research page functionality
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -338,4 +338,3 @@ document.addEventListener('DOMContentLoaded', function() {
 function viewResearch(id, title) {
     alert(`Viewing research: ${title}`);
 }
->>>>>>> Stashed changes
