@@ -64,8 +64,6 @@
               <li><a href="grade8.html">Grade 8</a></li>
               <li><a href="grade9.html">Grade 9</a></li>
               <li><a href="grade10.html">Grade 10</a></li>
-              <li><a href="grade11.html">Grade 11</a></li>
-              <li><a href="grade12.html">Grade 12</a></li>
             </ul>
           </li>
         </ul>
@@ -148,30 +146,30 @@
 
 <!-- School Map -->
 <div class="schoolmap">
-  <img src="../imgs/schoolmap.png" alt="Map of Recto Memorial National High School" class="schoolmap">
+  <img src="../../imgs/schoolmap.png" alt="Map of Recto Memorial National High School" class="schoolmap">
 </div>
 
 <!-- Letter-based Facility Section -->
 <div class="text-container">
   <div class="title-top">HOME OF</div>
   <div class="title-bottom">
-    <span class="letter-btn" data-letter="R1">R</span>
-    <span class="letter-btn" data-letter="E">E</span>
-    <span class="letter-btn" data-letter="C">C</span>
-    <span class="letter-btn" data-letter="T">T</span>
-    <span class="letter-btn" data-letter="O">O</span>
-    <span class="letter-btn" data-letter="R2">R</span>
-    <span class="letter-btn" data-letter="I">I</span>
-    <span class="letter-btn" data-letter="A">A</span>
-    <span class="letter-btn" data-letter="N">N</span>
-    <span class="letter-btn" data-letter="S">S</span>
+    <button type="button" class="letter-btn" data-letter="R1" data-image="../../imgs/1.png" aria-label="Open Rectorians image 1">R</button>
+    <button type="button" class="letter-btn" data-letter="E" data-image="../../imgs/2.png" aria-label="Open Rectorians image 2">E</button>
+    <button type="button" class="letter-btn" data-letter="C" data-image="../../imgs/3.png" aria-label="Open Rectorians image 3">C</button>
+    <button type="button" class="letter-btn" data-letter="T" data-image="../../imgs/4.png" aria-label="Open Rectorians image 4">T</button>
+    <button type="button" class="letter-btn" data-letter="O" data-image="../../imgs/5.png" aria-label="Open Rectorians image 5">O</button>
+    <button type="button" class="letter-btn" data-letter="R2" data-image="../../imgs/6.png" aria-label="Open Rectorians image 6">R</button>
+    <button type="button" class="letter-btn" data-letter="I" data-image="../../imgs/7.png" aria-label="Open Rectorians image 7">I</button>
+    <button type="button" class="letter-btn" data-letter="A" data-image="../../imgs/8.png" aria-label="Open Rectorians image 8">A</button>
+    <button type="button" class="letter-btn" data-letter="N" data-image="../../imgs/9.png" aria-label="Open Rectorians image 9">N</button>
+    <button type="button" class="letter-btn" data-letter="S" data-image="../../imgs/10.png" aria-label="Open Rectorians image 10">S</button>
   </div>
 </div>
 
 <!-- Modal for Facility Images -->
-<div id="facilityModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
+<div id="facilityModal" class="modal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-label="Facility image preview">
+    <button type="button" class="close" aria-label="Close image preview">&times;</button>
     <img id="modalImage" src="" alt="">
   </div>
 </div>
@@ -228,5 +226,64 @@
     <p>&copy;2026 All Rights Reserved</p>
   </div>
 </footer>
+
+<script>
+  const facilityModal = document.getElementById('facilityModal');
+  const modalImage = document.getElementById('modalImage');
+  const closeModalButton = facilityModal.querySelector('.close');
+  const letterButtons = document.querySelectorAll('.letter-btn');
+  let lastTriggeredButton = null;
+
+  facilityModal.inert = true;
+
+  function openFacilityModal(button) {
+    const imageSrc = button.dataset.image;
+    const imageLabel = button.textContent.trim();
+
+    lastTriggeredButton = button;
+    modalImage.src = imageSrc;
+    modalImage.alt = 'Rectorians image for letter ' + imageLabel;
+    facilityModal.inert = false;
+    facilityModal.style.display = 'flex';
+    facilityModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    closeModalButton.focus();
+  }
+
+  function closeFacilityModal() {
+    if (document.activeElement && facilityModal.contains(document.activeElement)) {
+      if (lastTriggeredButton) {
+        lastTriggeredButton.focus();
+      } else {
+        document.body.focus();
+      }
+    }
+
+    facilityModal.style.display = 'none';
+    facilityModal.inert = true;
+    facilityModal.setAttribute('aria-hidden', 'true');
+    modalImage.src = '';
+    modalImage.alt = '';
+    document.body.style.overflow = '';
+  }
+
+  letterButtons.forEach((button) => {
+    button.addEventListener('click', () => openFacilityModal(button));
+  });
+
+  closeModalButton.addEventListener('click', closeFacilityModal);
+
+  facilityModal.addEventListener('click', (event) => {
+    if (event.target === facilityModal) {
+      closeFacilityModal();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && facilityModal.style.display === 'flex') {
+      closeFacilityModal();
+    }
+  });
+</script>
 </body>
 </html>

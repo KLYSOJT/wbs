@@ -1,6 +1,6 @@
 // ==================== INDEXEDDB SETUP FOR DEPED ORDER ====================
 const DB_NAME = 'WBSSDatabase_DepedOrder';
-const DB_VERSION = 2;
+const DB_VERSION = 1;
 const STORE_NAME = 'depedOrder';
 const FILE_STORE_NAME = 'depedOrderFiles';
 
@@ -199,16 +199,10 @@ async function deletePdfFromIndexedDB(memoId) {
 }
 
 // ==================== SUPABASE STORAGE & HELPER FUNCTIONS ====================
-const DEPED_ORDER_BUCKET = 'deped-order-files';
 
 /**
- * Upload PDF file to Supabase Storage when available, otherwise fall back to IndexedDB
+ * Upload PDF file to IndexedDB (primary) or Supabase Storage (if available)
  */
-function getStorageFilePath(file, memoId) {
-  const safeName = (file?.name || 'document.pdf').replace(/[^a-zA-Z0-9._-]/g, '_');
-  return `deped-order/${memoId}-${Date.now()}-${safeName}`;
-}
-
 async function uploadPdfToStorage(file, memoId) {
   try {
     if (!file) return null;
@@ -224,39 +218,12 @@ async function uploadPdfToStorage(file, memoId) {
       throw new Error('File size must be less than 10MB');
     }
 
-    if (window.supabaseClient?.storage) {
-      try {
-        const filePath = getStorageFilePath(file, memoId);
-        console.log('Uploading PDF to Supabase Storage...');
-
-        const { error: uploadError } = await window.supabaseClient.storage
-          .from(DEPED_ORDER_BUCKET)
-          .upload(filePath, file, {
-            cacheControl: '3600',
-            upsert: true,
-            contentType: 'application/pdf'
-          });
-
-        if (uploadError) {
-          throw uploadError;
-        }
-
-        const { data: publicUrlData } = window.supabaseClient.storage
-          .from(DEPED_ORDER_BUCKET)
-          .getPublicUrl(filePath);
-
-        if (publicUrlData?.publicUrl) {
-          console.log('PDF uploaded to Supabase Storage');
-          return publicUrlData.publicUrl;
-        }
-      } catch (storageError) {
-        console.warn('Supabase Storage upload failed, falling back to IndexedDB:', storageError.message);
-      }
-    }
-
-    console.log('Storing PDF in IndexedDB fallback...');
+    // Store in IndexedDB (primary method - always available)
+    console.log('Storing PDF in IndexedDB...');
     await storePdfInIndexedDB(file, memoId);
-    console.log('PDF stored in IndexedDB');
+    console.log('✓ PDF stored in IndexedDB');
+    
+    // Return special identifier for IndexedDB files
     return `idb://${memoId}`;
   } catch (error) {
     console.error('Error uploading PDF:', error.message);
@@ -282,11 +249,11 @@ async function deletePdfFromStorage(fileUrl, memoId) {
     if (fileUrl.startsWith('http')) {
       try {
         // Extract file path from URL
-        const urlParts = fileUrl.split(`/${DEPED_ORDER_BUCKET}/`);
+        const urlParts = fileUrl.split('/documents/');
         if (urlParts.length === 2) {
           const filePath = urlParts[1].split('?')[0];
           const { error } = await supabaseClient.storage
-            .from(DEPED_ORDER_BUCKET)
+            .from('documents')
             .remove([filePath]);
 
           if (!error) {
@@ -395,66 +362,6 @@ async function loadMemosFromSupabase() {
     console.error('Error loading DepEd Orders from Supabase:', error.message);
     return [];
   }
-}
-
-async function migrateMemoFileToPublicUrl(memo) {
-  if (!memo?.id || !memo.file || !memo.file.startsWith('idb://')) {
-    return memo;
-  }
-
-  try {
-    const fileData = await getPdfFromIndexedDB(memo.id);
-    if (!fileData?.blob) {
-      return memo;
-    }
-
-    const uploadSource = new File(
-      [fileData.blob],
-      fileData.fileName || `deped-order-${memo.id}.pdf`,
-      { type: fileData.blob.type || 'application/pdf' }
-    );
-
-    const publicUrl = await uploadPdfToStorage(uploadSource, memo.id);
-    if (!publicUrl || publicUrl.startsWith('idb://')) {
-      return memo;
-    }
-
-    const { data, error } = await supabaseClient
-      .from('deped_order')
-      .update({ file: publicUrl })
-      .eq('id', memo.id)
-      .select()
-      .single();
-
-    if (error) {
-      console.warn('Could not update migrated file URL in Supabase:', error.message);
-      return memo;
-    }
-
-    const migratedMemo = data || { ...memo, file: publicUrl };
-
-    try {
-      await updateInStore(STORE_NAME, migratedMemo);
-    } catch (storeError) {
-      console.log('Local store update skipped after migration');
-    }
-
-    console.log('Migrated DepEd Order file to public URL:', memo.id);
-    return migratedMemo;
-  } catch (error) {
-    console.warn(`Skipping migration for memo ${memo.id}:`, error.message);
-    return memo;
-  }
-}
-
-async function migrateMemosToPublicUrls(memos) {
-  const migratedMemos = [];
-
-  for (const memo of memos) {
-    migratedMemos.push(await migrateMemoFileToPublicUrl(memo));
-  }
-
-  return migratedMemos;
 }
 
 /**
@@ -685,12 +592,11 @@ async function loadMemos() {
   try {
     // Try loading from Supabase first
     const supabaseMemos = await loadMemosFromSupabase();
-    const normalizedMemos = await migrateMemosToPublicUrls(supabaseMemos);
     
-    if (normalizedMemos.length > 0) {
-      allMemos = normalizedMemos;
+    if (supabaseMemos.length > 0) {
+      allMemos = supabaseMemos;
       // Sync to local storage
-      for (const memo of normalizedMemos) {
+      for (const memo of supabaseMemos) {
         try {
           await updateInStore(STORE_NAME, memo);
         } catch (e) {
@@ -990,9 +896,8 @@ document.addEventListener('DOMContentLoaded', async function() {
   setInterval(async () => {
     try {
       const supabaseMemos = await loadMemosFromSupabase();
-      const normalizedMemos = await migrateMemosToPublicUrls(supabaseMemos);
-      if (normalizedMemos.length > 0 && JSON.stringify(normalizedMemos) !== JSON.stringify(allMemos)) {
-        allMemos = normalizedMemos;
+      if (supabaseMemos.length > 0 && JSON.stringify(supabaseMemos) !== JSON.stringify(allMemos)) {
+        allMemos = supabaseMemos;
         renderTable(allMemos);
         console.log('✓ Synced from Supabase');
       }
@@ -1001,5 +906,4 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
   }, 30000);
 });
-
 

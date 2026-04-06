@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>APP</title>
+  <title>Grade 10 Learning Materials</title>
   <link rel="icon" type="image/png" href="../../imgs/rectologo.png">
 
   <!-- Font Awesome -->
@@ -13,7 +13,9 @@
   <link rel="stylesheet" href="../../css/user/navbar.css">
   <link rel="stylesheet" href="../../css/user/footer.css">
   <link rel="stylesheet" href="../../css/user/header.css">
-   <link rel="stylesheet" href="../../css/user/memorandum.css">
+  <link rel="stylesheet" href="../../css/user/grade7.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/supabase-config.js"></script>
 
 
 </head>
@@ -41,17 +43,17 @@
       <li><a href="/dashboard.html" >Home</a></li>
 
       <li class="dropdown mobile-open">
-        <a href="#" onclick="return false" ">About <i class="arrow down"></i></a>
+        <a href="#" onclick="return false">About <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
           <li><a href="organizational-structure.html">Organizational Structure</a></li>
           <li><a href="recognized-structure.html">Recognized Organization</a></li>
-          <li><a href="history.html" class=>History Profile</a></li>
+          <li><a href="history.html">History Profile</a></li>
           <li><a href="mvc.html">VMC</a></li>
         </ul>
       </li>
 
       <li class="dropdown">
-        <a href="#" onclick="return false">Resources <i class="arrow down"></i></a>
+        <a href="#" onclick="return false" class="active">Resources <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
           <li><a href="school-memo.html">School Memorandum</a></li>
           <li><a href="division-memo.html">Division Memorandum</a></li>
@@ -59,26 +61,26 @@
           <li><a href="deped-order.html">DepEd Order</a></li>
 
           <li class="dropdown-submenu">
-            <a href="#" onclick="return false">Learning Materials <i class="arrow down"></i></a>
+            <a href="#" onclick="return false" class="active">Learning Materials <i class="arrow down"></i></a>
             <ul class="dropdown-submenu-list">
               <li><a href="grade7.html">Grade 7</a></li>
               <li><a href="grade8.html">Grade 8</a></li>
               <li><a href="grade9.html">Grade 9</a></li>
-              <li><a href="grade10.html">Grade 10</a></li>
+              <li><a href="grade10.html" class="active">Grade 10</a></li>
             </ul>
           </li>
         </ul>
       </li>
 
       <li class="dropdown">
-        <a href="#" onclick="return false"class="active">Transparency <i class="arrow down"></i></a>
+        <a href="#" onclick="return false">Transparency <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
           <li><a href="transparency-info.html">Transparency Information</a></li>
 
           <li class="dropdown-submenu">
             <a href="#" onclick="return false">Procurement Bulletin <i class="arrow down"></i></a>
             <ul class="dropdown-submenu-list">
-              <li><a href="app.html"class="active">APP</a></li>
+              <li><a href="app.html">APP</a></li>
               <li><a href="award-contracts.html">Award of Contracts</a></li>
               <li><a href="bac.html">Bid and Awards Committee</a></li>
               <li><a href="bid-bulletin.html">Bid Bulletin</a></li>
@@ -143,77 +145,129 @@
 </header>
 
 
-
-
-
-<!-- Main Content -->
-<main class="main-content">
-  <div class="container">
-
-    <div class="section-title-container">
-      <h1 class="section-title">APP</h1>
+<main class="grade-page" data-grade="Grade 10">
+  <section class="grade-hero">
+    <div class="grade-hero-copy">
+      <p class="grade-eyebrow">Learning Materials</p>
+      <h1>Resource Hub</h1>
+    
     </div>
 
-    <!-- Filters -->
-    <div class="filter-section">
-      <div class="filter-controls">
-        <select class="filter-dropdown" id="yearFilter">
-          <option value="">Year</option>
-        </select>
+    <div class="grade-hero-panel">
+      <span class="hero-panel-badge"><i class="fas fa-book-open"></i> Grade 10</span>
+      
+  </section>
 
-        <select class="filter-dropdown" id="monthFilter">
-          <option value="">Month</option>
-          <option value="01">January</option>
-          <option value="02">February</option>
-          <option value="03">March</option>
-          <option value="04">April</option>
-          <option value="05">May</option>
-          <option value="06">June</option>
-          <option value="07">July</option>
-          <option value="08">August</option>
-          <option value="09">September</option>
-          <option value="10">October</option>
-          <option value="11">November</option>
-          <option value="12">December</option>
-        </select>
-      </div>
-
-      <div class="search-box">
-        <input type="text" class="search-input" placeholder="Search" id="searchInput">
-        <button class="search-btn"><i class="fas fa-search"></i></button>
+  <section class="folder-section">
+    <div class="section-heading">
+      <div>
+        <h2>Subject Folders</h2>
+        <p>Select a subject folder to view available learning files.</p>
       </div>
     </div>
 
-    <!-- Table -->
-    <div class="table-container">
-      <table class="memo-table">
-        <thead>
-          <tr>
-            <th>Date Added</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>File</th>
-          </tr>
-        </thead>
+    <div class="learning-materials-layout">
+      <aside class="lm-left" aria-label="Grade 10 subject folders">
+        <h3>Folders</h3>
+        <ul class="folder-list" id="subjectFolders">
+          <li class="folder active">
+            <button type="button" class="folder-button" data-subject="english" aria-pressed="true">
+              <span class="folder-ic"><i class="fas fa-book"></i></span>
+              <span>English</span>
+            </button>
+          </li>
+          <li class="folder">
+            <button type="button" class="folder-button" data-subject="math" aria-pressed="false">
+              <span class="folder-ic"><i class="fas fa-square-root-alt"></i></span>
+              <span>Math</span>
+            </button>
+          </li>
+          <li class="folder">
+            <button type="button" class="folder-button" data-subject="filipino" aria-pressed="false">
+              <span class="folder-ic"><i class="fas fa-language"></i></span>
+              <span>Filipino</span>
+            </button>
+          </li>
+          <li class="folder">
+            <button type="button" class="folder-button" data-subject="science" aria-pressed="false">
+              <span class="folder-ic"><i class="fas fa-flask"></i></span>
+              <span>Science</span>
+            </button>
+          </li>
+          <li class="folder">
+            <button type="button" class="folder-button" data-subject="ap" aria-pressed="false">
+              <span class="folder-ic"><i class="fas fa-landmark"></i></span>
+              <span>AP</span>
+            </button>
+          </li>
+          <li class="folder">
+            <button type="button" class="folder-button" data-subject="music-and-arts" aria-pressed="false">
+              <span class="folder-ic"><i class="fas fa-music"></i></span>
+              <span>Music &amp; Arts</span>
+            </button>
+          </li>
+          <li class="folder">
+            <button type="button" class="folder-button" data-subject="pe-and-health" aria-pressed="false">
+              <span class="folder-ic"><i class="fas fa-heart-pulse"></i></span>
+              <span>PE &amp; Health</span>
+            </button>
+          </li>
+          <li class="folder">
+            <button type="button" class="folder-button" data-subject="tle" aria-pressed="false">
+              <span class="folder-ic"><i class="fas fa-tools"></i></span>
+              <span>TLE</span>
+            </button>
+          </li>
+          <li class="folder">
+            <button type="button" class="folder-button" data-subject="values-education" aria-pressed="false">
+              <span class="folder-ic"><i class="fas fa-heart"></i></span>
+              <span>Values Education</span>
+            </button>
+          </li>
+        </ul>
+      </aside>
 
-        <tbody id="memoTableBody"></tbody>
-      </table>
+      <section class="lm-right" aria-label="Available files">
+        <div class="files-panel-heading">
+          <div>
+            <p class="files-label" id="filesLabel">English Folder</p>
+            <h3>Available Files</h3>
+          </div>
+          <span class="files-count" id="filesCount">2 files</span>
+        </div>
+
+        <div class="files-grid" id="filesGrid">
+          <article class="file-card">
+            <a class="file-link" href="uploads/sample1.pdf" target="_blank" rel="noopener noreferrer">
+              <div class="file-doc">
+                <i class="fas fa-file-pdf pdf-file-icon"></i>
+              </div>
+              <div class="file-copy">
+                <span class="file-type">PDF Document</span>
+                <div class="file-name">Lesson 1 - Introduction.pdf</div>
+              </div>
+            </a>
+          </article>
+
+          <article class="file-card">
+            <a class="file-link" href="uploads/sample2.docx" target="_blank" rel="noopener noreferrer">
+              <div class="file-doc doc-file-doc">
+                <span class="pdf-label small">DOCX</span>
+              </div>
+              <div class="file-copy">
+                <span class="file-type">Activity File</span>
+                <div class="file-name">Activity Sheet.docx</div>
+              </div>
+            </a>
+          </article>
+        </div>
+      </section>
     </div>
-
-    <!-- Pagination -->
-    <div class="pagination-container">
-      <div class="pagination" id="paginationControls"></div>
-    </div>
-
-  </div>
+  </section>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../../js/supabase-config.js"></script>
-<script src="../../js/user/app.js"></script>
+  <script src="../../js/user/learning-materials.js"></script>
   <script src="../../js/navbar.js"></script>
-
-
 
 <!-- Footer -->
 <footer class="footer">
@@ -267,8 +321,7 @@
     <p>&copy;2026 All Rights Reserved</p>
   </div>
 </footer>
- </body>
+</body>
 </html>
-
 
 

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Learning Materials</title>
+  <link rel="stylesheet" href="../../css/admin/navbar.css">
+  <link rel="stylesheet" href="../../css/admin/learning-materials.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/supabase-config.js"></script>
+  <script src="../../js/authAdmin.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo-container">
+      <img src="../../imgs/rectologo.png" alt="RMNHS Logo" class="logo-img">
+      <span class="logo-text">RMNHS</span>
+    </div>
+
+    <form class="search-container">
+      <input type="text" placeholder="Search">
+      <button type="button"><i class="fa fa-search"></i></button>
+    </form>
+
+    <ul class="nav-links">
+      <li><a href="home.html">Home</a></li>
+
+      <li class="dropdown mobile-open">
+        <a href="#" onclick="return false">About <i class="arrow down"></i></a>
+        <ul class="dropdown-menu">
+          <li><a href="organizational-structure.html">Organizational Structure</a></li>
+          <li><a href="recognized-structure.html">Recognized Organization</a></li>
+        </ul>
+      </li>
+
+      <li class="dropdown">
+        <a href="#" onclick="return false" class="active">Resources <i class="arrow down"></i></a>
+        <ul class="dropdown-menu">
+          <li><a href="school-memo.html">School Memorandum</a></li>
+          <li><a href="division-memo.html">Division Memorandum</a></li>
+          <li><a href="deped-memo.html">DepEd Memorandum</a></li>
+          <li><a href="deped-order.html">DepEd Order</a></li>
+          <li class="dropdown-submenu">
+            <a href="learning-materials.html" class="active">Learning Materials</a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="dropdown">
+        <a href="#" onclick="return false">Transparency <i class="arrow down"></i></a>
+        <ul class="dropdown-menu">
+          <li class="dropdown-submenu">
+            <a href="#" onclick="return false">Procurement Bulletin <i class="arrow down"></i></a>
+            <ul class="dropdown-submenu-list">
+              <li><a href="app.html">APP</a></li>
+              <li><a href="award-contracts.html">Award of Contracts</a></li>
+              <li><a href="bac.html">Bid and Awards Committee</a></li>
+              <li><a href="bid-bulletin.html">Bid Bulletin</a></li>
+              <li><a href="invitation-bid.html">Invitation to Bid</a></li>
+              <li><a href="philgeps.html">PhilGEPS</a></li>
+              <li><a href="procurement-reports.html">Procurement Reports</a></li>
+            </ul>
+          </li>
+          <li><a href="spta.html">SPTA</a></li>
+          <li><a href="sslg.html">SSLG</a></li>
+          <li><a href="bsp.html">BSP</a></li>
+          <li><a href="gsp.html">GSP</a></li>
+          <li><a href="tr.html">TR</a></li>
+          <li><a href="mooe.html">MOOE</a></li>
+          <li><a href="redcross.html">Red Cross</a></li>
+        </ul>
+      </li>
+
+      <li><a href="research.html">Research</a></li>
+    </ul>
+
+    <div class="admin-icon-container">
+      <button onclick="adminAuth.logout()" title="Logout" class="admin-icon-link" style="background: none; border: none; cursor: pointer; padding: 0;">
+        <i class="fas fa-power-off logout-icon"></i>
+      </button>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="container">
+      <div class="page-header">
+        <h1>Learning Materials</h1>
+      </div>
+
+      <div id="statusMessage" class="status-message" aria-live="polite"></div>
+
+      <div class="card">
+        <h2>Add New Document</h2>
+
+        <form id="uploadForm" class="upload-form">
+          <div class="form-row">
+            <label for="subjectName">Subject Name :</label>
+            <select id="subjectName" required>
+              <option value="">Select subject</option>
+              <option value="ENGLISH">ENGLISH</option>
+              <option value="ESP">ESP</option>
+              <option value="FILIPINO">FILIPINO</option>
+              <option value="MATH">MATH</option>
+              <option value="MUSIC & ARTS">MUSIC & ARTS</option>
+              <option value="SCIENCE">SCIENCE</option>
+              <option value="PE & HEALTH">PE & HEALTH</option>
+              <option value="SPJ">SPJ</option>
+              <option value="TLE">TLE</option>
+              <option value="SPSTEM">SPSTEM</option>
+              <option value="SPA">SPA</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="gradeLevel">Grade Level :</label>
+            <select id="gradeLevel" required>
+              <option value="">Select grade</option>
+              <option value="Grade 7">Grade 7</option>
+              <option value="Grade 8">Grade 8</option>
+              <option value="Grade 9">Grade 9</option>
+              <option value="Grade 10">Grade 10</option>
+              <option value="Grade 11">Grade 11</option>
+              <option value="Grade 12">Grade 12</option>
+            </select>
+          </div>
+
+          <div class="form-row file-row">
+            <label for="materialFile">Upload File :</label>
+            <input id="materialFile" type="file" accept=".pdf,application/pdf" required>
+            <button type="submit" class="btn-upload" id="uploadButton">Upload</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <form class="filter-form" id="filterForm" style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
+          <label for="filterGrade" style="min-width:120px">Filter Grade :</label>
+          <select id="filterGrade">
+            <option value="">All grades</option>
+            <option value="Grade 7">Grade 7</option>
+            <option value="Grade 8">Grade 8</option>
+            <option value="Grade 9">Grade 9</option>
+            <option value="Grade 10">Grade 10</option>
+            <option value="Grade 11">Grade 11</option>
+            <option value="Grade 12">Grade 12</option>
+          </select>
+          <button type="button" class="action-btn" id="applyFilter">Apply</button>
+          <button type="button" class="action-btn" id="clearFilter">Clear</button>
+        </form>
+
+        <h2>Uploaded Documents</h2>
+        <table class="uploads-table">
+          <thead>
+            <tr>
+              <th>Grade</th>
+              <th>Subject</th>
+              <th>File</th>
+              <th>Uploaded</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="materialsTableBody">
+            <tr>
+              <td colspan="5" class="table-message">Loading learning materials...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div id="editModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Edit Document</div>
+        <button class="modal-close" data-target="editModal" type="button">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <form id="editForm">
+          <div class="form-row">
+            <label for="editGradeLevel">New Grade :</label>
+            <select id="editGradeLevel" required>
+              <option value="Grade 7">Grade 7</option>
+              <option value="Grade 8">Grade 8</option>
+              <option value="Grade 9">Grade 9</option>
+              <option value="Grade 10">Grade 10</option>
+              <option value="Grade 11">Grade 11</option>
+              <option value="Grade 12">Grade 12</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="editSubjectName">New Subject :</label>
+            <select id="editSubjectName" required>
+              <option value="ENGLISH">ENGLISH</option>
+              <option value="ESP">ESP</option>
+              <option value="FILIPINO">FILIPINO</option>
+              <option value="MATH">MATH</option>
+              <option value="MUSIC & ARTS">MUSIC & ARTS</option>
+              <option value="SCIENCE">SCIENCE</option>
+              <option value="PE & HEALTH">PE & HEALTH</option>
+              <option value="SPJ">SPJ</option>
+              <option value="TLE">TLE</option>
+              <option value="SPSTEM">SPSTEM</option>
+              <option value="SPA">SPA</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="editMaterialFile">Replace File :</label>
+            <input id="editMaterialFile" type="file" accept=".pdf,application/pdf">
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel modal-close" data-target="editModal" type="button">Cancel</button>
+        <button class="btn-confirm" id="editSubmit" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="deleteModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Delete Document</div>
+        <button class="modal-close" data-target="deleteModal" type="button">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong id="deleteFileName"></strong>?</p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel modal-close" data-target="deleteModal" type="button">Cancel</button>
+        <button class="btn-confirm" id="deleteConfirm" type="button">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../js/admin/learning-materials.js"></script>
+</body>
+</html>
