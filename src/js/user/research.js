@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 document.addEventListener('DOMContentLoaded', initResearchPage);
 
 const RESEARCH_BUCKET = 'research-files';
@@ -226,3 +227,115 @@ function debounce(callback, delay) {
     timeoutId = window.setTimeout(() => callback(...args), delay);
   };
 }
+=======
+// research.js - Handles research page functionality
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle search form
+    const searchForm = document.getElementById('researchSearchForm');
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Implement search logic here
+            console.log('Search submitted');
+            // For now, just log
+        });
+    }
+
+    // Handle submit research form
+    const submitForm = document.getElementById('submitResearchForm');
+    if (submitForm) {
+        submitForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const title = formData.get('title');
+            const grade = formData.get('grade');
+            const department = formData.get('department');
+            const year = formData.get('year');
+            const category = formData.get('category');
+            const pictureFile = formData.get('picture');
+            const researchFile = formData.get('file');
+
+            console.log('Form data:', { title, grade, department, year, category, pictureFile, researchFile });
+
+            if (!pictureFile || !researchFile) {
+                alert('Please select both picture and file to upload.');
+                return;
+            }
+
+            try {
+                // Upload picture
+                const pictureFileName = `research-images/${Date.now()}-${pictureFile.name}`;
+                console.log('Uploading picture:', pictureFileName);
+                const { data: pictureData, error: pictureError } = await window.supabaseClient.storage
+                    .from('research')
+                    .upload(pictureFileName, pictureFile);
+
+                if (pictureError) {
+                    console.error('Picture upload error:', pictureError);
+                    throw pictureError;
+                }
+                console.log('Picture uploaded:', pictureData);
+
+                const { data: pictureUrlData } = window.supabaseClient.storage
+                    .from('research')
+                    .getPublicUrl(pictureFileName);
+                console.log('Picture URL:', pictureUrlData.publicUrl);
+
+                // Upload research file
+                const researchFileName = `research-files/${Date.now()}-${researchFile.name}`;
+                console.log('Uploading file:', researchFileName);
+                const { data: fileData, error: fileError } = await window.supabaseClient.storage
+                    .from('research')
+                    .upload(researchFileName, researchFile);
+
+                if (fileError) {
+                    console.error('File upload error:', fileError);
+                    throw fileError;
+                }
+                console.log('File uploaded:', fileData);
+
+                const { data: fileUrlData } = window.supabaseClient.storage
+                    .from('research')
+                    .getPublicUrl(researchFileName);
+                console.log('File URL:', fileUrlData.publicUrl);
+
+                // Insert into database
+                console.log('Inserting into database...');
+                const { data, error: insertError } = await window.supabaseClient
+                    .from('research')
+                    .insert([
+                        {
+                            title: title,
+                            grade: grade,
+                            department: department,
+                            year: year,
+                            category: category,
+                            image: pictureUrlData.publicUrl,
+                            file: fileUrlData.publicUrl
+                        }
+                    ]);
+
+                if (insertError) {
+                    console.error('Database insert error:', insertError);
+                    throw insertError;
+                }
+                console.log('Inserted successfully:', data);
+
+                alert('Research submitted successfully!');
+                this.reset();
+
+            } catch (error) {
+                console.error('Error submitting research:', error);
+                alert('Error submitting research: ' + error.message);
+            }
+        });
+    }
+});
+
+// Function for viewing research (placeholder)
+function viewResearch(id, title) {
+    alert(`Viewing research: ${title}`);
+}
+>>>>>>> Stashed changes
