@@ -2,7 +2,7 @@ const USER_NAVBAR_STATIC_RESULTS = [
   {
     title: 'Home',
     description: 'School home page and announcements',
-    href: '/dashboard.html',
+    href: '/index.html',
     section: 'Page',
     keywords: ['dashboard', 'home']
   },

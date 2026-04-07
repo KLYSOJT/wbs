@@ -16,8 +16,6 @@
   <link rel="stylesheet" href="../../css/user/grade7.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../../js/supabase-config.js"></script>
-
-
 </head>
 
 <body>
@@ -40,7 +38,7 @@
     </button>
 
     <ul class="nav-links">
-      <li><a href="/dashboard.html" >Home</a></li>
+      <li><a href="/index.html">Home</a></li>
 
       <li class="dropdown mobile-open">
         <a href="#" onclick="return false">About <i class="arrow down"></i></a>
@@ -111,216 +109,208 @@
     </div>
   </nav>
 
-
-<!-- NAVBAR (replace with your static navbar file if needed) -->
-<!-- Example: -->
-<!-- <script src="navbar.js"></script> -->
-
-<!-- Main Header Section -->
-<header class="main-header">
-  <div class="header-content">
-    <div class="brand-section">
-      <div class="vertical-divider"></div>
-      <h1 class="school-name">Recto Memorial National High School</h1>
-    </div>
-
-    <div class="contact-info">
-      <div class="contact-item">
-        <div class="icon-circle"><i class="fa fa-phone"></i></div>
-        <div class="contact-text">
-          <span class="label">Phone Number :</span>
-          <span class="value">0949-995-1769</span>
-        </div>
+  <!-- Main Header Section -->
+  <header class="main-header">
+    <div class="header-content">
+      <div class="brand-section">
+        <div class="vertical-divider"></div>
+        <h1 class="school-name">Recto Memorial National High School</h1>
       </div>
 
-      <div class="contact-item">
-        <div class="icon-circle"><i class="fa fa-envelope"></i></div>
-        <div class="contact-text">
-          <span class="label">Email Address :</span>
-          <span class="value">rectomns301380@gmail.com</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>
-
-
-<main class="grade-page" data-grade="Grade 7">
-  <section class="grade-hero">
-    <div class="grade-hero-copy">
-      <p class="grade-eyebrow">Learning Materials</p>
-      <h1>Resource Hub</h1>
-    </div>
-
-    <div class="grade-hero-panel">
-      <span class="hero-panel-badge"><i class="fas fa-book-open"></i> Grade 7</span>
-    </div>
-  </section>
-
-  <section class="folder-section">
-    <div class="section-heading">
-      <div>
-        <h2>Subject Folders</h2>
-        <p>Select a subject folder to view available learning files.</p>
-      </div>
-    </div>
-
-    <div class="learning-materials-layout">
-      <aside class="lm-left" aria-label="Grade 7 subject folders">
-        <h3>Folders</h3>
-        <ul class="folder-list" id="subjectFolders">
-          <li class="folder active">
-            <button type="button" class="folder-button" data-subject="english" aria-pressed="true">
-              <span class="folder-ic"><i class="fas fa-book"></i></span>
-              <span>English</span>
-            </button>
-          </li>
-          <li class="folder">
-            <button type="button" class="folder-button" data-subject="math" aria-pressed="false">
-              <span class="folder-ic"><i class="fas fa-square-root-alt"></i></span>
-              <span>Math</span>
-            </button>
-          </li>
-          <li class="folder">
-            <button type="button" class="folder-button" data-subject="filipino" aria-pressed="false">
-              <span class="folder-ic"><i class="fas fa-language"></i></span>
-              <span>Filipino</span>
-            </button>
-          </li>
-          <li class="folder">
-            <button type="button" class="folder-button" data-subject="science" aria-pressed="false">
-              <span class="folder-ic"><i class="fas fa-flask"></i></span>
-              <span>Science</span>
-            </button>
-          </li>
-          <li class="folder">
-            <button type="button" class="folder-button" data-subject="ap" aria-pressed="false">
-              <span class="folder-ic"><i class="fas fa-landmark"></i></span>
-              <span>AP</span>
-            </button>
-          </li>
-          <li class="folder">
-            <button type="button" class="folder-button" data-subject="music-and-arts" aria-pressed="false">
-              <span class="folder-ic"><i class="fas fa-music"></i></span>
-              <span>Music &amp; Arts</span>
-            </button>
-          </li>
-          <li class="folder">
-            <button type="button" class="folder-button" data-subject="pe-and-health" aria-pressed="false">
-              <span class="folder-ic"><i class="fas fa-heart-pulse"></i></span>
-              <span>PE &amp; Health</span>
-            </button>
-          </li>
-          <li class="folder">
-            <button type="button" class="folder-button" data-subject="tle" aria-pressed="false">
-              <span class="folder-ic"><i class="fas fa-tools"></i></span>
-              <span>TLE</span>
-            </button>
-          </li>
-          <li class="folder">
-            <button type="button" class="folder-button" data-subject="values-education" aria-pressed="false">
-              <span class="folder-ic"><i class="fas fa-heart"></i></span>
-              <span>Values Education</span>
-            </button>
-          </li>
-        </ul>
-      </aside>
-
-      <section class="lm-right" aria-label="Available files">
-        <div class="files-panel-heading">
-          <div>
-            <p class="files-label" id="filesLabel">English Folder</p>
-            <h3>Available Files</h3>
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="icon-circle"><i class="fa fa-phone"></i></div>
+          <div class="contact-text">
+            <span class="label">Phone Number :</span>
+            <span class="value">0949-995-1769</span>
           </div>
-          <span class="files-count" id="filesCount">2 files</span>
         </div>
 
-        <div class="files-grid" id="filesGrid">
-          <article class="file-card">
-            <a class="file-link" href="uploads/sample1.pdf" target="_blank" rel="noopener noreferrer">
-              <div class="file-doc">
-                <i class="fas fa-file-pdf pdf-file-icon"></i>
-              </div>
-              <div class="file-copy">
-                <span class="file-type">PDF Document</span>
-                <div class="file-name">Lesson 1 - Introduction.pdf</div>
-              </div>
-            </a>
-          </article>
-
-          <article class="file-card">
-            <a class="file-link" href="uploads/sample2.docx" target="_blank" rel="noopener noreferrer">
-              <div class="file-doc doc-file-doc">
-                <span class="pdf-label small">DOCX</span>
-              </div>
-              <div class="file-copy">
-                <span class="file-type">Activity File</span>
-                <div class="file-name">Activity Sheet.docx</div>
-              </div>
-            </a>
-          </article>
+        <div class="contact-item">
+          <div class="icon-circle"><i class="fa fa-envelope"></i></div>
+          <div class="contact-text">
+            <span class="label">Email Address :</span>
+            <span class="value">rectomns301380@gmail.com</span>
+          </div>
         </div>
-      </section>
+      </div>
     </div>
-  </section>
-</main>
+  </header>
+
+  <main class="grade-page" data-grade="Grade 7">
+    <section class="grade-hero">
+      <div class="grade-hero-copy">
+        <p class="grade-eyebrow">Learning Materials</p>
+        <h1>Resource Hub</h1>
+      </div>
+
+      <div class="grade-hero-panel">
+        <span class="hero-panel-badge"><i class="fas fa-book-open"></i> Grade 7</span>
+      </div>
+    </section>
+
+    <section class="folder-section">
+      <div class="section-heading">
+        <div>
+          <h2>Subject Folders</h2>
+          <p>Select a subject folder to view available learning files.</p>
+        </div>
+      </div>
+
+      <div class="learning-materials-layout">
+        <aside class="lm-left" aria-label="Grade 7 subject folders">
+          <h3>Folders</h3>
+          <ul class="folder-list" id="subjectFolders">
+            <li class="folder active">
+              <button type="button" class="folder-button" data-subject="english" aria-pressed="true">
+                <span class="folder-ic"><i class="fas fa-book"></i></span>
+                <span>English</span>
+              </button>
+            </li>
+            <li class="folder">
+              <button type="button" class="folder-button" data-subject="math" aria-pressed="false">
+                <span class="folder-ic"><i class="fas fa-square-root-alt"></i></span>
+                <span>Math</span>
+              </button>
+            </li>
+            <li class="folder">
+              <button type="button" class="folder-button" data-subject="filipino" aria-pressed="false">
+                <span class="folder-ic"><i class="fas fa-language"></i></span>
+                <span>Filipino</span>
+              </button>
+            </li>
+            <li class="folder">
+              <button type="button" class="folder-button" data-subject="science" aria-pressed="false">
+                <span class="folder-ic"><i class="fas fa-flask"></i></span>
+                <span>Science</span>
+              </button>
+            </li>
+            <li class="folder">
+              <button type="button" class="folder-button" data-subject="ap" aria-pressed="false">
+                <span class="folder-ic"><i class="fas fa-landmark"></i></span>
+                <span>AP</span>
+              </button>
+            </li>
+            <li class="folder">
+              <button type="button" class="folder-button" data-subject="music-and-arts" aria-pressed="false">
+                <span class="folder-ic"><i class="fas fa-music"></i></span>
+                <span>Music &amp; Arts</span>
+              </button>
+            </li>
+            <li class="folder">
+              <button type="button" class="folder-button" data-subject="pe-and-health" aria-pressed="false">
+                <span class="folder-ic"><i class="fas fa-heart-pulse"></i></span>
+                <span>PE &amp; Health</span>
+              </button>
+            </li>
+            <li class="folder">
+              <button type="button" class="folder-button" data-subject="tle" aria-pressed="false">
+                <span class="folder-ic"><i class="fas fa-tools"></i></span>
+                <span>TLE</span>
+              </button>
+            </li>
+            <li class="folder">
+              <button type="button" class="folder-button" data-subject="values-education" aria-pressed="false">
+                <span class="folder-ic"><i class="fas fa-heart"></i></span>
+                <span>Values Education</span>
+              </button>
+            </li>
+          </ul>
+        </aside>
+
+        <section class="lm-right" aria-label="Available files">
+          <div class="files-panel-heading">
+            <div>
+              <p class="files-label" id="filesLabel">English Folder</p>
+              <h3>Available Files</h3>
+            </div>
+            <span class="files-count" id="filesCount">2 files</span>
+          </div>
+
+          <div class="files-grid" id="filesGrid">
+            <article class="file-card">
+              <a class="file-link" href="uploads/sample1.pdf" target="_blank" rel="noopener noreferrer">
+                <div class="file-doc">
+                  <i class="fas fa-file-pdf pdf-file-icon"></i>
+                </div>
+                <div class="file-copy">
+                  <span class="file-type">PDF Document</span>
+                  <div class="file-name">Lesson 1 - Introduction.pdf</div>
+                </div>
+              </a>
+            </article>
+
+            <article class="file-card">
+              <a class="file-link" href="uploads/sample2.docx" target="_blank" rel="noopener noreferrer">
+                <div class="file-doc doc-file-doc">
+                  <span class="pdf-label small">DOCX</span>
+                </div>
+                <div class="file-copy">
+                  <span class="file-type">Activity File</span>
+                  <div class="file-name">Activity Sheet.docx</div>
+                </div>
+              </a>
+            </article>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
 
   <script src="../../js/user/learning-materials.js"></script>
   <script src="../../js/navbar.js"></script>
 
-<!-- Footer -->
-<footer class="footer">
-  <div class="footer-content">
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
 
-    <!-- Logos -->
-    <div class="footer-section footer-logos">
-      <div class="logos-grid">
-        <img src="../../imgs/rectologo.png" class="footer-logo">
-        <img src="../../imgs/depedquezon.png" class="footer-logo">
-        <img src="../../imgs/bagongpilipinas.png" class="footer-logo">
-        <img src="../../imgs/schoolseal.png" class="footer-logo">
+      <!-- Logos -->
+      <div class="footer-section footer-logos">
+        <div class="logos-grid">
+          <img src="../../imgs/rectologo.png" class="footer-logo">
+          <img src="../../imgs/depedquezon.png" class="footer-logo">
+          <img src="../../imgs/bagongpilipinas.png" class="footer-logo">
+          <img src="../../imgs/schoolseal.png" class="footer-logo">
+        </div>
       </div>
-    </div>
 
-    <!-- Facilities -->
-    <div class="footer-section footer-facilities">
-      <h3>Our facilities</h3>
-      <ul>
-        <li><a href="#">Libraries</a></li>
-        <li><a href="#">Conferences</a></li>
-        <li><a href="#">Research</a></li>
-        <li><a href="#">IT support</a></li>
-        <li><a href="#">Sport</a></li>
-      </ul>
-    </div>
-
-    <!-- Contact -->
-    <div class="footer-section footer-contact">
-      <h3>Contact Us</h3>
-      <h4>RECTO MEMORIAL NATIONAL HIGH SCHOOL</h4>
-      <p class="address">X85C+R5C, Tiaong, Quezon Province</p>
-      <p class="phone">0949 995 1769</p>
-
-      <div class="social-icons">
-        <a href="https://www.facebook.com/TheRectorianPress" target="_blank">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="https://mail.google.com" target="_blank">
-          <i class="fas fa-envelope"></i>
-        </a>
-        <a href="https://maps.google.com/?q=X85C+R5C,+Tiaong,+Quezon+Province" target="_blank">
-          <i class="fas fa-location-dot"></i>
-        </a>
+      <!-- Facilities -->
+      <div class="footer-section footer-facilities">
+        <h3>Our facilities</h3>
+        <ul>
+          <li><a href="#">Libraries</a></li>
+          <li><a href="#">Conferences</a></li>
+          <li><a href="#">Research</a></li>
+          <li><a href="#">IT support</a></li>
+          <li><a href="#">Sport</a></li>
+        </ul>
       </div>
+
+      <!-- Contact -->
+      <div class="footer-section footer-contact">
+        <h3>Contact Us</h3>
+        <h4>RECTO MEMORIAL NATIONAL HIGH SCHOOL</h4>
+        <p class="address">X85C+R5C, Tiaong, Quezon Province</p>
+        <p class="phone">0949 995 1769</p>
+
+        <div class="social-icons">
+          <a href="https://www.facebook.com/TheRectorianPress" target="_blank">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://mail.google.com" target="_blank">
+            <i class="fas fa-envelope"></i>
+          </a>
+          <a href="https://maps.google.com/?q=X85C+R5C,+Tiaong,+Quezon+Province" target="_blank">
+            <i class="fas fa-location-dot"></i>
+          </a>
+        </div>
+      </div>
+
     </div>
 
-  </div>
-
-  <div class="footer-bottom">
-    <p>&copy;2026 All Rights Reserved</p>
-  </div>
-</footer>
+    <div class="footer-bottom">
+      <p>&copy;2026 All Rights Reserved</p>
+    </div>
+  </footer>
 </body>
 </html>
-
-

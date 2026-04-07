@@ -5,7 +5,7 @@ const USER_SEARCH_STATIC_GROUPS = {
     {
       title: 'Home',
       description: 'School home page and announcements',
-      link: '/dashboard.html',
+      link: '/index.html',
       meta: 'Page',
       searchText: ['home', 'dashboard', 'school home page']
     },
@@ -133,12 +133,22 @@ async function initUserSearchPage() {
   }
 }
 
+function resolveUserSearchHref(relativePath) {
+  if (!relativePath) return relativePath;
+  if (/^(https?:|\/)/i.test(relativePath)) return relativePath;
+
+  const pathname = window.location.pathname.replace(/\\/g, '/').toLowerCase();
+  return pathname.includes('/src/pages/user/') ? relativePath : `src/pages/user/${relativePath}`;
+}
+
 function cacheSearchElements() {
   userSearchState.elements.input = document.getElementById('searchInput');
   userSearchState.elements.form = document.getElementById('searchPageForm');
   userSearchState.elements.title = document.getElementById('searchTitle');
   userSearchState.elements.summary = document.getElementById('searchSummary');
   userSearchState.elements.results = document.getElementById('resultsContainer');
+  userSearchState.elements.resultsSection = userSearchState.elements.results?.closest('.search-results') || null;
+  userSearchState.elements.page = userSearchState.elements.form?.closest('.search-page') || null;
 }
 
 function bindSearchEvents() {
@@ -155,11 +165,9 @@ function bindSearchEvents() {
 function renderInitialState() {
   if (!userSearchState.elements.results) return;
 
-  userSearchState.elements.results.innerHTML = `
-    <div class="loading-state">
-      <p>Loading search data...</p>
-    </div>
-  `;
+  userSearchState.elements.results.innerHTML = '';
+  setSearchResultsVisibility(false);
+  setSearchPageVisibility(false);
 }
 
 async function loadDynamicSearchGroups() {
@@ -186,7 +194,7 @@ async function loadDynamicSearchGroups() {
             return {
               title: mapped.title,
               description: mapped.description,
-              link: `${source.link}?search=${encodeURIComponent(mapped.title)}`,
+              link: `${resolveUserSearchHref(source.link)}?search=${encodeURIComponent(mapped.title)}`,
               meta: mapped.meta,
               haystack: normalizeSearchText([
                 mapped.title,
@@ -268,9 +276,11 @@ function renderSearchHeader(rawQuery, totalMatches) {
   if (!query) {
     title.textContent = 'Search Results';
     summary.textContent = 'Enter a search term above to begin.';
+    setSearchPageVisibility(false);
     return;
   }
 
+  setSearchPageVisibility(true);
   title.textContent = `Search Results for "${query}"`;
   summary.textContent = totalMatches > 0
     ? `${totalMatches} matching result${totalMatches === 1 ? '' : 's'} found across the user site.`
@@ -284,11 +294,12 @@ function renderSearchResults(groups, rawQuery, totalMatches) {
   if (!resultsContainer) return;
 
   if (!query) {
-    resultsContainer.innerHTML = `
-      <p class="no-results">Enter a search term above to begin.</p>
-    `;
+    resultsContainer.innerHTML = '';
+    setSearchResultsVisibility(false);
     return;
   }
+
+  setSearchResultsVisibility(true);
 
   if (totalMatches === 0) {
     resultsContainer.innerHTML = `
@@ -318,6 +329,20 @@ function renderSearchResults(groups, rawQuery, totalMatches) {
   `).join('');
 }
 
+function setSearchResultsVisibility(isVisible) {
+  const { resultsSection } = userSearchState.elements;
+  if (!resultsSection) return;
+
+  resultsSection.hidden = !isVisible;
+}
+
+function setSearchPageVisibility(isVisible) {
+  const { page } = userSearchState.elements;
+  if (!page || page.dataset.hideUntilSearch !== 'true') return;
+
+  page.hidden = !isVisible;
+}
+
 function createDocumentSource(group, table, link) {
   return {
     group,
@@ -339,6 +364,7 @@ function cloneStaticSearchGroups() {
       groupName,
       items.map((item) => ({
         ...item,
+        link: resolveUserSearchHref(item.link),
         haystack: normalizeSearchText([
           item.title,
           item.description,

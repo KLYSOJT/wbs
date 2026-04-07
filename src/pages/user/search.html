@@ -28,7 +28,7 @@
     </button>
 
     <ul class="nav-links">
-      <li><a href="/dashboard.html">Home</a></li>
+      <li><a href="/index.html">Home</a></li>
 
       <li class="dropdown mobile-open">
         <a href="#" onclick="return false">About <i class="arrow down"></i></a>
@@ -130,7 +130,11 @@
     <section class="search-hero">
       <p class="search-eyebrow">User Search</p>
       <h1 id="searchTitle">Search Results</h1>
-  
+      <form id="searchPageForm" class="search-page-form" role="search">
+        <div class="search-page-input-wrap">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchInput" placeholder="Search pages, memos, research..." aria-label="Search site content">
+        </div>
       </form>
       <p id="searchSummary" class="search-summary">Enter a search term above to begin.</p>
     </section>

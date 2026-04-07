@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../src/css/user/footer.css">
    <link rel="stylesheet" href="../src/css/user/header.css">
       <link rel="stylesheet" href="../src/css/user/facilities.css">
+  <link rel="stylesheet" href="../src/css/user/search.css">
 
 
 </head>
@@ -38,7 +39,7 @@
     </button>
 
     <ul class="nav-links">
-      <li><a href="../../dashboard.html"class="active" >Home</a></li>
+      <li><a href="/index.html"class="active" >Home</a></li>
 
       <li class="dropdown mobile-open">
         <a href="#" onclick="return false" ">About <i class="arrow down"></i></a>
@@ -116,6 +117,7 @@
   <script src="src/js/supabase-config.js"></script>
   <script src="src/js/supabase-helpers.js"></script>
   <script src="src/js/user/dashboard.js"></script>
+  <script src="src/js/user/search.js"></script>
   
   <!-- Navbar -->
 
@@ -147,6 +149,24 @@
     </div>
   </div>
 </header>
+
+<section class="search-page" data-hide-until-search="true" hidden>
+  <section class="search-hero">
+    <p class="search-eyebrow">User Search</p>
+    <h1 id="searchTitle">Search Results</h1>
+    <form id="searchPageForm" class="search-page-form" role="search">
+      <div class="search-page-input-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search pages, memos, research..." aria-label="Search site content">
+      </div>
+    </form>
+    <p id="searchSummary" class="search-summary">Enter a search term above to begin.</p>
+  </section>
+
+  <section class="search-results" aria-live="polite">
+    <div id="resultsContainer"></div>
+  </section>
+</section>
 
 
 <!-- Carousel -->
@@ -479,5 +499,6 @@
     <p>&copy;2026 All Rights Reserved</p>
   </div>
 </footer>
+<script src="src/js/navbar.js"></script>
  </body>
 </html>
