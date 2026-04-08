@@ -316,6 +316,91 @@
   background-color: #f0f0f0;
 }
 
+/* Submit Research Section */
+.submit-research-section {
+  margin-top: 60px;
+  background-color: #fff;
+  padding: 45px;
+  border-radius: 12px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.submit-research-section:hover {
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.12);
+}
+
+.submit-title {
+  font-size: 1.8rem;
+  color: #2a2a2a;
+  margin-bottom: 35px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.submit-form {
+  display: grid;
+  gap: 28px;
+}
+
+.submit-form .form-group {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  align-items: center;
+  gap: 20px;
+}
+
+.submit-form .form-group input[type="file"] {
+  padding: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.submit-form .form-group input[type="file"]:hover {
+  border-color: #d0d0d0;
+  background-color: #fafafa;
+}
+
+.submit-form .form-group input[type="file"]:focus {
+  outline: none;
+  border-color: #800000;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.1);
+}
+
+.submit-form .form-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.btn-submit {
+  padding: 14px 50px;
+  font-size: 1rem;
+  background-color: #800000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  letter-spacing: 0.3px;
+}
+
+.btn-submit:hover {
+  background-color: #a00000;
+  box-shadow: 0 6px 20px rgba(128, 0, 0, 0.25);
+  transform: translateY(-2px);
+}
+
+.btn-submit:active {
+  transform: translateY(0);
+}
+
 /* No Results */
 .no-results {
   text-align: center;
