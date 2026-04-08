@@ -1,110 +1,153 @@
-/* ========================================
-   ADMIN DASHBOARD - HOME PAGE STYLES
-   ======================================== */
-
-/* Root Variables for Consistent theming */
 :root {
-  --primary-color: #5d0000;       /* Your brand maroon */
-  --primary-hover: #450000;       /* Darker shade for hover */
-  --accent-light: #fef2f2;        /* Very light tint for backgrounds */
+  --primary-color: #5d0000;
+  --primary-hover: #450000;
+  --accent-light: #fef2f2;
   --bg-color: #f8fafc;
   --text-main: #1e293b;
   --text-muted: #64748b;
   --card-bg: #ffffff;
   --border-color: #e2e8f0;
-  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-lg: 0 18px 38px rgba(15, 23, 42, 0.14);
+  --transition: all 0.3s ease;
 }
 
-/* ========================================
-   MAIN CONTAINER
-   ======================================== */
-.container {
+.main-content {
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  padding: 36px 20px 48px;
+}
+
+.page-shell {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 40px 20px;
-  background-color: var(--bg-color);
-  min-height: calc(100vh - 80px);
-}
-
-/* Dashboard Heading */
-.container > h1 {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 10px;
-  letter-spacing: -0.5px;
-}
-
-.container > h1::after {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary-color), #a71c1c);
-  border-radius: 2px;
-  margin-top: 15px;
-}
-
-/* ========================================
-   GRID CONTAINER & COLUMNS
-   ======================================== */
-.grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-  gap: 30px;
-  margin-top: 40px;
+  gap: 24px;
 }
 
-.column {
+.dashboard-header {
+  background: linear-gradient(135deg, rgba(93, 0, 0, 0.97), rgba(140, 21, 21, 0.92));
+  color: #fff;
+  border-radius: 22px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+}
+
+.dashboard-header h1 {
+  margin: 0 0 10px;
+  font-size: clamp(2rem, 4vw, 2.7rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.dashboard-header p {
+  margin: 0;
+  max-width: 820px;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.6;
+}
+
+.overview-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.overview-tile {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 20px 22px;
+  box-shadow: var(--shadow);
+}
+
+.overview-tile span {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.overview-tile strong {
+  display: block;
+  font-size: 1.65rem;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+}
+
+.overview-tile small {
+  display: block;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.panel-card {
   background-color: var(--card-bg);
-  border-radius: 12px;
-  padding: 30px;
+  border-radius: 22px;
+  padding: 26px;
   box-shadow: var(--shadow);
   transition: var(--transition);
   border: 1px solid var(--border-color);
 }
 
-.column:hover {
+.panel-card:hover {
   box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
 }
 
-/* Column Heading */
-.column > h2 {
-  font-size: 22px;
-  font-weight: 600;
+.panel-heading {
+  margin-bottom: 22px;
+}
+
+.panel-heading h2 {
+  margin: 0 0 10px;
+  font-size: 1.45rem;
+  font-weight: 800;
   color: var(--text-main);
-  margin-bottom: 25px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
-.column > h2::before {
-  content: '';
-  display: inline-block;
-  width: 4px;
-  height: 24px;
-  background-color: var(--primary-color);
-  border-radius: 2px;
+.panel-heading p,
+.feed-header h3 {
+  margin: 0;
 }
 
-/* ========================================
-   FORM STYLES (SCOPED TO CONTAINER)
-   ======================================== */
-.container form {
+.panel-heading p {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.feed-header {
+  margin-top: 6px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-color);
+}
+
+.feed-header h3 {
+  color: var(--text-main);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.panel-card form {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin-bottom: 25px;
+  margin-bottom: 18px;
 }
 
-.container form label {
-  font-size: 13px;
+.panel-card form label {
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--text-main);
   margin-bottom: -6px;
@@ -117,14 +160,13 @@
   color: var(--text-muted);
 }
 
-/* File Inputs (SCOPED TO CONTAINER) */
-.container input[type="file"],
-.container input[type="text"],
-.container input[type="url"],
-.container textarea {
+.panel-card input[type="file"],
+.panel-card input[type="text"],
+.panel-card input[type="url"],
+.panel-card textarea {
   padding: 12px 14px;
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
   font-size: 14px;
   font-family: inherit;
   transition: var(--transition);
@@ -132,8 +174,8 @@
   color: var(--text-main);
 }
 
-.container input[type="file"]::file-selector-button {
-  padding: 10px 16px;
+.panel-card input[type="file"]::file-selector-button {
+  padding: 9px 14px;
   background-color: var(--primary-color);
   color: var(--card-bg);
   border: none;
@@ -145,53 +187,53 @@
   margin-right: 10px;
 }
 
-.container input[type="file"]::file-selector-button:hover {
+.panel-card input[type="file"]::file-selector-button:hover {
   background-color: var(--primary-hover);
 }
 
-.container input[type="text"],
-.container input[type="url"],
-.container textarea {
+.panel-card input[type="text"],
+.panel-card input[type="url"],
+.panel-card textarea {
   width: 100%;
   box-sizing: border-box;
 }
 
-.container input[type="text"]:focus,
-.container input[type="url"]:focus,
-.container textarea:focus,
-.container input[type="file"]:focus {
+.panel-card input[type="text"]:focus,
+.panel-card input[type="url"]:focus,
+.panel-card textarea:focus,
+.panel-card input[type="file"]:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(93, 0, 0, 0.1);
   background-color: var(--accent-light);
 }
 
-/* Textarea Specific */
-.container textarea {
+.panel-card textarea {
   resize: vertical;
   min-height: 100px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.5;
 }
 
-.container textarea::placeholder,
-.container input[type="text"]::placeholder,
-.container input[type="url"]::placeholder {
+.panel-card textarea::placeholder,
+.panel-card input[type="text"]::placeholder,
+.panel-card input[type="url"]::placeholder {
   color: var(--text-muted);
   font-weight: 400;
 }
 
-/* ========================================
-   RADIO GROUP STYLES (SCOPED TO CONTAINER)
-   ======================================== */
-.container .radio-group {
+.panel-card .radio-group {
   display: flex;
   gap: 20px;
   margin: 5px 0;
   align-items: center;
+  padding: 12px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: #fff;
 }
 
-.container .radio-group label {
+.panel-card .radio-group label {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -202,28 +244,25 @@
   transition: var(--transition);
 }
 
-.container .radio-group label:hover {
+.panel-card .radio-group label:hover {
   color: var(--primary-color);
 }
 
-.container .radio-group input[type="radio"] {
+.panel-card .radio-group input[type="radio"] {
   width: 18px;
   height: 18px;
   cursor: pointer;
   accent-color: var(--primary-color);
 }
 
-/* ========================================
-   BUTTON STYLES (SCOPED TO CONTAINER)
-   ======================================== */
-.container button[type="submit"] {
+.panel-card button[type="submit"] {
   padding: 12px 24px;
   background: linear-gradient(135deg, var(--primary-color), #450000);
   color: var(--card-bg);
   border: none;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 600;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
   box-shadow: var(--shadow-sm);
@@ -232,32 +271,28 @@
   margin-top: 5px;
 }
 
-.container button[type="submit"]:hover {
+.panel-card button[type="submit"]:hover {
   background: linear-gradient(135deg, var(--primary-hover), #300000);
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
-.container button[type="submit"]:active {
+.panel-card button[type="submit"]:active {
   transform: translateY(0);
   box-shadow: var(--shadow-sm);
 }
 
-.container button[type="submit"]:disabled {
+.panel-card button[type="submit"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
 }
 
-/* ========================================
-   LIST STYLES
-   ======================================== */
 .list {
-  margin-top: 25px;
-  padding-top: 25px;
-  border-top: 2px solid var(--border-color);
-  max-height: 400px;
+  margin-top: 18px;
+  max-height: 420px;
   overflow-y: auto;
+  padding-right: 4px;
 }
 
 .list::-webkit-scrollbar {
@@ -279,7 +314,6 @@
   background: var(--text-muted);
 }
 
-/* List Item Styling (for dynamic content) */
 .list-item {
   background-color: var(--accent-light);
   border-radius: 8px;
@@ -319,107 +353,62 @@
   object-fit: cover;
 }
 
-/* ========================================
-   RESPONSIVE DESIGN
-   ======================================== */
 @media (max-width: 1200px) {
-  .container {
-    padding: 30px 15px;
+  .overview-strip {
+    grid-template-columns: 1fr;
   }
 
-  .grid-container {
-    gap: 25px;
-  }
-
-  .column {
-    padding: 25px;
+  .dashboard-grid {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 768px) {
-  .container {
-    padding: 20px 12px;
-    min-height: calc(100vh - 60px);
+  .main-content {
+    padding: 24px 14px 40px;
   }
 
-  .container > h1 {
-    font-size: 26px;
-    margin-bottom: 8px;
+  .dashboard-header,
+  .overview-tile,
+  .panel-card {
+    border-radius: 18px;
+    padding: 22px;
   }
 
-  .grid-container {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    margin-top: 30px;
-  }
-
-  .column {
-    padding: 20px;
-    border-radius: 10px;
-  }
-
-  .column > h2 {
-    font-size: 18px;
-    margin-bottom: 18px;
-  }
-
-  .container form {
+  .panel-card form {
     gap: 12px;
   }
 
-  .container button[type="submit"] {
+  .panel-card button[type="submit"] {
     padding: 11px 20px;
     font-size: 14px;
   }
 
-  .container .radio-group {
+  .panel-card .radio-group {
     gap: 15px;
   }
 }
 
 @media (max-width: 480px) {
-  .container {
-    padding: 15px 10px;
-  }
-
-  .container > h1 {
-    font-size: 22px;
-  }
-
-  .container > h1::after {
-    width: 50px;
-    height: 3px;
-  }
-
-  .column {
-    padding: 15px;
-    border-radius: 8px;
-  }
-
-  .column > h2 {
-    font-size: 16px;
-    margin-bottom: 15px;
-  }
-
-  .container input[type="file"],
-  .container input[type="text"],
-  .container input[type="url"],
-  .container textarea {
+  .panel-card input[type="file"],
+  .panel-card input[type="text"],
+  .panel-card input[type="url"],
+  .panel-card textarea {
     padding: 10px 12px;
     font-size: 13px;
   }
 
-  .container textarea {
+  .panel-card textarea {
     min-height: 80px;
   }
 
-  .container .radio-group {
+  .panel-card .radio-group {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
 
-  .container button[type="submit"] {
+  .panel-card button[type="submit"] {
     padding: 10px 16px;
     font-size: 13px;
   }
@@ -458,9 +447,6 @@
   font-weight: 500;
 }
 
-/* ========================================
-   ANIMATIONS
-   ======================================== */
 @keyframes slideIn {
   from {
     opacity: 0;
@@ -476,13 +462,10 @@
   animation: slideIn 0.3s ease-out;
 }
 
-/* ========================================
-   ANNOUNCEMENT & NEWS CARD STYLES
-   ======================================== */
 .announcement-card,
 .news-card {
-  background-color: var(--accent-light);
-  border-radius: 10px;
+  background-color: #fff;
+  border-radius: 16px;
   padding: 15px;
   margin-bottom: 15px;
   border: 1px solid var(--border-color);
@@ -495,7 +478,6 @@
 .news-card:hover {
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
-  border-color: var(--primary-color);
 }
 
 .announcement-card-header,
@@ -545,7 +527,6 @@
   margin-bottom: 4px;
 }
 
-/* Responsive Announcement & News Cards */
 @media (max-width: 768px) {
   .announcement-card,
   .news-card {
@@ -575,12 +556,9 @@
   }
 }
 
-/* ========================================
-   VIDEO CARD STYLES
-   ======================================== */
 .video-card {
-  background-color: var(--accent-light);
-  border-radius: 10px;
+  background-color: #fff;
+  border-radius: 16px;
   padding: 15px;
   margin-bottom: 15px;
   border: 1px solid var(--border-color);
@@ -592,7 +570,6 @@
 .video-card:hover {
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
-  border-color: var(--primary-color);
 }
 
 .video-card-header {
@@ -629,11 +606,11 @@
 
 .delete-btn:hover {
   background-color: #dc2626;
-  transform: scale(1.05);
+  transform: translateY(-1px);
 }
 
 .delete-btn:active {
-  transform: scale(0.95);
+  transform: translateY(0);
 }
 
 .video-card-body {
@@ -664,7 +641,6 @@
   display: block;
 }
 
-/* Responsive Video Cards */
 @media (max-width: 768px) {
   .video-card {
     padding: 12px;

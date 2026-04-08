@@ -401,6 +401,38 @@ input[type="file"]::file-selector-button:hover {
   background: rgba(248, 250, 252, 0.9);
 }
 
+.modal-success .modal-header {
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.modal-success .modal-title {
+  color: #166534;
+}
+
+.modal-success .modal-body {
+  text-align: center;
+}
+
+.modal-success .modal-footer {
+  justify-content: center;
+}
+
+.success-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(34, 197, 94, 0.14);
+}
+
+.success-icon i {
+  font-size: 2.25rem;
+  color: #16a34a;
+}
+
 @media (max-width: 900px) {
   .filter-form {
     flex-wrap: wrap;

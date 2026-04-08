@@ -101,81 +101,106 @@
 
 
 
-<!-- MAIN CONTENT -->
-<div class="container">
+  <main class="main-content">
+    <div class="page-shell">
+      <section class="dashboard-header">
+        <h1>Dashboard</h1>
+         </section>
 
-<h1>Dashboard</h1>
+      <section class="overview-strip">
+        <article class="overview-tile">
+          <span>Publishing Areas</span>
+          <strong>3</strong>
+          <small>Announcements, news, and featured videos.</small>
+        </article>
+        <article class="overview-tile">
+          <span>Media Support</span>
+          <strong>Images</strong>
+          <small>Attach visuals to announcement and news posts.</small>
+        </article>
+        <article class="overview-tile">
+          <span>Video Source</span>
+          <strong>File / URL</strong>
+          <small>Upload directly or use an external link.</small>
+        </article>
+      </section>
 
-<div class="grid-container">
+      <section class="dashboard-grid">
+        <article class="panel-card column">
+          <div class="panel-heading">
+            <h2>Announcements</h2>
+           </div>
 
-  <!-- ================= ANNOUNCEMENTS ================= -->
-  <div class="column">
-    <h2>Announcements</h2>
+          <form id="announcementForm">
+            <label for="announcementImage">Upload Image</label>
+            <input type="file" id="announcementImage" accept="image/*">
+            <span class="input-help" id="announcementImageDetails">No file chosen</span>
+            <label for="announcementText">Announcement Text</label>
+            <textarea id="announcementText" placeholder="Write announcement..."></textarea>
+            <button type="submit">Publish</button>
+          </form>
 
-    <form id="announcementForm">
-      <label for="announcementImage">Upload Image</label>
-      <input type="file" id="announcementImage" accept="image/*">
-      <span class="input-help" id="announcementImageDetails">No file chosen</span>
-      <label for="announcementText">Announcement Text</label>
-      <textarea id="announcementText" placeholder="Write announcement..."></textarea>
-      <button type="submit">Publish</button>
-    </form>
+          <div class="feed-header">
+            <h3>Published Announcements</h3>
+          </div>
+          <div id="announcementList" class="list"></div>
+        </article>
 
-    <div id="announcementList" class="list"></div>
-  </div>
+        <article class="panel-card column">
+          <div class="panel-heading">
+            <h2>News</h2>
+            </div>
 
+          <form id="newsForm">
+            <label for="newsImage">Upload Image</label>
+            <input type="file" id="newsImage" accept="image/*">
+            <span class="input-help" id="newsImageDetails">No file chosen</span>
+            <label for="newsText">News Text</label>
+            <textarea id="newsText" placeholder="Write news..."></textarea>
+            <button type="submit">Publish</button>
+          </form>
 
-  <!-- ================= NEWS ================= -->
-  <div class="column">
-    <h2>News</h2>
+          <div class="feed-header">
+            <h3>Published News</h3>
+          </div>
+          <div id="newsList" class="list"></div>
+        </article>
 
-    <form id="newsForm">
-      <label for="newsImage">Upload Image</label>
-      <input type="file" id="newsImage" accept="image/*">
-      <span class="input-help" id="newsImageDetails">No file chosen</span>
-      <label for="newsText">News Text</label>
-      <textarea id="newsText" placeholder="Write news..."></textarea>
-      <button type="submit">Publish</button>
-    </form>
+        <article class="panel-card column">
+          <div class="panel-heading">
+            <h2>Featured Videos</h2>
+           </div>
 
-    <div id="newsList" class="list"></div>
-  </div>
+          <form id="videoForm">
+            <label for="videoTitle">Title</label>
+            <input type="text" id="videoTitle" placeholder="Title">
 
+            <div class="radio-group">
+              <label>
+                <input type="radio" name="videoType" value="file" checked> File
+              </label>
+              <label>
+                <input type="radio" name="videoType" value="url"> URL
+              </label>
+            </div>
 
-  <!-- ================= VIDEOS ================= -->
-  <div class="column">
-    <h2>Upload Video</h2>
+            <label for="videoFile">Upload Video File</label>
+            <input type="file" id="videoFile" accept="video/*">
+            <span class="input-help" id="videoFileDetails">No file chosen</span>
+            <label for="videoUrl">Video URL</label>
+            <input type="url" id="videoUrl" placeholder="Paste YouTube, Google Drive, or other video URL" style="display:none;">
 
-    <form id="videoForm">
-      <label for="videoTitle">Title</label>
-      <input type="text" id="videoTitle" placeholder="Title">
+            <button type="submit">Upload</button>
+          </form>
 
-      <div class="radio-group">
-        <label>
-          <input type="radio" name="videoType" value="file" checked> File
-        </label>
-        <label>
-          <input type="radio" name="videoType" value="url"> URL
-        </label>
-      </div>
-
-      <label for="videoFile">Upload Video File</label>
-      <input type="file" id="videoFile" accept="video/*">
-      <span class="input-help" id="videoFileDetails">No file chosen</span>
-      <label for="videoUrl">Video URL</label>
-      <input type="url" id="videoUrl" placeholder="Paste YouTube, Google Drive, or other video URL" style="display:none;">
-
-      <button type="submit">Upload</button>
-    </form>
-
-    <div id="videoList" class="list"></div>
-  </div>
-
-</div>
-
-</div>
-
-</main>
+          <div class="feed-header">
+            <h3>Published Videos</h3>
+          </div>
+          <div id="videoList" class="list"></div>
+        </article>
+      </section>
+    </div>
+  </main>
 
 <script src="../../js/supabase-helpers.js"></script>
 <script src="../../js/admin/home.js"></script>

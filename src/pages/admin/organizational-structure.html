@@ -3,24 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Home</title>
+    <title>Admin Organizational Structure</title>
     <link rel="stylesheet" href="../../css/admin/navbar.css">
     <link rel="stylesheet" href="../../css/admin/organizational-structure.css">
-    <!-- Add Font Awesome if not already included -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Supabase Auth Scripts for Admin Protection -->
- 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-config.js"></script>
+    <script src="../../js/authAdmin.js"></script>
 </head>
 <body>
-  <!-- Navigation Bar -->
   <nav class="navbar">
     <div class="logo-container">
       <img src="../../imgs/rectologo.png" alt="RMNHS Logo" class="logo-img">
       <span class="logo-text">RMNHS</span>
     </div>
 
-    <!-- Static Search (no backend) -->
     <form class="search-container">
       <input type="text" placeholder="Search">
       <button type="button"><i class="fa fa-search"></i></button>
@@ -44,7 +41,6 @@
           <li><a href="division-memo.html">Division Memorandum</a></li>
           <li><a href="deped-memo.html">DepEd Memorandum</a></li>
           <li><a href="deped-order.html">DepEd Order</a></li>
-
           <li class="dropdown-submenu">
             <a href="learning-materials.html">Learning Materials</a>
           </li>
@@ -66,7 +62,6 @@
               <li><a href="procurement-reports.html">Procurement Reports</a></li>
             </ul>
           </li>
-
           <li><a href="spta.html">SPTA</a></li>
           <li><a href="sslg.html">SSLG</a></li>
           <li><a href="bsp.html">BSP</a></li>
@@ -78,7 +73,6 @@
       </li>
 
       <li><a href="research.html">Research</a></li>
-
     </ul>
 
     <div class="admin-icon-container">
@@ -88,100 +82,128 @@
     </div>
   </nav>
 
-  <!-- Main Content -->
-<div class="container">
-  <h2>Department Files</h2>
-  <div class="grid">
+  <main class="main-content">
+    <div class="page-shell">
+      <section class="dashboard-header">
+        <h1>Organizational Structure</h1>
+      </section>
 
-    <!-- Card -->
-    <div class="card" data-title="AP">
-      <img src="" alt="AP"/>
-      <h3 class="card-title">AP</h3>
-      <p class="updated">Updated: --</p>
-      <div class="btn-group">
-        <button class="change-image-btn">Change Image</button>
-      </div>
+      <section class="dashboard-layout">
+        <aside class="overview-card">
+          <div class="overview-copy">
+            <h2>Department Overview</h2>
+             </div>
+
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span>Total Departments</span>
+              <strong>8</strong>
+              <small>All available department panels shown on the public organizational structure page.</small>
+            </div>
+            <div class="stat-item">
+              <span>Content Type</span>
+              <strong>Image</strong>
+              <small>Upload a replacement image per department without changing the current script workflow.</small>
+            </div>
+          </div>
+
+          <div class="tip-card">
+            <h3>Upload Tip</h3>
+            <p>Use clean, landscape-oriented images so each department card stays balanced and readable on desktop and mobile.</p>
+          </div>
+        </aside>
+
+        <div class="content-card">
+          <div class="content-header">
+            <div>
+              <h2>Department </h2>
+              <p>Select a department and replace its image when you need to refresh the organizational structure display.</p>
+            </div>
+            <div class="header-badge">
+              <i class="fas fa-building-columns"></i>
+              About Section
+            </div>
+          </div>
+
+          <div class="department-grid">
+            <article class="card" data-title="AP">
+              <div class="card-media"><img src="" alt="AP"></div>
+              <div class="card-body">
+                <h3 class="card-title">AP</h3>
+                <p class="updated">Updated: --</p>
+              </div>
+              <div class="btn-group"><button class="change-image-btn">Change Image</button></div>
+            </article>
+
+            <article class="card" data-title="English">
+              <div class="card-media"><img src="" alt="English"></div>
+              <div class="card-body">
+                <h3 class="card-title">English</h3>
+                <p class="updated">Updated: --</p>
+              </div>
+              <div class="btn-group"><button class="change-image-btn">Change Image</button></div>
+            </article>
+
+            <article class="card" data-title="Filipino">
+              <div class="card-media"><img src="" alt="Filipino"></div>
+              <div class="card-body">
+                <h3 class="card-title">Filipino</h3>
+                <p class="updated">Updated: --</p>
+              </div>
+              <div class="btn-group"><button class="change-image-btn">Change Image</button></div>
+            </article>
+
+            <article class="card" data-title="MAPEH">
+              <div class="card-media"><img src="" alt="MAPEH"></div>
+              <div class="card-body">
+                <h3 class="card-title">MAPEH</h3>
+                <p class="updated">Updated: --</p>
+              </div>
+              <div class="btn-group"><button class="change-image-btn">Change Image</button></div>
+            </article>
+
+            <article class="card" data-title="Math">
+              <div class="card-media"><img src="" alt="Math"></div>
+              <div class="card-body">
+                <h3 class="card-title">Math</h3>
+                <p class="updated">Updated: --</p>
+              </div>
+              <div class="btn-group"><button class="change-image-btn">Change Image</button></div>
+            </article>
+
+            <article class="card" data-title="TLE">
+              <div class="card-media"><img src="" alt="TLE"></div>
+              <div class="card-body">
+                <h3 class="card-title">TLE</h3>
+                <p class="updated">Updated: --</p>
+              </div>
+              <div class="btn-group"><button class="change-image-btn">Change Image</button></div>
+            </article>
+
+            <article class="card" data-title="Values Education">
+              <div class="card-media"><img src="" alt="Values Education"></div>
+              <div class="card-body">
+                <h3 class="card-title">Values Education</h3>
+                <p class="updated">Updated: --</p>
+              </div>
+              <div class="btn-group"><button class="change-image-btn">Change Image</button></div>
+            </article>
+
+            <article class="card" data-title="Science">
+              <div class="card-media"><img src="" alt="Science"></div>
+              <div class="card-body">
+                <h3 class="card-title">Science</h3>
+                <p class="updated">Updated: --</p>
+              </div>
+              <div class="btn-group"><button class="change-image-btn">Change Image</button></div>
+            </article>
+          </div>
+        </div>
+      </section>
     </div>
+  </main>
 
-    <div class="card" data-title="English">
-      <img src="" alt="English"/>
-      <h3 class="card-title">English</h3>
-      <p class="updated">Updated: --</p>
-      <div class="btn-group">
-        <button class="change-image-btn">Change Image</button>
-      </div>
-    </div>
-
-    <div class="card" data-title="Filipino">
-      <img src="" alt="Filipino"/>
-      <h3 class="card-title">Filipino</h3>
-      <p class="updated">Updated: --</p>
-      <div class="btn-group">
-        <button class="change-image-btn">Change Image</button>
-      </div>
-    </div>
-
-    <div class="card" data-title="MAPEH">
-      <img src="" alt="MAPEH"/>
-      <h3 class="card-title">MAPEH</h3>
-      <p class="updated">Updated: --</p>
-      <div class="btn-group">
-        <button class="change-image-btn">Change Image</button>
-      </div>
-    </div>
-
-    <div class="card" data-title="Math">
-      <img src="" alt="Math"/>
-      <h3 class="card-title">Math</h3>
-      <p class="updated">Updated: --</p>
-      <div class="btn-group">
-        <button class="change-image-btn">Change Image</button>
-      </div>
-    </div>
-
-    <div class="card" data-title="TLE">
-      <img src="" alt="TLE"/>
-      <h3 class="card-title">TLE</h3>
-      <p class="updated">Updated: --</p>
-      <div class="btn-group">
-        <button class="change-image-btn">Change Image</button>
-      </div>
-    </div>
-
-    <div class="card" data-title="Values Education">
-      <img src="" alt="Values Education"/>
-      <h3 class="card-title">Values Education</h3>
-      <p class="updated">Updated: --</p>
-      <div class="btn-group">
-        <button class="change-image-btn">Change Image</button>
-      </div>
-    </div>
-
-    <div class="card" data-title="Science">
-      <img src="" alt="Science"/>
-      <h3 class="card-title">Science</h3>
-      <p class="updated">Updated: --</p>
-      <div class="btn-group">
-        <button class="change-image-btn">Change Image</button>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-
-  <!-- JS -->
-  <!-- Supabase Library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Supabase Configuration -->
-  <script src="../../js/supabase-config.js"></script>
-  <!-- Supabase Helpers -->
   <script src="../../js/supabase-helpers.js"></script>
-
-  <!-- Main Script -->
   <script src="../../js/admin/organizational-structure.js"></script>
 </body>
 </html>
-
-
-

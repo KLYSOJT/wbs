@@ -592,6 +592,49 @@ function closeDeleteModal() {
   deletingId = null;
 }
 
+function ensureDeleteSuccessModal() {
+  if (document.querySelector('#deleteSuccessModal')) return;
+
+  const modal = document.createElement('div');
+  modal.id = 'deleteSuccessModal';
+  modal.className = 'modal';
+  modal.innerHTML = [
+    '<div class="modal-content modal-confirmation modal-success">',
+      '<div class="modal-header">',
+        '<h2>Deleted Successfully</h2>',
+        '<button class="modal-close" onclick="closeDeleteSuccessModal()">&times;</button>',
+      '</div>',
+      '<div class="modal-body">',
+        '<div class="success-icon" aria-hidden="true">',
+          '<i class="fas fa-circle-check"></i>',
+        '</div>',
+        '<p id="deleteSuccessMessage">Document deleted successfully.</p>',
+      '</div>',
+      '<div class="modal-footer">',
+        '<button class="btn-save" onclick="closeDeleteSuccessModal()">OK</button>',
+      '</div>',
+    '</div>'
+  ].join('');
+
+  document.body.appendChild(modal);
+}
+
+function openDeleteSuccessModal(message = 'Document deleted successfully.') {
+  const modal = document.querySelector('#deleteSuccessModal');
+  const successMessage = document.querySelector('#deleteSuccessMessage');
+  if (!modal || !successMessage) return;
+
+  successMessage.textContent = message;
+  modal.classList.add('active');
+}
+
+function closeDeleteSuccessModal() {
+  const modal = document.querySelector('#deleteSuccessModal');
+  if (modal) {
+    modal.classList.remove('active');
+  }
+}
+
 async function submitEditForm() {
   const title = document.querySelector('#editTitle').value.trim();
   const date = document.querySelector('#editDate').value;
@@ -674,7 +717,7 @@ async function confirmDelete() {
     // Reload memos
     await loadMemos();
     closeDeleteModal();
-    console.log('✓ Document deleted');
+    openDeleteSuccessModal('Document deleted successfully.');
   } catch (error) {
     console.error('Error deleting memo:', error);
     alert('Error deleting document');
@@ -781,6 +824,7 @@ function resetForm() {
 // ==================== FILE HANDLING ====================
 
 document.addEventListener('DOMContentLoaded', async function() {
+  ensureDeleteSuccessModal();
   // Initialize IndexedDB
   try {
     await initIndexedDB();
@@ -961,12 +1005,16 @@ document.addEventListener('DOMContentLoaded', async function() {
   window.addEventListener('click', function(event) {
     const editModal = document.querySelector('#editModal');
     const deleteModal = document.querySelector('#deleteModal');
+    const successModal = document.querySelector('#deleteSuccessModal');
     
     if (event.target === editModal) {
       closeEditModal();
     }
     if (event.target === deleteModal) {
       closeDeleteModal();
+    }
+    if (event.target === successModal) {
+      closeDeleteSuccessModal();
     }
   });
 
@@ -975,6 +1023,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (event.key === 'Escape') {
       closeEditModal();
       closeDeleteModal();
+      closeDeleteSuccessModal();
     }
   });
 
@@ -1001,3 +1050,5 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
   }, 30000);
 });
+
+

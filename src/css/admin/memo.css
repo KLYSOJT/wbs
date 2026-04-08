@@ -465,6 +465,14 @@
   max-width: 400px;
 }
 
+.modal-success .modal-header {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(34, 197, 94, 0.04) 100%);
+}
+
+.modal-success .modal-header h2 {
+  color: #166534;
+}
+
 .modal-header {
   padding: 24px 28px;
   border-bottom: 1px solid var(--border-color);
@@ -516,6 +524,30 @@
   font-size: 0.95rem;
   line-height: 1.6;
   margin: 0;
+}
+
+.modal-success .modal-body {
+  text-align: center;
+}
+
+.modal-success .modal-footer {
+  justify-content: center;
+}
+
+.success-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.success-icon i {
+  font-size: 2.25rem;
+  color: #16a34a;
 }
 
 .edit-form {

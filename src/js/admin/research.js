@@ -12,6 +12,7 @@ const researchState = {
 const elements = {};
 
 document.addEventListener('DOMContentLoaded', () => {
+  ensureDeleteSuccessModal();
   cacheElements();
   bindEvents();
   loadResearchRecords();
@@ -386,10 +387,61 @@ async function deleteResearchRecord(id) {
     }
 
     await loadResearchRecords();
+    openDeleteSuccessModal('Research entry deleted successfully.');
     showStatus('Research entry deleted successfully.');
   } catch (error) {
     console.error('Failed to delete research entry:', error);
     showStatus(error.message || 'Failed to delete the research entry.', true);
+  }
+}
+
+function ensureDeleteSuccessModal() {
+  if (document.getElementById('deleteSuccessModal')) return;
+
+  const modal = document.createElement('div');
+  modal.id = 'deleteSuccessModal';
+  modal.className = 'success-modal';
+  modal.innerHTML = [
+    '<div class="success-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="deleteSuccessTitle">',
+      '<button type="button" class="success-modal__close" aria-label="Close">&times;</button>',
+      '<div class="success-icon" aria-hidden="true"><i class="fas fa-circle-check"></i></div>',
+      '<h2 id="deleteSuccessTitle">Deleted Successfully</h2>',
+      '<p id="deleteSuccessMessage">Research entry deleted successfully.</p>',
+      '<button type="button" class="success-modal__button">OK</button>',
+    '</div>'
+  ].join('');
+
+  const closeModal = () => closeDeleteSuccessModal();
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      closeModal();
+    }
+  });
+  modal.querySelector('.success-modal__close')?.addEventListener('click', closeModal);
+  modal.querySelector('.success-modal__button')?.addEventListener('click', closeModal);
+
+  document.body.appendChild(modal);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeDeleteSuccessModal();
+    }
+  });
+}
+
+function openDeleteSuccessModal(message) {
+  const modal = document.getElementById('deleteSuccessModal');
+  const modalMessage = document.getElementById('deleteSuccessMessage');
+  if (!modal || !modalMessage) return;
+
+  modalMessage.textContent = message;
+  modal.classList.add('show');
+}
+
+function closeDeleteSuccessModal() {
+  const modal = document.getElementById('deleteSuccessModal');
+  if (modal) {
+    modal.classList.remove('show');
   }
 }
 

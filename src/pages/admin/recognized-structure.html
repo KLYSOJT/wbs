@@ -72,67 +72,90 @@
   </nav>
 
   <main class="main-content">
-    <div class="dashboard-header">
-      <h1>Recognized Organization</h1>
-      <p>Upload organization records, logo images, organization charts, and supporting PDFs to Supabase.</p>
-    </div>
+    <div class="page-shell">
+      <section class="dashboard-header">
+        <h1>Recognized Organization</h1>
+      </section>
 
-    <div class="content-card">
-      <div id="statusMessage" class="notice" hidden></div>
+      <section class="dashboard-layout">
+        <div class="form-card">
+          <div class="panel-heading">
+            <h2>Organization Details</h2>
+            </div>
 
-      <form id="recognizedForm" enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="org_name">Organization Name *</label>
-          <input type="text" id="org_name" name="org_name" placeholder="Enter organization name" required>
+          <div id="statusMessage" class="notice" hidden></div>
+
+          <form id="recognizedForm" enctype="multipart/form-data">
+            <div class="form-grid">
+              <div class="form-group form-group-full">
+                <label for="org_name">Organization Name *</label>
+                <input type="text" id="org_name" name="org_name" placeholder="Enter organization name" required>
+              </div>
+
+              <div class="form-group">
+                <label for="date_established">Date Established</label>
+                <input type="date" id="date_established" name="date_established">
+              </div>
+
+              <div class="form-group">
+                <label for="adviser_name">Adviser Name</label>
+                <input type="text" id="adviser_name" name="adviser_name" placeholder="Enter adviser name">
+              </div>
+            </div>
+
+            <div class="upload-grid">
+              <div class="upload-zone">
+                <label for="orgLogo">Upload Logo *</label>
+                <div class="drag-drop-area" id="logoDragDrop">
+                  <i class="fas fa-image"></i>
+                  <p class="primary-text">Upload Logo</p>
+                  <p class="secondary-text" id="logoFileLabel">Drag and drop or click to browse</p>
+                </div>
+                <input type="file" id="orgLogo" name="logo" accept="image/*" required>
+              </div>
+
+              <div class="upload-zone">
+                <label for="orgChart">Upload Organization Chart *</label>
+                <div class="drag-drop-area" id="chartDragDrop">
+                  <i class="fas fa-sitemap"></i>
+                  <p class="primary-text">Upload Organization Chart</p>
+                  <p class="secondary-text" id="chartFileLabel">Drag and drop or click to browse</p>
+                </div>
+                <input type="file" id="orgChart" name="chart" accept="image/*" required>
+              </div>
+
+              <div class="upload-zone upload-zone-full">
+                <label for="orgPdf">Upload PDF (Optional)</label>
+                <div class="drag-drop-area" id="pdfDragDrop">
+                  <i class="fas fa-file-pdf"></i>
+                  <p class="primary-text">Upload PDF</p>
+                  <p class="secondary-text" id="pdfFileLabel">Drag and drop or click to browse</p>
+                </div>
+                <input type="file" id="orgPdf" name="pdf" accept=".pdf,application/pdf">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="saveButton">Save Organization</button>
+          </form>
         </div>
 
-        <div class="form-group">
-          <label for="date_established">Date Established</label>
-          <input type="date" id="date_established" name="date_established">
-        </div>
-
-        <div class="form-group">
-          <label for="adviser_name">Adviser Name</label>
-          <input type="text" id="adviser_name" name="adviser_name" placeholder="Enter adviser name">
-        </div>
-
-        <div class="upload-zone">
-          <label for="orgLogo">Upload Logo *</label>
-          <div class="drag-drop-area" id="logoDragDrop">
-            <i class="fas fa-image"></i>
-            <p class="primary-text">Upload Logo</p>
-            <p class="secondary-text" id="logoFileLabel">Drag and drop or click to browse</p>
+        <div class="content-card">
+          <div class="panel-heading panel-heading-row">
+            <div>
+              <h2>Uploaded Organizations</h2>
+              <p>Review current organizations, check uploaded media, and remove entries when needed.</p>
+            </div>
+            <div class="header-badge">
+              <i class="fas fa-users-viewfinder"></i>
+              About Section
+            </div>
           </div>
-          <input type="file" id="orgLogo" name="logo" accept="image/*" required>
-        </div>
 
-        <div class="upload-zone">
-          <label for="orgChart">Upload Recognized Organization Chart *</label>
-          <div class="drag-drop-area" id="chartDragDrop">
-            <i class="fas fa-sitemap"></i>
-            <p class="primary-text">Upload Organization Chart</p>
-            <p class="secondary-text" id="chartFileLabel">Drag and drop or click to browse</p>
+          <div class="uploaded-grid" id="recognizedGrid">
+            <div class="notice">Loading organizations...</div>
           </div>
-          <input type="file" id="orgChart" name="chart" accept="image/*" required>
         </div>
-
-        <div class="upload-zone">
-          <label for="orgPdf">Upload PDF (Optional)</label>
-          <div class="drag-drop-area" id="pdfDragDrop">
-            <i class="fas fa-file-pdf"></i>
-            <p class="primary-text">Upload PDF</p>
-            <p class="secondary-text" id="pdfFileLabel">Drag and drop or click to browse</p>
-          </div>
-          <input type="file" id="orgPdf" name="pdf" accept=".pdf,application/pdf">
-        </div>
-
-        <button type="submit" class="btn btn-primary" id="saveButton">Save Organization</button>
-      </form>
-
-      <div class="section-title">Uploaded Organizations</div>
-      <div class="uploaded-grid" id="recognizedGrid">
-        <div class="notice">Loading organizations...</div>
-      </div>
+      </section>
     </div>
   </main>
 
