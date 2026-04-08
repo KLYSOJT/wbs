@@ -304,8 +304,8 @@ a.active .arrow {
   padding: 8px 10px;
 }
 
-/* Mobile responsive - all phone sizes */
-@media (max-width: 768px) {
+/* Tablet and mobile responsive */
+@media (max-width: 1024px) {
   .navbar {
     flex-wrap: wrap;
     gap: 6px;
