@@ -118,6 +118,7 @@ async function openModal(department) {
     
     modalBody.innerHTML = content;
     modal.classList.add('show');
+    document.body.classList.add('department-modal-open');
   } catch (error) {
     console.error('Error opening modal:', error);
     const placeholderSrc = createPlaceholderImage(department);
@@ -129,6 +130,7 @@ async function openModal(department) {
       <p style="color: #999; font-size: 0.9rem;">Unable to load department information.</p>
     `;
     modal.classList.add('show');
+    document.body.classList.add('department-modal-open');
   }
 }
 
@@ -138,6 +140,7 @@ async function openModal(department) {
 function closeModal() {
   const modal = document.getElementById('departmentModal');
   modal.classList.remove('show');
+  document.body.classList.remove('department-modal-open');
 }
 
 /**
@@ -147,5 +150,6 @@ window.onclick = (event) => {
   const modal = document.getElementById('departmentModal');
   if (event.target === modal) {
     modal.classList.remove('show');
+    document.body.classList.remove('department-modal-open');
   }
 };

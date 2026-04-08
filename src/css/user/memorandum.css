@@ -159,11 +159,78 @@
 }
 
 .file-view-btn {
-  background: none;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  min-height: 40px;
   padding: 0;
+  border: 1px solid rgba(93, 0, 0, 0.12);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8f1f1 100%);
+  color: transparent;
   font: inherit;
+  font-size: 0;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  box-shadow: 0 8px 18px rgba(93, 0, 0, 0.08);
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.file-view-btn::before {
+  content: '\f06e';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  font-size: 0.92rem;
+  color: var(--primary-color);
+}
+
+.file-view-btn:hover {
+  background: linear-gradient(180deg, #6d1010 0%, #5d0000 100%);
+  border-color: rgba(93, 0, 0, 0.22);
+  color: #ffffff;
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(93, 0, 0, 0.16);
+}
+
+.file-view-btn:focus-visible {
+  outline: 3px solid rgba(253, 185, 19, 0.35);
+  outline-offset: 2px;
+}
+
+.file-view-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 14px rgba(93, 0, 0, 0.12);
+}
+
+@media (max-width: 480px) {
+  .file-view-btn {
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    min-height: 36px;
+  }
+}
+
+@media (max-width: 360px) {
+  .file-view-btn {
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    min-height: 34px;
+  }
+
+  .file-view-btn::before {
+    font-size: 0.76rem;
+  }
 }
 
 .file-status {
@@ -222,14 +289,75 @@
   .filter-section {
     flex-direction: column;
   }
+}
+
+@media (max-width: 480px) {
+  .main-header {
+    padding: 15px 20px;
+    margin: 10px;
+  }
 
   .header-content {
     flex-direction: column;
-    align-items: flex-start;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .brand-section {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .vertical-divider {
+    display: none;
   }
 
   .school-name {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
+    line-height: 1.2;
   }
 
+  .contact-info {
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+  }
+
+  .contact-item {
+    gap: 8px;
+  }
+
+  .icon-circle {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+
+  .contact-text .label {
+    font-size: 9px;
+  }
+
+  .contact-text .value {
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .main-header {
+    padding: 12px 10px;
+    margin: 10px;
+  }
+
+  .school-name {
+    font-size: 1.1rem;
+  }
+
+  .contact-text .label {
+    font-size: 8px;
+  }
+
+  .contact-text .value {
+    font-size: 7px;
+  }
 }

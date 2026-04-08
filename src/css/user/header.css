@@ -45,8 +45,7 @@
 
 @media (max-width: 480px) {
   .vertical-divider {
-    width: 25px;
-    height: 2px;
+    display: none;
   }
 }
 
@@ -71,13 +70,6 @@
   }
 }
 
-@media (max-width: 480px) {
-  .school-name {
-    font-size: clamp(1rem, 4vw, 1.5rem);
-    text-align: center;
-  }
-}
-
 /* Contact Section */
 .contact-info {
   display: flex;
@@ -93,22 +85,10 @@
   }
 }
 
-@media (max-width: 480px) {
-  .contact-info {
-    gap: 8px;
-  }
-}
-
 .contact-item {
   display: flex;
   align-items: center;
   gap: clamp(4px, 1.5vw, 12px);
-}
-
-@media (max-width: 480px) {
-  .contact-item {
-    gap: 5px;
-  }
 }
 
 .icon-circle {
@@ -121,14 +101,6 @@
   justify-content: center;
   align-items: center;
   font-size: clamp(8px, 1.5vw, 12px);
-}
-
-@media (max-width: 480px) {
-  .icon-circle {
-    width: 16px;
-    height: 16px;
-    font-size: 8px;
-  }
 }
 
 .contact-text {
@@ -146,12 +118,69 @@
 }
 
 @media (max-width: 480px) {
+  .main-header {
+    padding: 15px 20px;
+    margin: 10px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .brand-section {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .school-name {
+    font-size: 1.3rem;
+    line-height: 1.2;
+  }
+
+  .contact-info {
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+  }
+
+  .contact-item {
+    gap: 8px;
+  }
+
+  .icon-circle {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+
   .contact-text .label {
     font-size: 9px;
   }
 
   .contact-text .value {
     font-size: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .main-header {
+    padding: 12px 10px;
+    margin: 10px;
+  }
+
+  .school-name {
+    font-size: 1.1rem;
+  }
+
+  .contact-text .label {
+    font-size: 8px;
+  }
+
+  .contact-text .value {
+    font-size: 7px;
   }
 }
 

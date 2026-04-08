@@ -142,9 +142,16 @@ hr {
   --modal-duration: 320ms;
   --modal-ease: cubic-bezier(.2,.9,.3,1);
   --modal-bg: rgba(255,255,255,0.98);
+  padding: clamp(16px, 4vw, 32px);
+  box-sizing: border-box;
 }
 .core-modal.open {
   display: flex;
+}
+
+.core-modal-open {
+  overflow: hidden;
+  scrollbar-gutter: stable;
 }
 
 .core-modal-overlay {
@@ -162,7 +169,8 @@ hr {
 .core-modal-content {
   position: relative;
   max-width: 640px;
-  width: min(92%, 640px);
+  width: min(640px, 100%);
+  max-height: calc(100dvh - (2 * clamp(16px, 4vw, 32px)));
   z-index: 2001;
   display: flex;
   flex-direction: column;
@@ -176,6 +184,7 @@ hr {
   opacity: 0;
   transition: transform var(--modal-duration) var(--modal-ease), opacity var(--modal-duration) var(--modal-ease);
   border: 1px solid rgba(93,0,0,0.06);
+  overflow: auto;
 }
 .core-modal.open .core-modal-content {
   transform: translateY(0) scale(1);
@@ -336,3 +345,218 @@ hr {
         color: var(--primary-color);
         padding-left: 30px;
     }
+
+@media (max-width: 768px) {
+    .mvc-main {
+        padding: 40px 16px;
+    }
+
+    .container {
+        max-width: 100%;
+    }
+
+    section {
+        padding: 32px 24px;
+        margin-bottom: 24px;
+        border-radius: 10px;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+    }
+
+    section p {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .mission-points li {
+        padding: 16px 18px 16px 20px;
+        font-size: 0.96rem;
+    }
+
+    .core-values-grid {
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+
+    .custom-dropdown {
+        flex: 1 1 calc(50% - 7px);
+        min-width: 220px;
+    }
+}
+
+@media (max-width: 640px) {
+    .mvc-main {
+        padding: 32px 14px;
+    }
+
+    section {
+        padding: 24px 18px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+    }
+
+    section p {
+        font-size: 0.95rem;
+        line-height: 1.65;
+    }
+
+    .mission-points li {
+        padding: 14px 16px 14px 18px;
+        margin-bottom: 12px;
+        font-size: 0.92rem;
+        line-height: 1.6;
+    }
+
+    hr {
+        margin: 28px 0;
+    }
+
+    .core-values-grid {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .custom-dropdown {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    .dropdown-header {
+        padding: 16px 40px 16px 14px;
+        font-size: 1rem;
+    }
+
+    .dropdown-header .dropdown-icon {
+        right: 14px;
+        bottom: 50%;
+        transform: translateY(50%);
+    }
+
+    .custom-dropdown.active .dropdown-icon {
+      transform: translateY(50%) rotate(180deg);
+    }
+
+    .reports-list li {
+        padding: 14px 18px;
+        font-size: 0.9rem;
+    }
+
+    .core-modal {
+        padding: 14px;
+    }
+
+    .core-modal-content {
+        width: min(380px, 100%);
+        max-height: calc(100dvh - 28px);
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .core-modal-body {
+        padding: 4px;
+    }
+
+    .core-modal-caption {
+        margin-top: 12px;
+        padding: 10px 14px;
+        font-size: 0.92rem;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .mvc-main {
+        padding: 28px 12px;
+    }
+
+    section {
+        padding: 20px 14px;
+        margin-bottom: 16px;
+        border-radius: 8px;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+        padding-bottom: 10px;
+    }
+
+    section p {
+        font-size: 0.92rem;
+        margin-bottom: 16px;
+    }
+
+    .mission-points li {
+        padding: 12px 14px 12px 16px;
+        font-size: 0.88rem;
+    }
+
+    .dropdown-header {
+        padding: 14px 38px 14px 12px;
+        font-size: 0.95rem;
+    }
+
+    .reports-list li {
+        padding: 12px 14px;
+        font-size: 0.86rem;
+    }
+
+    .core-modal {
+        padding: 12px;
+    }
+
+    .core-modal-content {
+        width: min(320px, 100%);
+        max-height: calc(100dvh - 24px);
+        padding: 14px;
+        border-radius: 10px;
+    }
+
+    .core-modal-close {
+        top: 10px;
+        right: 10px;
+        font-size: 1rem;
+        padding: 6px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mvc-main {
+        padding: 24px 10px;
+    }
+
+    section {
+        padding: 18px 12px;
+    }
+
+    h2 {
+        font-size: 1.15rem;
+    }
+
+    .dropdown-header {
+        font-size: 0.9rem;
+    }
+
+    .core-modal {
+        padding: 10px;
+    }
+
+    .core-modal-content {
+        width: 100%;
+        max-height: calc(100dvh - 20px);
+        padding: 12px;
+    }
+
+    .core-modal-caption {
+        font-size: 0.85rem;
+        padding: 8px 12px;
+    }
+}

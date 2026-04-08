@@ -130,17 +130,26 @@
 
 .recognized-modal-open {
     overflow: hidden;
+    scrollbar-gutter: stable;
 }
 
 .recognized-modal {
+    --recognized-navbar-offset: 72px;
     position: fixed;
-    inset: 0;
+    top: var(--recognized-navbar-offset);
+    right: 0;
+    bottom: 0;
+    left: 0;
     display: none;
     z-index: 1200;
+    padding: clamp(16px, 4vw, 32px);
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
 }
 
 .recognized-modal.is-open {
-    display: block;
+    display: flex;
 }
 
 .recognized-modal-backdrop {
@@ -152,9 +161,10 @@
 
 .recognized-modal-dialog {
     position: relative;
-    width: min(920px, calc(100% - 32px));
-    max-height: calc(100vh - 48px);
-    margin: 24px auto;
+    width: min(920px, 100%);
+    max-width: min(920px, calc(100vw - (2 * clamp(16px, 4vw, 32px))));
+    max-height: calc(100dvh - var(--recognized-navbar-offset) - (2 * clamp(16px, 4vw, 32px)));
+    margin: 0;
     background: linear-gradient(180deg, #fffdfc 0%, #fff5f3 100%);
     border-radius: 24px;
     overflow: auto;
@@ -270,6 +280,11 @@
 }
 
 @media (max-width: 640px) {
+    .recognized-modal {
+        --recognized-navbar-offset: 64px;
+        padding: 14px;
+    }
+
     .department-page {
         padding: 0 18px;
     }
@@ -289,14 +304,14 @@
     }
 
     .recognized-modal-dialog {
-        width: calc(100% - 20px);
-        max-height: calc(100vh - 20px);
-        margin: 10px auto;
+        width: min(380px, 100%);
+        max-width: calc(100vw - 28px);
+        max-height: calc(100dvh - var(--recognized-navbar-offset) - 28px);
         border-radius: 18px;
     }
 
     .recognized-modal-body {
-        padding: 8px 18px 22px;
+        padding: 8px 18px 20px;
     }
 
     .recognized-modal-header {
@@ -318,5 +333,75 @@
 
     .recognized-logo-shell {
         min-height: 210px;
+    }
+}
+
+@media (max-width: 480px) {
+    .recognized-modal-dialog {
+        width: min(320px, 100%);
+        max-height: calc(100dvh - var(--recognized-navbar-offset) - 24px);
+        max-width: calc(100vw - 24px);
+        border-radius: 16px;
+    }
+
+    .recognized-modal-close {
+        top: 10px;
+        margin-right: 10px;
+        width: 36px;
+        height: 36px;
+        font-size: 1.5rem;
+    }
+
+    .recognized-modal-body {
+        padding: 6px 14px 18px;
+    }
+
+    .recognized-modal-title {
+        font-size: 1.35rem;
+    }
+
+    .recognized-modal-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .recognized-detail-card,
+    .recognized-modal-actions {
+        padding: 14px;
+        border-radius: 14px;
+    }
+
+    .recognized-detail-value,
+    .recognized-link {
+        font-size: 0.92rem;
+    }
+
+    .recognized-modal-chart {
+        max-height: 240px;
+    }
+}
+
+@media (max-width: 360px) {
+    .recognized-modal {
+        --recognized-navbar-offset: 60px;
+        padding: 10px;
+    }
+
+    .recognized-modal-dialog {
+        width: 100%;
+        max-width: calc(100vw - 20px);
+        max-height: calc(100dvh - var(--recognized-navbar-offset) - 20px);
+        border-radius: 14px;
+    }
+
+    .recognized-modal-body {
+        padding: 6px 12px 16px;
+    }
+
+    .recognized-modal-title {
+        font-size: 1.2rem;
+    }
+
+    .recognized-modal-chart {
+        max-height: 210px;
     }
 }
