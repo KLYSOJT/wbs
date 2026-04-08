@@ -178,42 +178,41 @@
             
             <div class="custom-dropdown" id="dropdown-diyos">
                 <div class="dropdown-header">
-                  <span onclick="openValueModal('userimages/makadiyos.png', 'Maka-diyos: pagkakaroon ng matibay na pananalig, pagmamahal, at pagsunod sa mga utos ng Panginoong Maykapal')">Maka-Diyos</span>
+                  <span onclick="openValueModal('../../imgs/makadiyos.png', '')">Maka-Diyos</span>
                   <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true" onclick="event.stopPropagation(); toggleDropdown('dropdown-diyos')"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
-                <ul class="reports-list">
-                    <li>Accomplishment Report 1</li>
-                    <li>Accomplishment Report 2</li>
+                 <ul class="reports-list">
+                    <li><a href="../../pdf/NEWSLETTER .pdf" target="_blank" rel="noopener noreferrer">Accomplishmenr Report 1</a></li>
                 </ul>
             </div>
 
             <div class="custom-dropdown" id="dropdown-tao">
                 <div class="dropdown-header">
-                  <span onclick="openValueModal('userimages/makatao.png', 'Maka-tao: pagpapakita ng pagmamahal, paggalang, at malasakit sa kapwa tao')">Maka-Tao</span>
+                  <span onclick="openValueModal('../../imgs/makatao.png', '')">Maka-Tao</span>
                   <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true" onclick="event.stopPropagation(); toggleDropdown('dropdown-tao')"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
                 <ul class="reports-list">
-                    <li>Accomplishment Report 1</li>
+                    <li> No Accomplishment Report </li>
                 </ul>
             </div>
 
             <div class="custom-dropdown" id="dropdown-kalikasan">
                 <div class="dropdown-header">
-                  <span onclick="openValueModal('userimages/makakalikasan.png', 'Maka-kalikasan: pagmamahal, pagpapahalaga, at pangangalaga sa kapaligiran')">Makakalikasan</span>
+                  <span onclick="openValueModal('../../imgs/makakalikasan.png', '')">Makakalikasan</span>
                   <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true" onclick="event.stopPropagation(); toggleDropdown('dropdown-kalikasan')"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
                 <ul class="reports-list">
-                    <li>Accomplishment Report 1</li>
+                    <li>No Accomplishment Report </li>
                 </ul>
             </div>
 
             <div class="custom-dropdown" id="dropdown-bansa">
                 <div class="dropdown-header">
-                  <span onclick="openValueModal('userimages/makabansa.png', 'Maka-bansa: pagmamahal, katapatan, at paggalang ng isang indibidwal sa kanyang sariling bayan')">Makabansa</span>
+                  <span onclick="openValueModal('../../imgs/makabansa.png', '')">Makabansa</span>
                   <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true" onclick="event.stopPropagation(); toggleDropdown('dropdown-bansa')"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
                 <ul class="reports-list">
-                    <li>Accomplishment Report 1</li>
+                    <li><a href="../../pdf/makabansa.pdf" target="_blank" rel="noopener noreferrer">Accomplishmenr Report 1</a></li>
                 </ul>
             </div>
 
@@ -226,7 +225,7 @@
         <button class="core-modal-close" id="coreModalClose" aria-label="Close modal">&times;</button>
         <div class="core-modal-body">
           <img id="coreModalImage" src="" alt="Core value image">
-          <p id="coreModalCaption" class="core-modal-caption"></p>
+          <p id="coreModalCaption" class="core-modal-caption" hidden></p>
         </div>
       </div>
     </div>
@@ -254,6 +253,7 @@
       function openValueModal(src, text) {
           modalImg.src = src;
           modalCaption.textContent = text;
+          modalCaption.hidden = !text;
           modal.classList.add('open');
           modal.setAttribute('aria-hidden', 'false');
       }
@@ -261,6 +261,7 @@
       function closeModal() {
           modal.classList.remove('open');
           modal.setAttribute('aria-hidden', 'true');
+          modalCaption.hidden = true;
       }
 
       overlay.addEventListener('click', closeModal);

@@ -175,6 +175,7 @@ class AdminAuthGuard {
 
 // Create global instance
 const adminAuth = new AdminAuthGuard();
+window.adminAuth = adminAuth;
 
 // Auto-initialize on page load if not on login page
 document.addEventListener('DOMContentLoaded', async () => {

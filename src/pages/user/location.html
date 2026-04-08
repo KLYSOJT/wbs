@@ -167,7 +167,7 @@
 </div>
 
 <!-- Modal for Facility Images -->
-<div id="facilityModal" class="modal" aria-hidden="true">
+<div id="facilityModal" class="modal" aria-hidden="true" hidden>
   <div class="modal-content" role="dialog" aria-modal="true" aria-label="Facility image preview">
     <button type="button" class="close" aria-label="Close image preview">&times;</button>
     <img id="modalImage" src="" alt="">
@@ -244,7 +244,7 @@
     modalImage.src = imageSrc;
     modalImage.alt = 'Rectorians image for letter ' + imageLabel;
     facilityModal.inert = false;
-    facilityModal.style.display = 'flex';
+    facilityModal.hidden = false;
     facilityModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
     closeModalButton.focus();
@@ -259,9 +259,9 @@
       }
     }
 
-    facilityModal.style.display = 'none';
-    facilityModal.inert = true;
     facilityModal.setAttribute('aria-hidden', 'true');
+    facilityModal.hidden = true;
+    facilityModal.inert = true;
     modalImage.src = '';
     modalImage.alt = '';
     document.body.style.overflow = '';
@@ -280,7 +280,7 @@
   });
 
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && facilityModal.style.display === 'flex') {
+    if (event.key === 'Escape' && !facilityModal.hidden) {
       closeFacilityModal();
     }
   });

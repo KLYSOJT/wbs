@@ -123,7 +123,7 @@
 
 /* Modern Modal */
 .modal {
-  display: none;
+  display: flex;
   position: fixed;
   inset: 0;
   z-index: 9999;
@@ -135,6 +135,10 @@
   animation: fadeIn 0.2s ease-out;
 }
 
+.modal[hidden] {
+  display: none;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -143,10 +147,10 @@
 .modal-content {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  width: min(90vw, 40vw);
-  max-width: 800px;
-  max-height: 85vh;
-  padding: 0;
+  width: fit-content;
+  max-width: 92vw;
+  max-height: 92vh;
+  padding: 0.75rem;
   border-radius: 24px;
   box-shadow: 
     0 25px 50px -12px rgba(0, 0, 0, 0.25),
@@ -223,12 +227,12 @@
 /* Modal image */
 #modalImage {
   display: block;
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
+  width: auto;
+  height: auto;
+  max-width: calc(92vw - 1.5rem);
+  max-height: calc(92vh - 1.5rem);
   object-fit: contain;
-  border-radius: 20px 20px 0 0;
+  border-radius: 18px;
 }
 
 /* ========================================
@@ -271,7 +275,7 @@
   }
   
   .modal-content {
-    width: min(95vw, 85vw);
+    max-width: 95vw;
     border-radius: 20px;
   }
 }

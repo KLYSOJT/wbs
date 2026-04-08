@@ -210,6 +210,10 @@ hr {
   max-width: 90%;
 }
 
+.core-modal-caption[hidden] {
+  display: none;
+}
+
 .core-modal-close {
   position: absolute;
   top: 12px;
@@ -319,6 +323,12 @@ hr {
         font-size: 0.95rem;
         cursor: pointer;
         transition: all 0.2s ease;
+    }
+
+    .reports-list li a {
+        color: inherit;
+        display: block;
+        text-decoration: none;
     }
 
     .reports-list li:hover {
