@@ -2,18 +2,6 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-body.fixed-navbar-page {
-  padding-top: 82px;
-}
-
-body.fixed-navbar-page .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-}
-
 .navbar {
   display: flex;
   align-items: center;
@@ -316,12 +304,8 @@ a.active .arrow {
   padding: 8px 10px;
 }
 
-/* Mobile responsive - all phone sizes */
-@media (max-width: 768px) {
-  body.fixed-navbar-page {
-    padding-top: 58px;
-  }
-
+/* Tablet and mobile responsive */
+@media (max-width: 1024px) {
   .navbar {
     flex-wrap: wrap;
     gap: 6px;

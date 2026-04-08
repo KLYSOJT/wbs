@@ -364,7 +364,7 @@ function initUserNavbarNavigation() {
   dropdowns.forEach((dropdown) => {
     const trigger = dropdown.querySelector(':scope > a');
     trigger?.addEventListener('click', (event) => {
-      if (window.innerWidth > 768) return;
+      if (window.innerWidth > 1024) return;
 
       event.preventDefault();
       dropdown.classList.toggle('mobile-open');
