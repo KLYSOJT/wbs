@@ -13,7 +13,6 @@ const learningMaterialsState = {
 const elements = {};
 
 document.addEventListener('DOMContentLoaded', () => {
-  ensureDeleteSuccessModal();
   cacheElements();
   initializeModals();
   bindEvents();
@@ -40,12 +39,10 @@ function cacheElements() {
   elements.deleteModal = document.getElementById('deleteModal');
   elements.deleteFileName = document.getElementById('deleteFileName');
   elements.deleteConfirm = document.getElementById('deleteConfirm');
-  elements.deleteSuccessModal = document.getElementById('deleteSuccessModal');
-  elements.deleteSuccessMessage = document.getElementById('deleteSuccessMessage');
 }
 
 function initializeModals() {
-  [elements.editModal, elements.deleteModal, elements.deleteSuccessModal].forEach((modal) => {
+  [elements.editModal, elements.deleteModal].forEach((modal) => {
     if (!modal) return;
     modal.setAttribute('aria-hidden', 'true');
     modal.inert = true;
@@ -316,7 +313,6 @@ async function handleDeleteConfirm() {
     hideModal('deleteModal');
     learningMaterialsState.deletingRecord = null;
     await loadLearningMaterials();
-    showDeleteSuccessModal('Learning material deleted successfully.');
     showStatus('Learning material deleted successfully.');
   } catch (error) {
     console.error('Failed to delete learning material:', error);
@@ -429,42 +425,6 @@ function hideModal(id) {
   modal.classList.remove('show');
   modal.setAttribute('aria-hidden', 'true');
   modal.inert = true;
-}
-
-function ensureDeleteSuccessModal() {
-  if (document.getElementById('deleteSuccessModal')) return;
-
-  const modal = document.createElement('div');
-  modal.id = 'deleteSuccessModal';
-  modal.className = 'modal';
-  modal.setAttribute('aria-hidden', 'true');
-  modal.innerHTML = [
-    '<div class="modal-content modal-success">',
-      '<div class="modal-header">',
-        '<div class="modal-title">Deleted Successfully</div>',
-        '<button class="modal-close" data-target="deleteSuccessModal" type="button">&times;</button>',
-      '</div>',
-      '<div class="modal-body">',
-        '<div class="success-icon" aria-hidden="true">',
-          '<i class="fas fa-circle-check"></i>',
-        '</div>',
-        '<p id="deleteSuccessMessage">Learning material deleted successfully.</p>',
-      '</div>',
-      '<div class="modal-footer">',
-        '<button class="btn-confirm modal-close" data-target="deleteSuccessModal" type="button">OK</button>',
-      '</div>',
-    '</div>'
-  ].join('');
-
-  document.body.appendChild(modal);
-}
-
-function showDeleteSuccessModal(message) {
-  if (elements.deleteSuccessMessage) {
-    elements.deleteSuccessMessage.textContent = message;
-  }
-
-  showModal('deleteSuccessModal');
 }
 
 function showStatus(message, isError = false) {

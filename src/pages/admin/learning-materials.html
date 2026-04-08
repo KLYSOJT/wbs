@@ -82,91 +82,135 @@
     </div>
   </nav>
 
-  <main class="content">
-    <div class="container">
-      <div class="page-header">
+  <main class="main-content">
+    <div class="page-shell">
+      <section class="dashboard-header">
         <h1>Learning Materials</h1>
-      </div>
+        <p>Upload, organize, and manage curriculum PDFs in a cleaner admin workspace aligned with the rest of the dashboard.</p>
+      </section>
+
+      <section class="overview-strip">
+        <article class="overview-tile">
+          <span>Resource Type</span>
+          <strong>PDF</strong>
+          <small>All published learning materials stay standardized as PDF files.</small>
+        </article>
+        <article class="overview-tile">
+          <span>Grade Coverage</span>
+          <strong>7 to 12</strong>
+          <small>Manage materials across junior and senior high levels.</small>
+        </article>
+        <article class="overview-tile">
+          <span>Workflow</span>
+          <strong>Upload / Edit</strong>
+          <small>Keep the current behavior while presenting it in a cleaner admin layout.</small>
+        </article>
+      </section>
 
       <div id="statusMessage" class="status-message" aria-live="polite"></div>
 
-      <div class="card">
-        <h2>Add New Document</h2>
-
-        <form id="uploadForm" class="upload-form">
-          <div class="form-row">
-            <label for="subjectName">Subject Name :</label>
-            <select id="subjectName" required>
-              <option value="">Select subject</option>
-              <option value="ENGLISH">ENGLISH</option>
-              <option value="ESP">ESP</option>
-              <option value="FILIPINO">FILIPINO</option>
-              <option value="MATH">MATH</option>
-              <option value="MUSIC & ARTS">MUSIC & ARTS</option>
-              <option value="SCIENCE">SCIENCE</option>
-              <option value="PE & HEALTH">PE & HEALTH</option>
-              <option value="SPJ">SPJ</option>
-              <option value="TLE">TLE</option>
-              <option value="SPSTEM">SPSTEM</option>
-              <option value="SPA">SPA</option>
-            </select>
+      <section class="dashboard-layout">
+        <div class="form-card">
+          <div class="panel-heading">
+            <h2>Add New Material</h2>
+            <p>Select the subject, grade level, and PDF file to publish a new learning material.</p>
           </div>
 
-          <div class="form-row">
-            <label for="gradeLevel">Grade Level :</label>
-            <select id="gradeLevel" required>
-              <option value="">Select grade</option>
-              <option value="Grade 7">Grade 7</option>
-              <option value="Grade 8">Grade 8</option>
-              <option value="Grade 9">Grade 9</option>
-              <option value="Grade 10">Grade 10</option>
-              <option value="Grade 11">Grade 11</option>
-              <option value="Grade 12">Grade 12</option>
-            </select>
+          <form id="uploadForm" class="upload-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="subjectName">Subject Name</label>
+                <select id="subjectName" required>
+                  <option value="">Select subject</option>
+                  <option value="ENGLISH">ENGLISH</option>
+                  <option value="ESP">ESP</option>
+                  <option value="FILIPINO">FILIPINO</option>
+                  <option value="MATH">MATH</option>
+                  <option value="MUSIC & ARTS">MUSIC & ARTS</option>
+                  <option value="SCIENCE">SCIENCE</option>
+                  <option value="PE & HEALTH">PE & HEALTH</option>
+                  <option value="SPJ">SPJ</option>
+                  <option value="TLE">TLE</option>
+                  <option value="SPSTEM">SPSTEM</option>
+                  <option value="SPA">SPA</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="gradeLevel">Grade Level</label>
+                <select id="gradeLevel" required>
+                  <option value="">Select grade</option>
+                  <option value="Grade 7">Grade 7</option>
+                  <option value="Grade 8">Grade 8</option>
+                  <option value="Grade 9">Grade 9</option>
+                  <option value="Grade 10">Grade 10</option>
+                  <option value="Grade 11">Grade 11</option>
+                  <option value="Grade 12">Grade 12</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group form-group-full">
+              <label for="materialFile">Upload File</label>
+              <input id="materialFile" type="file" accept=".pdf,application/pdf" required>
+              <p class="field-note">Only PDF files up to 10MB are accepted.</p>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="uploadButton">Upload Material</button>
+          </form>
+        </div>
+
+        <div class="content-card">
+          <div class="panel-heading panel-heading-row">
+            <div>
+              <h2>Uploaded Materials</h2>
+              <p>Filter, review, and manage all published learning materials from one table.</p>
+            </div>
+            <div class="header-badge">
+              <i class="fas fa-book-open-reader"></i>
+              Resources
+            </div>
           </div>
 
-          <div class="form-row file-row">
-            <label for="materialFile">Upload File :</label>
-            <input id="materialFile" type="file" accept=".pdf,application/pdf" required>
-            <button type="submit" class="btn-upload" id="uploadButton">Upload</button>
+          <form class="filter-form" id="filterForm">
+            <div class="form-group filter-group">
+              <label for="filterGrade">Filter By Grade</label>
+              <select id="filterGrade">
+                <option value="">All grades</option>
+                <option value="Grade 7">Grade 7</option>
+                <option value="Grade 8">Grade 8</option>
+                <option value="Grade 9">Grade 9</option>
+                <option value="Grade 10">Grade 10</option>
+                <option value="Grade 11">Grade 11</option>
+                <option value="Grade 12">Grade 12</option>
+              </select>
+            </div>
+            <div class="filter-actions">
+              <button type="button" class="btn btn-primary btn-inline" id="applyFilter">Apply Filter</button>
+              <button type="button" class="btn btn-secondary btn-inline" id="clearFilter">Clear</button>
+            </div>
+          </form>
+
+          <div class="table-shell">
+            <table class="uploads-table">
+              <thead>
+                <tr>
+                  <th>Grade</th>
+                  <th>Subject</th>
+                  <th>File</th>
+                  <th>Uploaded</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="materialsTableBody">
+                <tr>
+                  <td colspan="5" class="table-message">Loading learning materials...</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        </form>
-      </div>
-
-      <div class="card">
-        <form class="filter-form" id="filterForm" style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
-          <label for="filterGrade" style="min-width:120px">Filter Grade :</label>
-          <select id="filterGrade">
-            <option value="">All grades</option>
-            <option value="Grade 7">Grade 7</option>
-            <option value="Grade 8">Grade 8</option>
-            <option value="Grade 9">Grade 9</option>
-            <option value="Grade 10">Grade 10</option>
-            <option value="Grade 11">Grade 11</option>
-            <option value="Grade 12">Grade 12</option>
-          </select>
-          <button type="button" class="action-btn" id="applyFilter">Apply</button>
-          <button type="button" class="action-btn" id="clearFilter">Clear</button>
-        </form>
-
-        <h2>Uploaded Documents</h2>
-        <table class="uploads-table">
-          <thead>
-            <tr>
-              <th>Grade</th>
-              <th>Subject</th>
-              <th>File</th>
-              <th>Uploaded</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="materialsTableBody">
-            <tr>
-              <td colspan="5" class="table-message">Loading learning materials...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        </div>
+      </section>
     </div>
   </main>
 
@@ -180,7 +224,7 @@
       <div class="modal-body">
         <form id="editForm">
           <div class="form-row">
-            <label for="editGradeLevel">New Grade :</label>
+            <label for="editGradeLevel">New Grade</label>
             <select id="editGradeLevel" required>
               <option value="Grade 7">Grade 7</option>
               <option value="Grade 8">Grade 8</option>
@@ -192,7 +236,7 @@
           </div>
 
           <div class="form-row">
-            <label for="editSubjectName">New Subject :</label>
+            <label for="editSubjectName">New Subject</label>
             <select id="editSubjectName" required>
               <option value="ENGLISH">ENGLISH</option>
               <option value="ESP">ESP</option>
@@ -209,7 +253,7 @@
           </div>
 
           <div class="form-row">
-            <label for="editMaterialFile">Replace File :</label>
+            <label for="editMaterialFile">Replace File</label>
             <input id="editMaterialFile" type="file" accept=".pdf,application/pdf">
           </div>
         </form>
