@@ -117,8 +117,14 @@ function openRecognizedModal(recordId) {
   const pdfEntries = getPdfEntries(record);
   const pdfMarkup = pdfEntries.length > 0
     ? pdfEntries.map((pdf, index) => `
-        <a class="recognized-link" href="${escapeHtml(pdf.url)}" target="_blank" rel="noopener noreferrer">
-          View Accomplishment Report${pdfEntries.length > 1 ? ` ${index + 1}` : ''}
+        <a class="recognized-link" href="${escapeHtml(pdf.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open accomplishment report ${index + 1}">
+          <span class="recognized-link-icon" aria-hidden="true">
+            <i class="fas fa-file-pdf"></i>
+          </span>
+          <span class="recognized-link-text">
+            <span class="recognized-link-title">${escapeHtml(pdf.name || `Accomplishment Report ${index + 1}`)}</span>
+            <span class="recognized-link-caption">Open PDF</span>
+          </span>
         </a>
       `).join('')
     : '<span class="recognized-link recognized-link-disabled">No accomplishment report uploaded</span>';
