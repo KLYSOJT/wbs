@@ -723,7 +723,12 @@ function applyPageSearchFromUrl() {
 function formatDateValue(value) {
   if (!value) return '';
 
-  const normalized = String(value).match(/^\d{4}-\d{2}-\d{2}/)?.[0] || String(value);
+  const rawValue = String(value).trim();
+  if (/^\d{4}$/.test(rawValue)) {
+    return rawValue;
+  }
+
+  const normalized = rawValue.match(/^\d{4}-\d{2}-\d{2}/)?.[0] || rawValue;
   const parsed = new Date(`${normalized}T00:00:00`);
 
   if (Number.isNaN(parsed.getTime())) {

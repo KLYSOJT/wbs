@@ -222,16 +222,16 @@
     }
     
     /* Modal adjustments for phone */
-    #departmentModal {
+    .modal {
         padding: 10px;
     }
     
-    #departmentModal .modal-content {
-        width: min(320px, calc(100vw - 20px));
-        max-width: min(320px, calc(100vw - 20px));
-        padding: 14px 12px;
+    .modal-content {
+        width: 95vw;
+        max-width: 95vw;
+        padding: 16px 14px;
         border-radius: 12px;
-        max-height: 72vh;
+        max-height: 80vh;
     }
     
     .modal-content h2 {
@@ -311,7 +311,7 @@
     }
     
     .modal-content {
-        padding: 12px 10px;
+        padding: 14px 12px;
     }
     
     .modal-content h2 {
@@ -321,24 +321,18 @@
 }
 
 /* Modal Styles */
-.department-modal-open {
-    overflow: hidden;
-    scrollbar-gutter: stable;
-}
-
-#departmentModal {
-    --modal-navbar-offset: 72px;
+.modal {
     display: flex;
     position: fixed;
-    top: var(--modal-navbar-offset);
-    right: 0;
-    bottom: 0;
+    top: 0;
     left: 0;
-    z-index: 1100;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.4);
-    padding: clamp(16px, 4vw, 32px);
+    padding: 20px;
     backdrop-filter: blur(5px);
     animation: fadeIn 0.25s ease-out;
     opacity: 0;
@@ -346,16 +340,16 @@
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-#departmentModal.show {
+.modal.show {
     opacity: 1;
     visibility: visible;
 }
-#departmentModal .modal-content {
+.modal-content {
     background: #ffffff;
-    width: min(650px, calc(100vw - (2 * clamp(16px, 4vw, 32px))));
-    max-width: min(650px, calc(100vw - (2 * clamp(16px, 4vw, 32px))));
+    width: 90vw;
     height: auto;
-    max-height: calc(100dvh - var(--modal-navbar-offset) - (2 * clamp(16px, 4vw, 32px)));
+    max-width: 650px;
+    max-height: 85vh;
     border-radius: 20px;
     box-shadow: 0 25px 70px rgba(93, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.08);
     padding: 32px 28px;
@@ -363,10 +357,6 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    align-self: center;
-    margin: 0 auto;
-    box-sizing: border-box;
-    transform: none;
     animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     border: 1.5px solid rgba(93, 0, 0, 0.06);
     scrollbar-color: #e2e8f000 #f8fafc00;
@@ -503,18 +493,7 @@
 }
 
 @media (max-width: 640px) {
-    #departmentModal {
-        --modal-navbar-offset: 64px;
-        padding: 12px;
-    }
-
-    #departmentModal .modal-content {
-        width: min(360px, calc(100vw - 24px));
-        max-width: min(360px, calc(100vw - 24px));
-        padding: 18px 16px;
-        max-height: calc(100dvh - var(--modal-navbar-offset) - 24px);
-    }
-
+    .modal-content { padding: 20px; max-width: 94vw; }
     .modal-pdf-frame { height: calc(60vh - 100px); }
 }
 

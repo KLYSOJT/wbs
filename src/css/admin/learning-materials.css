@@ -21,11 +21,7 @@ body {
   background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+
 
 .main-content {
   min-height: calc(100vh - 80px);
@@ -141,7 +137,8 @@ body {
 
 .form-card {
   position: sticky;
-  top: 24px;
+  top: 88px;
+  align-self: start;
 }
 
 .panel-heading {
@@ -204,7 +201,7 @@ body {
   font-weight: 700;
   font-size: 0.92rem;
   color: var(--text-main);
-  margin-bottom: 8px;
+  margin-bottom: 80px;
 }
 
 .form-group select,
@@ -222,6 +219,11 @@ body {
   background: #fff;
   color: var(--text-main);
   transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.form-group input[type="file"],
+.form-row input[type="file"] {
+  cursor: pointer;
 }
 
 .form-group select,
@@ -313,6 +315,7 @@ body {
 
 .filter-form {
   display: flex;
+  flex-wrap: wrap;
   align-items: end;
   justify-content: space-between;
   gap: 16px;
@@ -325,6 +328,7 @@ body {
 
 .filter-group {
   flex: 1;
+  min-width: 220px;
 }
 
 .filter-actions {
@@ -336,12 +340,14 @@ body {
 .table-shell {
   border: 1px solid var(--border-color);
   border-radius: 20px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   background: #fff;
 }
 
 .uploads-table {
   width: 100%;
+  min-width: 760px;
   border-collapse: collapse;
 }
 
@@ -409,6 +415,7 @@ body {
   border: none;
   border-radius: 10px;
   padding: 10px 16px;
+  min-width: 92px;
   font-size: 0.9rem;
   font-weight: 700;
   font-family: inherit;
@@ -558,10 +565,12 @@ body {
     width: fit-content;
   }
 
-  .uploads-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .table-shell {
+    border-radius: 16px;
   }
 
   .uploads-actions,
