@@ -158,6 +158,40 @@
         <input type="text" class="search-bar" placeholder="Search documents...">
       </div>
 
+      <div class="filter-toolbar card">
+        <div class="filter-toolbar__heading">
+          <h2>Filter Records</h2>
+          <p>Narrow the document list by month and year.</p>
+        </div>
+        <div class="filter-toolbar__controls">
+          <div class="filter-group">
+            <label for="monthFilter">Month</label>
+            <select id="monthFilter" class="filter-select">
+              <option value="">All months</option>
+              <option value="0">January</option>
+              <option value="1">February</option>
+              <option value="2">March</option>
+              <option value="3">April</option>
+              <option value="4">May</option>
+              <option value="5">June</option>
+              <option value="6">July</option>
+              <option value="7">August</option>
+              <option value="8">September</option>
+              <option value="9">October</option>
+              <option value="10">November</option>
+              <option value="11">December</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="yearFilter">Year</label>
+            <select id="yearFilter" class="filter-select">
+              <option value="">All years</option>
+            </select>
+          </div>
+          <button type="button" class="filter-reset-btn" id="resetMemoFilters">Reset</button>
+        </div>
+      </div>
+
       <div class="card table-card">
         <table class="resources-table">
           <thead>

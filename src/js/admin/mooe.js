@@ -554,6 +554,11 @@ const memoTableState = {
   currentPage: 1,
   pageSize: 10
 };
+const memoFilters = {
+  search: '',
+  month: '',
+  year: ''
+};
 
 // ==================== MODAL FUNCTIONS ====================
 
@@ -755,11 +760,46 @@ async function loadMemos() {
       allMemos = await getAllFromStore(STORE_NAME);
     }
     
-    updateTableView(allMemos);
+    populateYearFilterOptions(allMemos);
+    applyMemoFilters();
   } catch (error) {
     console.error('Error loading memos:', error);
     allMemos = [];
-    updateTableView([]);
+    populateYearFilterOptions([]);
+    applyMemoFilters();
+  }
+}
+
+function getMemoYearOptions(memos) {
+  return Array.from(
+    new Set(
+      memos
+        .map((memo) => {
+          if (!memo?.date) return null;
+          const parsedDate = new Date(memo.date + 'T00:00:00');
+          if (Number.isNaN(parsedDate.getTime())) return null;
+          return String(parsedDate.getFullYear());
+        })
+        .filter(Boolean)
+    )
+  ).sort((a, b) => Number(b) - Number(a));
+}
+
+function populateYearFilterOptions(memos) {
+  const yearFilter = document.querySelector('#yearFilter');
+  if (!yearFilter) return;
+
+  const availableYears = getMemoYearOptions(memos);
+  const activeYear = memoFilters.year;
+
+  yearFilter.innerHTML = '<option value="">All years</option>' +
+    availableYears.map((year) => `<option value="${year}">${year}</option>`).join('');
+
+  if (availableYears.includes(activeYear)) {
+    yearFilter.value = activeYear;
+  } else {
+    memoFilters.year = '';
+    yearFilter.value = '';
   }
 }
 
@@ -801,15 +841,21 @@ function renderTable() {
   const visibleMemos = getPaginatedMemos();
 
   tbody.innerHTML = visibleMemos.map(memo => {
-    let fileDisplay = 'N/A';
+    let fileDisplay = '<span class="file-empty">N/A</span>';
     if (memo.file) {
       if (memo.file.startsWith('idb://')) {
-        // IndexedDB file - create view button
         const escapedTitle = escapeHtml(memo.title);
-        fileDisplay = `<button class="btn-view" onclick="downloadIdbFile(${memo.id}, '${escapedTitle}')">View</button>`;
+        fileDisplay = `
+          <button type="button" class="action-icon-btn action-icon-btn--view" onclick="downloadIdbFile(${memo.id}, '${escapedTitle}')" aria-label="View ${escapedTitle}" title="View document">
+            <i class="fas fa-eye" aria-hidden="true"></i>
+          </button>
+        `;
       } else {
-        // Supabase Storage or external URL
-        fileDisplay = `<a href="${escapeHtml(memo.file)}" target="_blank">View</a>`;
+        fileDisplay = `
+          <a href="${escapeHtml(memo.file)}" target="_blank" rel="noopener noreferrer" class="action-icon-btn action-icon-btn--view" aria-label="View ${escapeHtml(memo.title)}" title="View document">
+            <i class="fas fa-eye" aria-hidden="true"></i>
+          </a>
+        `;
       }
     }
 
@@ -820,8 +866,14 @@ function renderTable() {
         <td>${escapeHtml(memo.description || 'N/A')}</td>
         <td>${fileDisplay}</td>
         <td>
-          <button class="btn-edit" onclick="editMemo(${memo.id})">Edit</button>
-          <button class="btn-delete" onclick="deleteMemo(${memo.id})">Delete</button>
+          <div class="action-icon-group">
+            <button type="button" class="action-icon-btn action-icon-btn--edit" onclick="editMemo(${memo.id})" aria-label="Edit ${escapeHtml(memo.title)}" title="Edit document">
+              <i class="fas fa-pen-to-square" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="action-icon-btn action-icon-btn--delete" onclick="deleteMemo(${memo.id})" aria-label="Delete ${escapeHtml(memo.title)}" title="Delete document">
+              <i class="fas fa-trash-can" aria-hidden="true"></i>
+            </button>
+          </div>
         </td>
       </tr>
     `;
@@ -950,11 +1002,43 @@ function createPaginationEllipsis() {
 }
 
 function searchMemos(query) {
-  const filtered = allMemos.filter(memo => 
-    memo.title.toLowerCase().includes(query.toLowerCase()) ||
-    (memo.description && memo.description.toLowerCase().includes(query.toLowerCase()))
-  );
-  updateTableView(filtered);
+  memoFilters.search = query.trim();
+  applyMemoFilters();
+}
+
+function applyMemoFilters(resetPage = true) {
+  const searchValue = memoFilters.search.toLowerCase();
+  const filtered = allMemos.filter((memo) => {
+    const title = (memo.title || '').toLowerCase();
+    const description = (memo.description || '').toLowerCase();
+    const parsedDate = memo?.date ? new Date(memo.date + 'T00:00:00') : null;
+    const memoMonth = parsedDate && !Number.isNaN(parsedDate.getTime()) ? String(parsedDate.getMonth()) : '';
+    const memoYear = parsedDate && !Number.isNaN(parsedDate.getTime()) ? String(parsedDate.getFullYear()) : '';
+    const matchesSearch = !searchValue || title.includes(searchValue) || description.includes(searchValue);
+    const matchesMonth = !memoFilters.month || memoMonth === memoFilters.month;
+    const matchesYear = !memoFilters.year || memoYear === memoFilters.year;
+    return matchesSearch && matchesMonth && matchesYear;
+  });
+  updateTableView(filtered, resetPage);
+}
+
+function filterMemosByDate(month, year) {
+  memoFilters.month = month;
+  memoFilters.year = year;
+  applyMemoFilters();
+}
+
+function resetMemoFilters() {
+  memoFilters.search = '';
+  memoFilters.month = '';
+  memoFilters.year = '';
+  const searchBar = document.querySelector('.search-bar');
+  const monthFilter = document.querySelector('#monthFilter');
+  const yearFilter = document.querySelector('#yearFilter');
+  if (searchBar) searchBar.value = '';
+  if (monthFilter) monthFilter.value = '';
+  if (yearFilter) yearFilter.value = '';
+  applyMemoFilters();
 }
 
 function editMemo(id) {
@@ -972,6 +1056,7 @@ function resetForm() {
   document.querySelector('.file-name').textContent = 'No file chosen';
   const submitBtn = form.querySelector('.upload-btn');
   submitBtn.textContent = 'Upload';
+  submitBtn.disabled = false;
 }
 
 // ==================== FILE HANDLING ====================
@@ -991,6 +1076,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   if (uploadForm) {
     uploadForm.addEventListener('submit', async function(e) {
       e.preventDefault();
+      const submitBtn = uploadForm.querySelector('.upload-btn');
 
       const title = document.querySelector('#memoTitle').value.trim();
       const date = document.querySelector('#memoDate').value;
@@ -1024,6 +1110,10 @@ document.addEventListener('DOMContentLoaded', async function() {
       }
 
       try {
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Uploading...';
+        }
         // Upload PDF to storage (use editingId if updating, or temporary id for temp storage)
         console.log('Uploading PDF file...');
         const tempId = editingId || `temp_${Date.now()}`;
@@ -1086,6 +1176,10 @@ document.addEventListener('DOMContentLoaded', async function() {
       } catch (error) {
         console.error('Error saving memo:', error);
         alert('Error: ' + error.message);
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Upload';
+        }
       }
     });
   }
@@ -1188,6 +1282,26 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
   }
 
+  const monthFilter = document.querySelector('#monthFilter');
+  const yearFilter = document.querySelector('#yearFilter');
+  const resetFiltersBtn = document.querySelector('#resetMemoFilters');
+
+  if (monthFilter) {
+    monthFilter.addEventListener('change', function() {
+      filterMemosByDate(this.value, yearFilter ? yearFilter.value : '');
+    });
+  }
+
+  if (yearFilter) {
+    yearFilter.addEventListener('change', function() {
+      filterMemosByDate(monthFilter ? monthFilter.value : '', this.value);
+    });
+  }
+
+  if (resetFiltersBtn) {
+    resetFiltersBtn.addEventListener('click', resetMemoFilters);
+  }
+
   // Auto-load data every 30 seconds to sync from Supabase
   setInterval(async () => {
     try {
@@ -1195,7 +1309,8 @@ document.addEventListener('DOMContentLoaded', async function() {
       const normalizedMemos = await migrateMemosToPublicUrls(supabaseMemos);
       if (normalizedMemos.length > 0 && JSON.stringify(normalizedMemos) !== JSON.stringify(allMemos)) {
         allMemos = normalizedMemos;
-        updateTableView(allMemos, false);
+        populateYearFilterOptions(allMemos);
+        applyMemoFilters(false);
         console.log('✓ Synced from Supabase');
       }
     } catch (error) {

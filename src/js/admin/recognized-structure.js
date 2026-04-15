@@ -4,6 +4,8 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 const state = {
   records: [],
+  currentPage: 1,
+  pageSize: 6,
   editingRecordId: null,
   pendingPdfFiles: [],
   removedExistingPdfPaths: []
@@ -40,6 +42,7 @@ function cacheElements() {
   elements.currentPdfList = document.getElementById('currentPdfList');
   elements.selectedPdfWrap = document.getElementById('selectedPdfWrap');
   elements.selectedPdfList = document.getElementById('selectedPdfList');
+  elements.pagination = document.getElementById('paginationControls');
 }
 
 function bindEvents() {
@@ -353,9 +356,13 @@ async function loadOrganizations() {
 
     state.records = data || [];
     renderOrganizations();
+    renderPagination();
   } catch (error) {
     console.error('Failed to load organizations:', error);
     elements.grid.innerHTML = '<div class="notice error">Failed to load organizations.</div>';
+    if (elements.pagination) {
+      elements.pagination.innerHTML = '';
+    }
   }
 }
 
@@ -364,10 +371,18 @@ function renderOrganizations() {
 
   if (state.records.length === 0) {
     elements.grid.innerHTML = '<div class="notice">No organizations uploaded yet.</div>';
+    if (elements.pagination) {
+      elements.pagination.innerHTML = '';
+    }
     return;
   }
 
-  elements.grid.innerHTML = state.records.map((record) => {
+  const totalPages = getTotalPages();
+  state.currentPage = Math.min(state.currentPage, totalPages);
+  const startIndex = (state.currentPage - 1) * state.pageSize;
+  const visibleRecords = state.records.slice(startIndex, startIndex + state.pageSize);
+
+  elements.grid.innerHTML = visibleRecords.map((record) => {
     const logoUrl = resolveImageUrl(record.logo_url, record.logo_path, record.chart_url, record.chart_path, record.image_url, record.image_path);
     const chartUrl = resolveImageUrl(record.chart_url, record.chart_path, record.image_url, record.image_path, record.logo_url, record.logo_path);
     const established = formatEstablishedYear(record.date_established);
@@ -410,6 +425,130 @@ function renderOrganizations() {
   elements.grid.querySelectorAll('[data-action="delete"]').forEach((button) => {
     button.addEventListener('click', () => deleteOrganization(Number(button.dataset.id)));
   });
+}
+
+function getTotalPages() {
+  return Math.max(1, Math.ceil(state.records.length / state.pageSize));
+}
+
+function renderPagination() {
+  const pagination = elements.pagination;
+  if (!pagination) return;
+
+  pagination.innerHTML = '';
+
+  const totalPages = getTotalPages();
+  if (state.records.length === 0 || totalPages <= 1) {
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+
+  fragment.appendChild(
+    createPaginationButton('Previous', state.currentPage - 1, {
+      isDisabled: state.currentPage === 1,
+      extraClass: 'pagination-btn--nav',
+      ariaLabel: 'Previous page'
+    })
+  );
+
+  buildPaginationItems(totalPages, state.currentPage).forEach((item) => {
+    if (item === 'ellipsis') {
+      fragment.appendChild(createPaginationEllipsis());
+      return;
+    }
+
+    fragment.appendChild(
+      createPaginationButton(String(item), item, {
+        isActive: item === state.currentPage,
+        ariaLabel: 'Page ' + item
+      })
+    );
+  });
+
+  fragment.appendChild(
+    createPaginationButton('Next', state.currentPage + 1, {
+      isDisabled: state.currentPage === totalPages,
+      extraClass: 'pagination-btn--nav',
+      ariaLabel: 'Next page'
+    })
+  );
+
+  pagination.appendChild(fragment);
+}
+
+function buildPaginationItems(totalPages, currentPage) {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  const items = [1];
+  let startPage = Math.max(2, currentPage - 1);
+  let endPage = Math.min(totalPages - 1, currentPage + 1);
+
+  if (currentPage <= 4) {
+    startPage = 2;
+    endPage = 5;
+  } else if (currentPage >= totalPages - 3) {
+    startPage = totalPages - 4;
+    endPage = totalPages - 1;
+  }
+
+  if (startPage > 2) {
+    items.push('ellipsis');
+  }
+
+  for (let page = startPage; page <= endPage; page += 1) {
+    items.push(page);
+  }
+
+  if (endPage < totalPages - 1) {
+    items.push('ellipsis');
+  }
+
+  items.push(totalPages);
+  return items;
+}
+
+function createPaginationButton(label, page, options = {}) {
+  const {
+    isActive = false,
+    isDisabled = false,
+    extraClass = '',
+    ariaLabel = label
+  } = options;
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'pagination-btn' + (isActive ? ' active' : '') + (extraClass ? ' ' + extraClass : '');
+  button.textContent = label;
+  button.setAttribute('aria-label', ariaLabel);
+
+  if (isActive) {
+    button.setAttribute('aria-current', 'page');
+  }
+
+  if (isDisabled) {
+    button.disabled = true;
+    button.setAttribute('aria-disabled', 'true');
+    return button;
+  }
+
+  button.addEventListener('click', () => {
+    state.currentPage = page;
+    renderOrganizations();
+    renderPagination();
+  });
+
+  return button;
+}
+
+function createPaginationEllipsis() {
+  const ellipsis = document.createElement('span');
+  ellipsis.className = 'pagination-ellipsis';
+  ellipsis.textContent = '...';
+  ellipsis.setAttribute('aria-hidden', 'true');
+  return ellipsis;
 }
 
 function startEditOrganization(id) {
@@ -465,6 +604,7 @@ function updateFormMode() {
 
   if (elements.cancelEditButton) {
     elements.cancelEditButton.hidden = !isEditing;
+    elements.cancelEditButton.style.display = isEditing ? 'inline-flex' : 'none';
   }
 
   if (elements.logoInput) {
