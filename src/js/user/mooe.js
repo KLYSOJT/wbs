@@ -233,35 +233,112 @@ function renderPagination() {
 
   const fragment = document.createDocumentFragment();
 
-  if (mooeState.currentPage > 1) {
-    fragment.appendChild(createPaginationButton('Previous', mooeState.currentPage - 1));
-  }
+  fragment.appendChild(
+    createPaginationButton('Previous', mooeState.currentPage - 1, {
+      isDisabled: mooeState.currentPage === 1,
+      extraClass: 'pagination-btn--nav',
+      ariaLabel: 'Previous page'
+    })
+  );
 
-  const startPage = Math.max(1, mooeState.currentPage - 2);
-  const endPage = Math.min(totalPages, startPage + 4);
+  buildPaginationItems(totalPages, mooeState.currentPage).forEach((item) => {
+    if (item === 'ellipsis') {
+      fragment.appendChild(createPaginationEllipsis());
+      return;
+    }
 
-  for (let page = startPage; page <= endPage; page += 1) {
-    fragment.appendChild(createPaginationButton(String(page), page, page === mooeState.currentPage));
-  }
+    fragment.appendChild(
+      createPaginationButton(String(item), item, {
+        isActive: item === mooeState.currentPage,
+        ariaLabel: 'Page ' + item
+      })
+    );
+  });
 
-  if (mooeState.currentPage < totalPages) {
-    fragment.appendChild(createPaginationButton('Next', mooeState.currentPage + 1));
-  }
+  fragment.appendChild(
+    createPaginationButton('Next', mooeState.currentPage + 1, {
+      isDisabled: mooeState.currentPage === totalPages,
+      extraClass: 'pagination-btn--nav',
+      ariaLabel: 'Next page'
+    })
+  );
 
   pagination.appendChild(fragment);
 }
 
-function createPaginationButton(label, page, isActive = false) {
+function buildPaginationItems(totalPages, currentPage) {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  const items = [1];
+  let startPage = Math.max(2, currentPage - 1);
+  let endPage = Math.min(totalPages - 1, currentPage + 1);
+
+  if (currentPage <= 4) {
+    startPage = 2;
+    endPage = 5;
+  } else if (currentPage >= totalPages - 3) {
+    startPage = totalPages - 4;
+    endPage = totalPages - 1;
+  }
+
+  if (startPage > 2) {
+    items.push('ellipsis');
+  }
+
+  for (let page = startPage; page <= endPage; page += 1) {
+    items.push(page);
+  }
+
+  if (endPage < totalPages - 1) {
+    items.push('ellipsis');
+  }
+
+  items.push(totalPages);
+
+  return items;
+}
+
+function createPaginationButton(label, page, options = {}) {
+  const {
+    isActive = false,
+    isDisabled = false,
+    extraClass = '',
+    ariaLabel = label
+  } = options;
+
   const button = document.createElement('button');
   button.type = 'button';
-  button.className = `pagination-btn${isActive ? ' pagination-active' : ''}`;
+  button.className = 'pagination-btn' + (isActive ? ' active pagination-active' : '') + (extraClass ? ' ' + extraClass : '');
   button.textContent = label;
+  button.setAttribute('aria-label', ariaLabel);
+
+  if (isActive) {
+    button.setAttribute('aria-current', 'page');
+  }
+
+  if (isDisabled) {
+    button.disabled = true;
+    button.setAttribute('aria-disabled', 'true');
+    return button;
+  }
+
   button.addEventListener('click', () => {
     mooeState.currentPage = page;
     renderTable();
     renderPagination();
   });
+
   return button;
+}
+
+function createPaginationEllipsis() {
+  const ellipsis = document.createElement('span');
+  ellipsis.className = 'pagination-ellipsis';
+  ellipsis.textContent = '...';
+  ellipsis.setAttribute('aria-hidden', 'true');
+  return ellipsis;
 }
 
 async function openPdf(url) {
@@ -339,4 +416,6 @@ function debounce(callback, delay) {
     timeoutId = window.setTimeout(() => callback(...args), delay);
   };
 }
+
+
 

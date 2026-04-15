@@ -4,7 +4,7 @@
 const departmentImageMap = {
   'TLE': '../../imgs/tle.png',
   'Math': '../../imgs/math.png',
-  'English': '../../imgs/english.png',
+  'English': '../../imgs/englishlogo.png',
   'Science': '../../imgs/science.png',
   'Filipino': '../../imgs/filipino.jpg',
   'AP': '../../imgs/ap.jpg',
@@ -14,7 +14,10 @@ const departmentImageMap = {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadOrganizationalStructureImages();
+  bindDepartmentModalEvents();
 });
+
+let lastFocusedDepartmentCard = null;
 
 /**
  * Load organizational structure images - Keep card images static (local only)
@@ -87,6 +90,9 @@ function showPlaceholders() {
 async function openModal(department) {
   const modal = document.getElementById('departmentModal');
   const modalBody = document.getElementById('modalBody');
+  const modalClose = document.getElementById('departmentModalClose');
+
+  lastFocusedDepartmentCard = document.activeElement instanceof HTMLElement ? document.activeElement : null;
   
   try {
     // Fetch department image from Supabase
@@ -98,39 +104,45 @@ async function openModal(department) {
     if (imageData && imageData.image) {
       content += `
         <div class="modal-image-container">
-          <img src="${imageData.image}" alt="${department}" style="max-width: 100%; height: auto; border-radius: 8px; margin: 20px 0;">
+          <img src="${imageData.image}" alt="${department}" class="modal-image">
         </div>
       `;
       
       if (imageData.updated_at) {
         const date = new Date(imageData.updated_at);
         const formatted = date.toLocaleString();
-        content += `<p style="color: #666; font-size: 0.9rem; margin-top: 10px;">Updated: ${formatted}</p>`;
+        content += `<p class="modal-updated-date">Updated: ${formatted}</p>`;
       }
     } else {
       content += `
         <div class="modal-image-container">
-          <img src="${createPlaceholderImage(department)}" alt="${department}" style="max-width: 100%; height: auto; border-radius: 8px; margin: 20px 0;">
+          <img src="${createPlaceholderImage(department)}" alt="${department}" class="modal-image">
         </div>
-        <p style="color: #999; font-size: 0.9rem;">No image available for this department.</p>
+        <p class="modal-no-image-text">No image available for this department.</p>
       `;
     }
     
-    modalBody.innerHTML = content;
+    modalBody.innerHTML = content.replace('<h2>', '<h2 id="departmentModalTitle">');
+    modal.hidden = false;
+    modal.inert = false;
     modal.classList.add('show');
     document.body.classList.add('department-modal-open');
+    modalClose?.focus();
   } catch (error) {
     console.error('Error opening modal:', error);
     const placeholderSrc = createPlaceholderImage(department);
     modalBody.innerHTML = `
-      <h2>${department} Department</h2>
+      <h2 id="departmentModalTitle">${department} Department</h2>
       <div class="modal-image-container">
-        <img src="${placeholderSrc}" alt="${department}" style="max-width: 100%; height: auto; border-radius: 8px; margin: 20px 0;">
+        <img src="${placeholderSrc}" alt="${department}" class="modal-image">
       </div>
-      <p style="color: #999; font-size: 0.9rem;">Unable to load department information.</p>
+      <p class="modal-no-image-text">Unable to load department information.</p>
     `;
+    modal.hidden = false;
+    modal.inert = false;
     modal.classList.add('show');
     document.body.classList.add('department-modal-open');
+    modalClose?.focus();
   }
 }
 
@@ -140,16 +152,29 @@ async function openModal(department) {
 function closeModal() {
   const modal = document.getElementById('departmentModal');
   modal.classList.remove('show');
+  modal.inert = true;
+  modal.hidden = true;
   document.body.classList.remove('department-modal-open');
+
+  if (lastFocusedDepartmentCard && typeof lastFocusedDepartmentCard.focus === 'function') {
+    lastFocusedDepartmentCard.focus();
+  }
 }
 
-/**
- * Close modal when clicking outside the content
- */
-window.onclick = (event) => {
+function bindDepartmentModalEvents() {
   const modal = document.getElementById('departmentModal');
-  if (event.target === modal) {
-    modal.classList.remove('show');
-    document.body.classList.remove('department-modal-open');
-  }
-};
+  const modalClose = document.getElementById('departmentModalClose');
+
+  modalClose?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', (event) => {
+    if (event.target instanceof HTMLElement && event.target.dataset.closeModal === 'true') {
+      closeModal();
+    }
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modal?.classList.contains('show')) {
+      closeModal();
+    }
+  });
+}

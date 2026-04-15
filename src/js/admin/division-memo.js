@@ -549,6 +549,11 @@ async function downloadIdbFile(memoId, memoTitle) {
 let allMemos = [];
 let editingId = null;
 let deletingId = null;
+const memoTableState = {
+  filteredMemos: [],
+  currentPage: 1,
+  pageSize: 10
+};
 
 // ==================== MODAL FUNCTIONS ====================
 
@@ -750,25 +755,52 @@ async function loadMemos() {
       allMemos = await getAllFromStore(STORE_NAME);
     }
     
-    renderTable(allMemos);
+    updateTableView(allMemos);
   } catch (error) {
     console.error('Error loading memos:', error);
     allMemos = [];
-    renderTable([]);
+    updateTableView([]);
   }
 }
 
-function renderTable(memos) {
+function updateTableView(memos, resetPage = true) {
+  memoTableState.filteredMemos = [...memos];
+
+  if (resetPage) {
+    memoTableState.currentPage = 1;
+  } else {
+    memoTableState.currentPage = Math.min(memoTableState.currentPage, getTotalPages());
+  }
+
+  renderTable();
+  renderPagination();
+}
+
+function getTotalPages() {
+  return Math.max(1, Math.ceil(memoTableState.filteredMemos.length / memoTableState.pageSize));
+}
+
+function getPaginatedMemos() {
+  const startIndex = (memoTableState.currentPage - 1) * memoTableState.pageSize;
+  return memoTableState.filteredMemos.slice(
+    startIndex,
+    startIndex + memoTableState.pageSize
+  );
+}
+
+function renderTable() {
   const tbody = document.querySelector('.resources-table tbody');
   
   if (!tbody) return;
 
-  if (memos.length === 0) {
+  if (memoTableState.filteredMemos.length === 0) {
     tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No documents found</td></tr>';
     return;
   }
 
-  tbody.innerHTML = memos.map(memo => {
+  const visibleMemos = getPaginatedMemos();
+
+  tbody.innerHTML = visibleMemos.map(memo => {
     let fileDisplay = 'N/A';
     if (memo.file) {
       if (memo.file.startsWith('idb://')) {
@@ -796,12 +828,133 @@ function renderTable(memos) {
   }).join('');
 }
 
+function renderPagination() {
+  const pagination = document.querySelector('#paginationControls');
+  if (!pagination) return;
+
+  pagination.innerHTML = '';
+
+  const totalPages = getTotalPages();
+  if (memoTableState.filteredMemos.length === 0 || totalPages <= 1) {
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+
+  fragment.appendChild(
+    createPaginationButton('Previous', memoTableState.currentPage - 1, {
+      isDisabled: memoTableState.currentPage === 1,
+      extraClass: 'pagination-btn--nav',
+      ariaLabel: 'Previous page'
+    })
+  );
+
+  buildPaginationItems(totalPages, memoTableState.currentPage).forEach((item) => {
+    if (item === 'ellipsis') {
+      fragment.appendChild(createPaginationEllipsis());
+      return;
+    }
+
+    fragment.appendChild(
+      createPaginationButton(String(item), item, {
+        isActive: item === memoTableState.currentPage,
+        ariaLabel: 'Page ' + item
+      })
+    );
+  });
+
+  fragment.appendChild(
+    createPaginationButton('Next', memoTableState.currentPage + 1, {
+      isDisabled: memoTableState.currentPage === totalPages,
+      extraClass: 'pagination-btn--nav',
+      ariaLabel: 'Next page'
+    })
+  );
+
+  pagination.appendChild(fragment);
+}
+
+function buildPaginationItems(totalPages, currentPage) {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  const items = [1];
+  let startPage = Math.max(2, currentPage - 1);
+  let endPage = Math.min(totalPages - 1, currentPage + 1);
+
+  if (currentPage <= 4) {
+    startPage = 2;
+    endPage = 5;
+  } else if (currentPage >= totalPages - 3) {
+    startPage = totalPages - 4;
+    endPage = totalPages - 1;
+  }
+
+  if (startPage > 2) {
+    items.push('ellipsis');
+  }
+
+  for (let page = startPage; page <= endPage; page += 1) {
+    items.push(page);
+  }
+
+  if (endPage < totalPages - 1) {
+    items.push('ellipsis');
+  }
+
+  items.push(totalPages);
+
+  return items;
+}
+
+function createPaginationButton(label, page, options = {}) {
+  const {
+    isActive = false,
+    isDisabled = false,
+    extraClass = '',
+    ariaLabel = label
+  } = options;
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'pagination-btn' + (isActive ? ' active' : '') + (extraClass ? ' ' + extraClass : '');
+  button.textContent = label;
+  button.setAttribute('aria-label', ariaLabel);
+
+  if (isActive) {
+    button.setAttribute('aria-current', 'page');
+  }
+
+  if (isDisabled) {
+    button.disabled = true;
+    button.setAttribute('aria-disabled', 'true');
+    return button;
+  }
+
+  button.addEventListener('click', () => {
+    memoTableState.currentPage = page;
+    renderTable();
+    renderPagination();
+  });
+
+  return button;
+}
+
+function createPaginationEllipsis() {
+  const ellipsis = document.createElement('span');
+  ellipsis.className = 'pagination-ellipsis';
+  ellipsis.textContent = '...';
+  ellipsis.setAttribute('aria-hidden', 'true');
+  return ellipsis;
+}
+
 function searchMemos(query) {
   const filtered = allMemos.filter(memo => 
     memo.title.toLowerCase().includes(query.toLowerCase()) ||
     (memo.description && memo.description.toLowerCase().includes(query.toLowerCase()))
   );
-  renderTable(filtered);
+  updateTableView(filtered);
 }
 
 function editMemo(id) {
@@ -1042,7 +1195,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       const normalizedMemos = await migrateMemosToPublicUrls(supabaseMemos);
       if (normalizedMemos.length > 0 && JSON.stringify(normalizedMemos) !== JSON.stringify(allMemos)) {
         allMemos = normalizedMemos;
-        renderTable(allMemos);
+        updateTableView(allMemos, false);
         console.log('✓ Synced from Supabase');
       }
     } catch (error) {
@@ -1050,5 +1203,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
   }, 30000);
 });
+
+
 
 
