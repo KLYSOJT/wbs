@@ -5,6 +5,8 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const learningMaterialsState = {
   records: [],
   filteredRecords: [],
+  currentPage: 1,
+  pageSize: 10,
   editingRecord: null,
   deletingRecord: null,
   lastFocusedTrigger: null
@@ -30,6 +32,7 @@ function cacheElements() {
   elements.applyFilter = document.getElementById('applyFilter');
   elements.clearFilter = document.getElementById('clearFilter');
   elements.tableBody = document.getElementById('materialsTableBody');
+  elements.paginationControls = document.getElementById('paginationControls');
   elements.editModal = document.getElementById('editModal');
   elements.editForm = document.getElementById('editForm');
   elements.editGradeLevel = document.getElementById('editGradeLevel');
@@ -174,7 +177,9 @@ function applyFilter() {
     return record.grade_level === selectedGrade;
   });
 
+  learningMaterialsState.currentPage = 1;
   renderTable();
+  renderPagination();
 }
 
 function clearFilter() {
@@ -189,10 +194,21 @@ function renderTable() {
 
   if (!learningMaterialsState.filteredRecords.length) {
     renderMessageRow('No learning materials found.');
+    if (elements.paginationControls) {
+      elements.paginationControls.innerHTML = '';
+    }
     return;
   }
 
-  elements.tableBody.innerHTML = learningMaterialsState.filteredRecords.map((record) => `
+  const totalPages = getTotalPages();
+  learningMaterialsState.currentPage = Math.min(learningMaterialsState.currentPage, totalPages);
+  const startIndex = (learningMaterialsState.currentPage - 1) * learningMaterialsState.pageSize;
+  const visibleRecords = learningMaterialsState.filteredRecords.slice(
+    startIndex,
+    startIndex + learningMaterialsState.pageSize
+  );
+
+  elements.tableBody.innerHTML = visibleRecords.map((record) => `
     <tr>
       <td>${escapeHtml(record.grade_level)}</td>
       <td>${escapeHtml(record.subject_name)}</td>
@@ -206,6 +222,130 @@ function renderTable() {
       </td>
     </tr>
   `).join('');
+}
+
+function getTotalPages() {
+  return Math.max(1, Math.ceil(learningMaterialsState.filteredRecords.length / learningMaterialsState.pageSize));
+}
+
+function renderPagination() {
+  const pagination = elements.paginationControls;
+  if (!pagination) return;
+
+  pagination.innerHTML = '';
+
+  const totalPages = getTotalPages();
+  if (learningMaterialsState.filteredRecords.length === 0 || totalPages <= 1) {
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+
+  fragment.appendChild(
+    createPaginationButton('Previous', learningMaterialsState.currentPage - 1, {
+      isDisabled: learningMaterialsState.currentPage === 1,
+      extraClass: 'pagination-btn--nav',
+      ariaLabel: 'Previous page'
+    })
+  );
+
+  buildPaginationItems(totalPages, learningMaterialsState.currentPage).forEach((item) => {
+    if (item === 'ellipsis') {
+      fragment.appendChild(createPaginationEllipsis());
+      return;
+    }
+
+    fragment.appendChild(
+      createPaginationButton(String(item), item, {
+        isActive: item === learningMaterialsState.currentPage,
+        ariaLabel: 'Page ' + item
+      })
+    );
+  });
+
+  fragment.appendChild(
+    createPaginationButton('Next', learningMaterialsState.currentPage + 1, {
+      isDisabled: learningMaterialsState.currentPage === totalPages,
+      extraClass: 'pagination-btn--nav',
+      ariaLabel: 'Next page'
+    })
+  );
+
+  pagination.appendChild(fragment);
+}
+
+function buildPaginationItems(totalPages, currentPage) {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  const items = [1];
+  let startPage = Math.max(2, currentPage - 1);
+  let endPage = Math.min(totalPages - 1, currentPage + 1);
+
+  if (currentPage <= 4) {
+    startPage = 2;
+    endPage = 5;
+  } else if (currentPage >= totalPages - 3) {
+    startPage = totalPages - 4;
+    endPage = totalPages - 1;
+  }
+
+  if (startPage > 2) {
+    items.push('ellipsis');
+  }
+
+  for (let page = startPage; page <= endPage; page += 1) {
+    items.push(page);
+  }
+
+  if (endPage < totalPages - 1) {
+    items.push('ellipsis');
+  }
+
+  items.push(totalPages);
+  return items;
+}
+
+function createPaginationButton(label, page, options = {}) {
+  const {
+    isActive = false,
+    isDisabled = false,
+    extraClass = '',
+    ariaLabel = label
+  } = options;
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'pagination-btn' + (isActive ? ' active' : '') + (extraClass ? ' ' + extraClass : '');
+  button.textContent = label;
+  button.setAttribute('aria-label', ariaLabel);
+
+  if (isActive) {
+    button.setAttribute('aria-current', 'page');
+  }
+
+  if (isDisabled) {
+    button.disabled = true;
+    button.setAttribute('aria-disabled', 'true');
+    return button;
+  }
+
+  button.addEventListener('click', () => {
+    learningMaterialsState.currentPage = page;
+    renderTable();
+    renderPagination();
+  });
+
+  return button;
+}
+
+function createPaginationEllipsis() {
+  const ellipsis = document.createElement('span');
+  ellipsis.className = 'pagination-ellipsis';
+  ellipsis.textContent = '...';
+  ellipsis.setAttribute('aria-hidden', 'true');
+  return ellipsis;
 }
 
 function openEditModal(record) {
@@ -390,6 +530,10 @@ function renderMessageRow(message) {
       <td colspan="5" class="table-message">${escapeHtml(message)}</td>
     </tr>
   `;
+
+  if (elements.paginationControls) {
+    elements.paginationControls.innerHTML = '';
+  }
 }
 
 function showModal(id) {
