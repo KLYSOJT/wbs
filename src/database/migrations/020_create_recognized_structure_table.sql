@@ -1,7 +1,7 @@
 create table if not exists public."recognized-structure" (
   id integer generated always as identity primary key,
   org_name text not null,
-  date_established date,
+  date_established integer,
   adviser_name text,
   image_url text not null,
   image_path text not null,

@@ -157,7 +157,7 @@
     </div>
 
     <div class="department-card" onclick="openModal('English')">
-      <img src="../../imgs/english.png" alt="English Department">
+      <img src="../../imgs/englishlogo.png" alt="English Department">
       <div class="dept-name">ENGLISH DEPARTMENT</div>
     </div>
 
@@ -189,9 +189,10 @@
 </main>
 
 <!-- Modal -->
-<div id="departmentModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
+<div id="departmentModal" class="modal" hidden inert>
+  <div class="modal-backdrop" data-close-modal="true"></div>
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="departmentModalTitle">
+    <button type="button" class="close" id="departmentModalClose" aria-label="Close modal">&times;</button>
     <div id="modalBody"></div>
   </div>
 </div>

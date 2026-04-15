@@ -40,8 +40,12 @@
           <li><a href="division-memo.html">Division Memorandum</a></li>
           <li><a href="deped-memo.html">DepEd Memorandum</a></li>
           <li><a href="deped-order.html">DepEd Order</a></li>
+          <li class="dropdown-submenu">
+            <a href="learning-materials.html">Learning Materials</a>
+          </li>
         </ul>
       </li>
+
       <li class="dropdown">
         <a href="#" onclick="return false">Transparency <i class="arrow down"></i></a>
         <ul class="dropdown-menu">
@@ -80,8 +84,9 @@
       <section class="dashboard-layout">
         <div class="form-card">
           <div class="panel-heading">
-            <h2>Organization Details</h2>
-            </div>
+            <h2 id="formTitle">Organization Details</h2>
+            <p id="formDescription">Add a recognized organization with its logo, chart, and optional PDF files.</p>
+          </div>
 
           <div id="statusMessage" class="notice" hidden></div>
 
@@ -93,8 +98,16 @@
               </div>
 
               <div class="form-group">
-                <label for="date_established">Date Established</label>
-                <input type="date" id="date_established" name="date_established">
+                <label for="date_established">Year Established</label>
+                <input
+                  type="number"
+                  id="date_established"
+                  name="date_established"
+                  placeholder="Enter year"
+                  min="1900"
+                  max="2099"
+                  step="1"
+                  inputmode="numeric">
               </div>
 
               <div class="form-group">
@@ -125,17 +138,30 @@
               </div>
 
               <div class="upload-zone upload-zone-full">
-                <label for="orgPdf">Upload PDF (Optional)</label>
+                <label for="orgPdf">Upload PDF Files (Optional)</label>
                 <div class="drag-drop-area" id="pdfDragDrop">
                   <i class="fas fa-file-pdf"></i>
-                  <p class="primary-text">Upload PDF</p>
-                  <p class="secondary-text" id="pdfFileLabel">Drag and drop or click to browse</p>
+                  <p class="primary-text">Upload PDF Files</p>
+                  <p class="secondary-text" id="pdfFileLabel">Drag and drop one or more PDFs, or click to browse</p>
                 </div>
-                <input type="file" id="orgPdf" name="pdf" accept=".pdf,application/pdf">
+                <input type="file" id="orgPdf" name="pdf" accept=".pdf,application/pdf" multiple>
+              </div>
+
+              <div class="selected-pdf-wrap upload-zone-full" id="selectedPdfWrap" hidden>
+                <label>Selected PDF Files</label>
+                <ul class="selected-pdf-list" id="selectedPdfList"></ul>
+              </div>
+
+              <div class="current-pdf-wrap upload-zone-full" id="currentPdfWrap" hidden>
+                <label>Current PDF Files</label>
+                <ul class="current-pdf-list" id="currentPdfList"></ul>
               </div>
             </div>
 
-            <button type="submit" class="btn btn-primary" id="saveButton">Save Organization</button>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="saveButton">Save Organization</button>
+              <button type="button" class="btn btn-secondary" id="cancelEditButton" hidden>Cancel Edit</button>
+            </div>
           </form>
         </div>
 
