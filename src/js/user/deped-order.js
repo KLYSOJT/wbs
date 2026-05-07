@@ -188,7 +188,7 @@ function renderTable() {
     row.appendChild(createCell(record.title));
     row.appendChild(createCell(record.description || 'No description provided.'));
     row.appendChild(createFileCell(record));
-    tableBody.appendChild(row);
+    depedOrderElements.tableBody.appendChild(row);
   });
 }
 
@@ -214,8 +214,6 @@ function createFileCell(record) {
   button.className = 'download-link file-view-btn';
   button.dataset.action = 'view-pdf';
   button.dataset.url = record.fileUrl;
-  button.dataset.title = record.title;
-  button.dataset.date = record.dateDisplay;
   button.textContent = 'View PDF';
   cell.appendChild(button);
 
@@ -418,5 +416,3 @@ function debounce(callback, delay) {
     timeoutId = window.setTimeout(() => callback(...args), delay);
   };
 }
-
-
