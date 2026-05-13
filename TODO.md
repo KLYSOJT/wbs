@@ -1,1 +1,0 @@
-# Fix SUPABASE_URL Redeclaration Error\n\n- [x] Create TODO.md\n- [x] Update src/js/supabase-config.js to use idempotent window. declarations\n- [ ] Test: Hard refresh on src/pages/user/school-memo.html and check console\n- [ ] Complete task
