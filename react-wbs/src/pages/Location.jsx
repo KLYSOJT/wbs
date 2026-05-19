@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { ArrowUpRight, Clock, Compass, Globe, Landmark, Loader2, Mail, MapPin, Navigation, Phone, Search } from 'lucide-react';
+import HeroWaveBackground from '../components/HeroWaveBackground';
 
 const Location = () => {
   const [loading, setLoading] = useState(true);
@@ -37,8 +38,8 @@ const Location = () => {
 
   return (
     <main className="min-h-screen bg-[#f7f7f5] font-outfit text-gray-950">
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#330000] via-[#520707] to-gray-950 pt-36 pb-20 text-white">
-        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.12),transparent_38%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.12),transparent_28%)]"></div>
+      <section className="relative overflow-hidden bg-[radial-gradient(circle_at_88%_16%,rgba(255,255,255,0.10)_0%,transparent_30%),linear-gradient(135deg,#210000_0%,#430505_42%,#120505_72%,#030303_100%)] pt-36 pb-20 text-white">
+        <HeroWaveBackground />
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#f7f7f5] to-transparent"></div>
 
         <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">

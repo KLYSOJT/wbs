@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { Calendar, ArrowRight, Award, Users, GraduationCap, Clock, Megaphone, Newspaper, Play } from 'lucide-react';
+import HeroWaveBackground from '../components/HeroWaveBackground';
 import welcomeImg from '../assets/imgs/welcome.png';
 import makingImg from '../assets/imgs/making.png';
 import tatakrectoImg from '../assets/imgs/tatakrecto.png';
@@ -286,8 +287,8 @@ const Home = () => {
       </section>
 
       {/* Featured Video */}
-      <section className="featured-video relative overflow-hidden bg-gradient-to-br from-[#330000] via-[#520707] to-gray-950 py-24 text-white">
-        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.12),transparent_38%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.12),transparent_28%)] pointer-events-none"></div>
+      <section className="featured-video relative overflow-hidden bg-[radial-gradient(circle_at_88%_16%,rgba(255,255,255,0.10)_0%,transparent_30%),linear-gradient(135deg,#210000_0%,#430505_42%,#120505_72%,#030303_100%)] py-24 text-white">
+        <HeroWaveBackground />
         <div className="featured-video-container relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
           <div className="featured-video-heading max-w-3xl mb-16">
             <span className="featured-video-kicker text-[10px] font-bold uppercase tracking-[0.3em] text-maroon-200">
