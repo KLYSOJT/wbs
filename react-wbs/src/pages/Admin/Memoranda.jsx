@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { 
   Upload, 
@@ -39,10 +40,14 @@ const categories = [
 ];
 
 const AdminMemoranda = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [activeTable, setActiveTable] = useState(categories[0].id);
+  const initialTable = searchParams.get('table');
+  const [activeTable, setActiveTable] = useState(
+    categories.some((cat) => cat.id === initialTable) ? initialTable : categories[0].id
+  );
 
   // Form states
   const [title, setTitle] = useState('');
@@ -53,6 +58,13 @@ const AdminMemoranda = () => {
   useEffect(() => {
     fetchRecords();
   }, [activeTable]);
+
+  useEffect(() => {
+    const table = searchParams.get('table');
+    if (categories.some((cat) => cat.id === table) && table !== activeTable) {
+      setActiveTable(table);
+    }
+  }, [searchParams, activeTable]);
 
   const fetchRecords = async () => {
     setLoading(true);
@@ -117,6 +129,11 @@ const AdminMemoranda = () => {
     }
   };
 
+  const handleCategoryChange = (categoryId) => {
+    setActiveTable(categoryId);
+    setSearchParams({ table: categoryId });
+  };
+
   return (
     <div className="max-w-[1600px] mx-auto space-y-12 pb-20 font-outfit">
       {/* Cinematic Identity Header */}
@@ -173,7 +190,7 @@ const AdminMemoranda = () => {
                 {categories.map((cat) => (
                   <button
                     key={cat.id}
-                    onClick={() => setActiveTable(cat.id)}
+                    onClick={() => handleCategoryChange(cat.id)}
                     className={`w-full flex items-center justify-between p-5 rounded-2xl transition-all duration-500 group relative overflow-hidden ${activeTable === cat.id ? 'bg-maroon-600 text-white shadow-2xl' : 'hover:bg-white/5 text-white/30 hover:text-white'}`}
                   >
                     <span className="font-bold uppercase tracking-tight text-[11px] text-left leading-tight relative z-10">{cat.name}</span>

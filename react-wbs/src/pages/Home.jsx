@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { Calendar, ArrowRight, Award, Users, GraduationCap, Clock, Megaphone, Newspaper } from 'lucide-react';
+import { Calendar, ArrowRight, Award, Users, GraduationCap, Clock, Megaphone, Newspaper, Play } from 'lucide-react';
 import welcomeImg from '../assets/imgs/welcome.png';
 import makingImg from '../assets/imgs/making.png';
 import tatakrectoImg from '../assets/imgs/tatakrecto.png';
@@ -18,6 +18,30 @@ const Home = () => {
   
   const slides = [welcomeImg, makingImg, tatakrectoImg];
   const itemsPerPage = 3;
+  const featuredVideos = [
+    {
+      id: 1,
+      title: 'Sample Video Title',
+      description: 'Sample description here.',
+      date: 'January 1, 2026',
+      embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    },
+    {
+      id: 2,
+      title: 'Campus Highlights',
+      description: 'A quick look at recent school activities and student moments.',
+      date: 'January 8, 2026',
+      embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    },
+    {
+      id: 3,
+      title: 'Official School Update',
+      description: 'Featured clips and announcements from the RMNHS community.',
+      date: 'January 15, 2026',
+      embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    },
+  ];
+  const [selectedVideo, setSelectedVideo] = useState(featuredVideos[0]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,6 +125,9 @@ const Home = () => {
         </div>
         <h3 className="text-2xl font-bold text-gray-900 tracking-tight leading-tight">{item.title}</h3>
         <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">{item.description}</p>
+        <button className="read-more-btn premium-btn premium-btn-outline w-fit text-sm">
+          Read more <ArrowRight size={16} />
+        </button>
       </div>
     </article>
   );
@@ -123,6 +150,9 @@ const Home = () => {
         </div>
         <h3 className="text-2xl font-bold text-gray-900 tracking-tight leading-tight">{item.title}</h3>
         <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">{item.description}</p>
+        <button className="read-more-btn premium-btn premium-btn-outline w-fit text-sm">
+          Read more <ArrowRight size={16} />
+        </button>
       </div>
     </article>
   );
@@ -239,6 +269,88 @@ const Home = () => {
           </div>
           <div className="pagination flex justify-center gap-3 mt-12" id="newsPaginationContainer">
             {renderPagination(news.length, newsPage, setNewsPage)}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Video */}
+      <section className="featured-video relative overflow-hidden py-32 bg-gradient-to-r from-[#3A0000] via-[#4A0000] to-black text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,rgba(255,255,255,0.12),transparent_28%),radial-gradient(circle_at_72%_10%,rgba(128,0,0,0.42),transparent_34%)] pointer-events-none"></div>
+        <div className="featured-video-container relative z-10 max-w-[1440px] mx-auto px-10">
+          <div className="featured-video-heading max-w-3xl mb-16">
+            <span className="featured-video-kicker text-[10px] font-bold uppercase tracking-[0.3em] text-maroon-200">
+              School Media
+            </span>
+            <h2 className="featured-video-title text-4xl lg:text-5xl font-bold tracking-tight italic mt-4">
+              Featured Videos
+            </h2>
+            <p className="featured-video-copy text-white/60 leading-relaxed mt-4">
+              Watch the latest featured clips, school highlights, and official uploads in one place.
+            </p>
+          </div>
+
+          <div className="featured-video-grid grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_420px] gap-8 items-start">
+            <div className="featured-main">
+              <div className="video-wrapper aspect-video overflow-hidden rounded-[2rem] bg-black border border-white/10 shadow-2xl">
+                <iframe
+                  id="mainVideo"
+                  title={selectedVideo.title}
+                  width="100%"
+                  height="500"
+                  src={selectedVideo.embedUrl}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+
+              <div className="video-info mt-8 space-y-3">
+                <h3 id="mainTitle" className="text-3xl font-bold tracking-tight">
+                  {selectedVideo.title}
+                </h3>
+                <p id="mainDesc" className="text-white/60 leading-relaxed">
+                  {selectedVideo.description}
+                </p>
+                <p id="mainDate" className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
+                  <Calendar size={12} />
+                  {selectedVideo.date}
+                </p>
+              </div>
+            </div>
+
+            <div className="video-list-panel rounded-[2rem] border border-white/10 bg-white/[0.04] p-6">
+              <div className="video-list-panel-header flex items-end justify-between gap-4 mb-6">
+                <h3 className="text-2xl font-bold tracking-tight">Playlist</h3>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">
+                  Tap a card to switch videos
+                </span>
+              </div>
+              <div className="video-list space-y-4" id="videoList">
+                {featuredVideos.map((video) => (
+                  <button
+                    key={video.id}
+                    type="button"
+                    onClick={() => setSelectedVideo(video)}
+                    className={`w-full text-left rounded-2xl border p-4 transition-all duration-300 ${
+                      selectedVideo.id === video.id
+                        ? 'border-maroon-300 bg-maroon-800/40'
+                        : 'border-white/10 bg-white/[0.03] hover:border-white/30 hover:bg-white/[0.07]'
+                    }`}
+                  >
+                    <div className="flex gap-4">
+                      <div className="w-14 h-14 shrink-0 rounded-xl bg-white/10 flex items-center justify-center text-maroon-100">
+                        <Play size={20} fill="currentColor" />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-bold leading-tight">{video.title}</h4>
+                        <p className="mt-2 text-xs text-white/50 line-clamp-2">{video.description}</p>
+                        <p className="mt-3 text-[10px] font-bold uppercase tracking-widest text-white/30">{video.date}</p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
