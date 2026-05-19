@@ -1,5 +1,4 @@
-import React from 'react';
-import { Globe, Mail, MapPin, Sparkles, ShieldCheck, Heart } from 'lucide-react';
+import { Phone, Mail, MapPin } from 'lucide-react';
 import rectologo from '../assets/imgs/rectologo.png';
 import depedquezon from '../assets/imgs/depedquezon.png';
 import bagongpilipinas from '../assets/imgs/bagongpilipinas.png';
@@ -7,106 +6,121 @@ import schoolseal from '../assets/imgs/schoolseal.png';
 
 const Footer = () => {
   return (
-    <footer className="bg-white border-t border-gray-100 mt-32 font-roboto overflow-hidden relative">
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-maroon-900/5 rounded-full -mr-96 -mt-96 blur-3xl pointer-events-none"></div>
-      
-      <div className="max-w-7xl mx-auto px-6 py-24 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-20 items-start">
+    <footer className="bg-white font-outfit border-t border-gray-100">
+      <div className="max-w-[1440px] mx-auto px-10 py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
           
-          {/* Brand & Mission */}
-          <div className="lg:col-span-2 space-y-12">
-            <div className="flex flex-wrap gap-8 items-center">
-              <img src={rectologo} alt="RMNHS Logo" className="h-16 lg:h-20 object-contain hover:scale-110 transition-transform duration-500" />
-              <img src={depedquezon} alt="DepEd Quezon Logo" className="h-16 lg:h-20 object-contain hover:scale-110 transition-transform duration-500" />
-              <img src={bagongpilipinas} alt="Bagong Pilipinas Logo" className="h-16 lg:h-20 object-contain hover:scale-110 transition-transform duration-500" />
-              <img src={schoolseal} alt="School Seal" className="h-16 lg:h-20 object-contain hover:scale-110 transition-transform duration-500" />
+          {/* Brand Column */}
+          <div className="space-y-8">
+            <div className="flex items-center gap-3">
+               <img src={rectologo} alt="RMNHS" className="h-12 w-auto" />
+               <div className="flex flex-col">
+                  <span className="text-xl font-bold tracking-tight">RMNHS</span>
+                  <span className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">Quezon Province</span>
+               </div>
             </div>
-            
-            <div className="max-w-md">
-               <h2 className="text-3xl font-black text-gray-900 uppercase italic tracking-tighter mb-6 leading-none">
-                 Recto Memorial <span className="text-maroon-800">National</span> High School
-               </h2>
-               <p className="text-gray-400 font-medium italic leading-relaxed text-sm">
-                 Committed to nurturing Filipino learners who are passionately patriotic, value-driven, and globally competitive. Building a legacy of excellence since its foundation.
-               </p>
-            </div>
-
-            <div className="flex items-center gap-6">
+            <p className="text-sm text-gray-500 leading-relaxed">
+              Recto Memorial National High School is a premier educational institution dedicated to fostering academic excellence and character development in Quezon Province.
+            </p>
+            <div className="flex gap-4">
               {[
-                { icon: <Globe size={20} />, href: "https://www.facebook.com/TheRectorianPress", bg: "hover:bg-blue-600" },
-                { icon: <Mail size={20} />, href: "mailto:rectomns301380@gmail.com", bg: "hover:bg-red-600" },
-                { icon: <MapPin size={20} />, href: "https://maps.google.com/?q=X85C+R5C,+Tiaong,+Quezon+Province", bg: "hover:bg-orange-600" }
-              ].map((social, idx) => (
-                <a 
-                  key={idx}
-                  href={social.href} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className={`w-14 h-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-maroon-800 shadow-sm transition-all transform hover:-translate-y-2 hover:text-white hover:shadow-2xl ${social.bg}`}
-                >
+                { 
+                  icon: <svg size={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>, 
+                  color: 'hover:text-blue-600' 
+                },
+                { 
+                  icon: <svg size={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>, 
+                  color: 'hover:text-red-600' 
+                },
+                { 
+                  icon: <svg size={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>, 
+                  color: 'hover:text-pink-600' 
+                },
+                { 
+                  icon: <svg size={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>, 
+                  color: 'hover:text-blue-400' 
+                }
+              ].map((social, i) => (
+                <a key={i} href="#" className={`w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 transition-all hover:bg-white hover:shadow-lg ${social.color}`}>
                   {social.icon}
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Development Unit */}
-          <div>
-            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-10 flex items-center gap-2 italic">
-               <Sparkles size={14} className="text-maroon-800" /> System Architects
-            </h3>
+          {/* Quick Links */}
+          <div className="space-y-8">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-gray-900">Quick Links</h3>
             <ul className="space-y-4">
-              {['Catibog, S.', 'Lajara, J.', 'Magnaye, B.', 'Perez, K.', 'Pucyutan, L.', 'Salcedo, L.'].map((dev, idx) => (
-                <li key={idx} className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-gray-900 group">
-                   <div className="w-1.5 h-1.5 rounded-full bg-maroon-800 opacity-0 group-hover:opacity-100 transition-all"></div>
-                   <span className="group-hover:translate-x-2 transition-transform">{dev}</span>
+              {['Home', 'About Us', 'Resources', 'Transparency Seal', 'Research', 'Location'].map((link) => (
+                <li key={link}>
+                  <a href="#" className="text-sm text-gray-500 hover:text-maroon-800 transition-colors flex items-center gap-2 group">
+                    <span className="w-0 h-[1px] bg-maroon-800 transition-all group-hover:w-3"></span>
+                    {link}
+                  </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact HQ */}
-          <div>
-            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-10 flex items-center gap-2 italic">
-               <ShieldCheck size={14} className="text-maroon-800" /> Institutional HQ
-            </h3>
-            <div className="space-y-8">
-               <div>
-                  <p className="text-[10px] font-black text-maroon-800 uppercase tracking-widest mb-2">Physical Location</p>
-                  <p className="text-xs font-bold text-gray-900 leading-relaxed uppercase italic tracking-tighter">
-                    X85C+R5C, Quipot, Tiaong,<br />Quezon Province, 4325
-                  </p>
-               </div>
-               <div>
-                  <p className="text-[10px] font-black text-maroon-800 uppercase tracking-widest mb-2">Direct Channel</p>
-                  <p className="text-2xl font-black text-gray-900 tracking-tighter leading-none">+63 949 995 1769</p>
-               </div>
-               <div className="pt-8 border-t border-gray-50 flex items-center gap-3">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-xl shadow-green-500/50"></div>
-                  <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 italic">System Status: Synchronized</span>
+          {/* Team Column */}
+          <div className="space-y-8">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-gray-900">Our Team</h3>
+            <ul className="grid grid-cols-2 gap-4">
+              {['Catibog, S.', 'Lajara, J.', 'Magnaye, B.', 'Perez, K.', 'Pucyutan, L.', 'Salcedo, L.'].map((name) => (
+                <li key={name} className="text-[11px] font-medium text-gray-500 uppercase tracking-tight">{name}</li>
+              ))}
+            </ul>
+            <div className="pt-4 border-t border-gray-50">
+               <div className="flex items-center gap-4 grayscale opacity-40">
+                  <img src={depedquezon} alt="DepEd" className="h-10" />
+                  <img src={bagongpilipinas} alt="Bagong Pilipinas" className="h-10" />
+                  <img src={schoolseal} alt="Seal" className="h-10" />
                </div>
             </div>
           </div>
+
+          {/* Contact Column */}
+          <div className="space-y-8">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-gray-900">Contact Us</h3>
+            <div className="space-y-6">
+               <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-2xl bg-maroon-50 flex items-center justify-center text-maroon-800 flex-shrink-0">
+                     <MapPin size={20} />
+                  </div>
+                  <p className="text-sm text-gray-500 leading-relaxed italic">
+                    Quipot, Tiaong, <br /> Quezon Province 4325
+                  </p>
+               </div>
+               <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-2xl bg-maroon-50 flex items-center justify-center text-maroon-800 flex-shrink-0">
+                     <Phone size={20} />
+                  </div>
+                  <p className="text-sm font-bold text-gray-700 tracking-tight">+63 949 995 1769</p>
+               </div>
+               <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-2xl bg-maroon-50 flex items-center justify-center text-maroon-800 flex-shrink-0">
+                     <Mail size={20} />
+                  </div>
+                  <p className="text-sm font-bold text-gray-700 tracking-tight">rectomns301380@gmail.com</p>
+               </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      {/* Legal Strip */}
-      <div className="bg-gray-900 text-white py-12 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex items-center gap-4">
-             <div className="w-10 h-10 bg-maroon-800 rounded-xl flex items-center justify-center font-black text-xs italic shadow-xl">RM</div>
-             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-               &copy; {new Date().getFullYear()} Recto Memorial National High School. All Rights Reserved.
-             </p>
-          </div>
-          <div className="flex items-center gap-8 text-[9px] font-black uppercase tracking-widest text-white/30">
-             <a href="#" className="hover:text-maroon-500 transition-colors">Privacy Protocol</a>
-             <a href="#" className="hover:text-maroon-500 transition-colors">Digital Ethics</a>
-             <div className="flex items-center gap-2 text-white/10">
-                Crafted with <Heart size={10} className="text-maroon-800 fill-maroon-800" /> by RMNS Dev Team
-             </div>
-          </div>
-        </div>
+      {/* Bottom Bar */}
+      <div className="border-t border-gray-50 py-10 px-10">
+         <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <p className="text-[11px] font-medium text-gray-400 uppercase tracking-[0.2em]">
+              &copy; {new Date().getFullYear()} Recto Memorial National High School • All Rights Reserved
+            </p>
+            <div className="flex gap-10 text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+               <a href="#" className="hover:text-maroon-800 transition-colors">Privacy Policy</a>
+               <a href="#" className="hover:text-maroon-800 transition-colors">Terms of Service</a>
+            </div>
+         </div>
       </div>
     </footer>
   );

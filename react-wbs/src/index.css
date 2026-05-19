@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Dancing+Script:wght@400;700&display=swap');
 
 @theme {
   --color-maroon-50: #f8eaea;
@@ -12,13 +13,19 @@
   --color-maroon-800: #800000;
   --color-maroon-900: #5d0000;
   
-  --font-roboto: "Roboto", system-ui, sans-serif;
+  --font-outfit: "Outfit", system-ui, sans-serif;
 }
 
 :root {
-  font-family: "Roboto", system-ui, sans-serif;
+  font-family: "Outfit", system-ui, sans-serif;
   background-color: #ffffff;
   color: #1a1a1a;
+  
+  /* Premium Palette */
+  --surface: #ffffff;
+  --subsurface: #f8f9fa;
+  --accent: #800000;
+  --text-main: #1a1a1a;
 }
 
 body {
@@ -26,11 +33,14 @@ body {
   padding: 0;
   min-height: 100vh;
   overflow-x: hidden;
+  background-color: var(--surface);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -38,32 +48,32 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #800000;
+  background: #d1d5db;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #5d0000;
+  background: var(--accent);
 }
 
-/* Page Transitions */
-.page-enter {
-  opacity: 0;
-  transform: translateY(10px);
-}
-.page-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 400ms, transform 400ms;
+/* Premium Component Tokens */
+.bento-card {
+  @apply bg-white rounded-[2.5rem] border border-gray-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:border-maroon-100;
 }
 
-/* Utility Classes */
-.glass-effect {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+.premium-btn {
+  @apply px-8 py-3 rounded-full font-semibold transition-all duration-300 flex items-center justify-center gap-2;
 }
 
-.text-shadow-lg {
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+.premium-btn-primary {
+  @apply bg-maroon-800 text-white hover:bg-maroon-900 shadow-lg hover:shadow-maroon-900/20 active:scale-95;
 }
+
+.premium-btn-outline {
+  @apply border-2 border-gray-100 text-gray-900 hover:border-maroon-800 hover:text-maroon-800 active:scale-95;
+}
+
+.glass-panel {
+  @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl;
+}
+

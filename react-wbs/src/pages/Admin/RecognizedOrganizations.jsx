@@ -6,14 +6,12 @@ import {
   ImageIcon, 
   Loader2, 
   Plus, 
-  CheckCircle2, 
-  Search,
-  Filter,
   Users,
-  FileText,
   Calendar,
-  ExternalLink,
-  ChevronRight
+  ChevronRight,
+  ArrowUpRight,
+  Zap,
+  UserCheck
 } from 'lucide-react';
 
 const AdminRecognizedOrgs = () => {
@@ -103,136 +101,179 @@ const AdminRecognizedOrgs = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-12 pb-20">
-      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 bg-white p-10 rounded-[3rem] shadow-2xl shadow-gray-200/50 border border-gray-100 relative overflow-hidden">
-        <div className="relative z-10">
-          <span className="text-maroon-800 font-black uppercase tracking-[0.4em] text-[10px] mb-4 block">Student Affairs Unit</span>
-          <h1 className="text-5xl font-black text-gray-900 uppercase italic tracking-tighter leading-none">Recognized Organizations</h1>
-          <p className="text-gray-400 mt-4 font-medium italic">Manage the digital registry of official school organizations.</p>
-        </div>
-        <div className="relative z-10 bg-maroon-900 text-white p-8 rounded-[2.5rem] shadow-2xl shadow-maroon-900/20 flex items-center gap-6">
-           <div className="text-right">
-              <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">Active Units</p>
-              <p className="text-3xl font-black italic tracking-tighter">{records.length}</p>
-           </div>
-           <Users size={40} className="text-white/20" />
-        </div>
-      </header>
-
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-12">
-        {/* Creator Sidebar */}
-        <div className="xl:col-span-1">
-          <form onSubmit={handleSubmit} className="bg-gray-900 rounded-[3.5rem] p-10 shadow-2xl shadow-gray-900/40 text-white sticky top-12">
-            <div className="flex items-center gap-3 mb-10">
-              <div className="w-10 h-10 bg-maroon-600 rounded-2xl flex items-center justify-center">
-                <Plus size={20} />
-              </div>
-              <h2 className="text-2xl font-black uppercase italic tracking-tighter text-white">Add Organization</h2>
+    <div className="max-w-7xl mx-auto space-y-12 pb-20 font-outfit">
+      {/* Cinematic Identity Header */}
+      <div className="bg-white p-12 rounded-[3.5rem] shadow-2xl shadow-gray-200/40 border border-gray-100 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(128,0,0,0.03)_0%,transparent_70%)] pointer-events-none transition-transform duration-1000 group-hover:scale-110"></div>
+        
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 relative z-10">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+               <span className="text-maroon-800 font-bold uppercase tracking-[0.5em] text-[10px] bg-maroon-50 px-5 py-2 rounded-full">
+                 Student Affairs Unit
+               </span>
+               <div className="h-px w-12 bg-maroon-100"></div>
             </div>
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 tracking-tighter leading-none font-['Playfair_Display'] italic">
+              Organization <span className="text-maroon-800">Registry</span>
+            </h1>
+            <p className="text-gray-400 font-medium italic text-lg max-w-2xl">
+              Official management portal for recognized institutional groups, student organizations, and academic councils.
+            </p>
+          </div>
 
-            <div className="space-y-8">
-              <div>
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-3 block">Organization Name</label>
-                <input 
-                  type="text"
-                  required
-                  value={orgName}
-                  onChange={(e) => setOrgName(e.target.value)}
-                  placeholder="e.g. Science Club"
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:bg-white/10 focus:ring-4 focus:ring-maroon-500/20 outline-none transition-all placeholder:text-white/20"
-                />
-              </div>
+          <div className="relative bg-maroon-950 px-10 py-8 rounded-[2.5rem] shadow-2xl shadow-maroon-950/20 group/stat hover:bg-black transition-all duration-500 border border-white/5">
+             <div className="flex items-center gap-6">
+                <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-maroon-500 border border-white/10 group-hover/stat:scale-110 transition-transform duration-500">
+                   <Users size={28} />
+                </div>
+                <div className="text-right">
+                   <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Active Units</p>
+                   <p className="text-4xl font-bold text-white tracking-tighter font-['Playfair_Display'] italic">{records.length}</p>
+                </div>
+             </div>
+          </div>
+        </div>
+      </div>
 
-              <div>
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-3 block">Faculty Adviser</label>
-                <input 
-                  type="text"
-                  required
-                  value={adviserName}
-                  onChange={(e) => setAdviserName(e.target.value)}
-                  placeholder="Enter full name..."
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:bg-white/10 focus:ring-4 focus:ring-maroon-500/20 outline-none transition-all placeholder:text-white/20"
-                />
-              </div>
-
-              <div>
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-3 block">Date Established</label>
-                <input 
-                  type="date"
-                  required
-                  value={dateEstablished}
-                  onChange={(e) => setDateEstablished(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:bg-white/10 focus:ring-4 focus:ring-maroon-500/20 outline-none transition-all"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-3 block">Logo (Square)</label>
-                  <label className="flex flex-col items-center justify-center bg-white/5 border border-dashed border-white/10 rounded-2xl p-4 cursor-pointer hover:bg-white/10 transition-all">
-                    <ImageIcon size={20} className="text-white/20 mb-2" />
-                    <span className="text-[9px] font-black uppercase tracking-widest text-white/40 truncate w-full text-center">
-                      {logoFile ? logoFile.name : 'Upload Logo'}
-                    </span>
-                    <input type="file" className="hidden" accept="image/*" onChange={(e) => setLogoFile(e.target.files[0])} />
-                  </label>
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-12">
+        {/* Sidebar: Registration Console */}
+        <div className="xl:col-span-4">
+          <div className="bg-gray-950 rounded-[4rem] p-12 shadow-2xl shadow-gray-900/40 text-white sticky top-32 border border-white/5 overflow-hidden group/form">
+            <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none group-hover/form:opacity-10 transition-opacity">
+               <Zap size={200} />
+            </div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-12">
+                <div className="w-14 h-14 bg-maroon-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-maroon-600/40">
+                  <Plus size={28} />
                 </div>
                 <div>
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-3 block">Structure Chart</label>
-                  <label className="flex flex-col items-center justify-center bg-white/5 border border-dashed border-white/10 rounded-2xl p-4 cursor-pointer hover:bg-white/10 transition-all">
-                    <Upload size={20} className="text-white/20 mb-2" />
-                    <span className="text-[9px] font-black uppercase tracking-widest text-white/40 truncate w-full text-center">
-                      {chartFile ? chartFile.name : 'Upload Chart'}
-                    </span>
-                    <input type="file" className="hidden" accept="image/*" onChange={(e) => setChartFile(e.target.files[0])} />
-                  </label>
+                   <h2 className="text-3xl font-bold tracking-tighter font-['Playfair_Display'] italic">Register</h2>
+                   <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.4em]">Unit Identity Portal</p>
                 </div>
               </div>
 
-              <button 
-                type="submit"
-                disabled={submitting}
-                className="w-full py-6 rounded-[2rem] bg-maroon-600 hover:bg-maroon-500 text-white font-black uppercase tracking-[0.3em] text-xs flex items-center justify-center gap-3 transition-all shadow-2xl shadow-maroon-900/50 active:scale-95"
-              >
-                {submitting ? <Loader2 className="animate-spin" size={18} /> : <><Plus size={18} /> Register Unit</>}
-              </button>
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="space-y-6">
+                  <div className="group/input">
+                    <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block group-focus-within/input:text-maroon-500 transition-colors">Official Name</label>
+                    <input 
+                      type="text"
+                      required
+                      value={orgName}
+                      onChange={(e) => setOrgName(e.target.value)}
+                      placeholder="e.g. Science Research Council"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:bg-white/10 focus:ring-4 focus:ring-maroon-600/20 outline-none transition-all placeholder:text-white/10"
+                    />
+                  </div>
+
+                  <div className="group/input">
+                    <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block group-focus-within/input:text-maroon-500 transition-colors">Faculty Lead / Adviser</label>
+                    <input 
+                      type="text"
+                      required
+                      value={adviserName}
+                      onChange={(e) => setAdviserName(e.target.value)}
+                      placeholder="Full Name of Adviser"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:bg-white/10 focus:ring-4 focus:ring-maroon-600/20 outline-none transition-all placeholder:text-white/10"
+                    />
+                  </div>
+
+                  <div className="group/input">
+                    <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block">Establishment Date</label>
+                    <input 
+                      type="date"
+                      required
+                      value={dateEstablished}
+                      onChange={(e) => setDateEstablished(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:bg-white/10 focus:ring-4 focus:ring-maroon-600/20 outline-none transition-all"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block">Identity Logo</label>
+                      <label className="flex flex-col items-center justify-center bg-white/5 border border-dashed border-white/10 rounded-2xl p-6 cursor-pointer hover:bg-white/10 hover:border-maroon-600/40 transition-all group/upload relative overflow-hidden h-32">
+                        <ImageIcon size={24} className="text-white/10 group-hover/upload:text-maroon-500 transition-all mb-2" />
+                        <span className="text-[9px] font-bold uppercase tracking-widest text-white/40 truncate w-full text-center px-4">
+                          {logoFile ? logoFile.name : 'Upload Asset'}
+                        </span>
+                        <input type="file" className="hidden" accept="image/*" onChange={(e) => setLogoFile(e.target.files[0])} />
+                      </label>
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block">Structural Map</label>
+                      <label className="flex flex-col items-center justify-center bg-white/5 border border-dashed border-white/10 rounded-2xl p-6 cursor-pointer hover:bg-white/10 hover:border-maroon-600/40 transition-all group/upload relative overflow-hidden h-32">
+                        <Upload size={24} className="text-white/10 group-hover/upload:text-maroon-500 transition-all mb-2" />
+                        <span className="text-[9px] font-bold uppercase tracking-widest text-white/40 truncate w-full text-center px-4">
+                          {chartFile ? chartFile.name : 'Upload Map'}
+                        </span>
+                        <input type="file" className="hidden" accept="image/*" onChange={(e) => setChartFile(e.target.files[0])} />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <button 
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full py-6 rounded-full font-bold uppercase tracking-[0.4em] text-[10px] flex items-center justify-center gap-4 transition-all duration-500 active:scale-95 shadow-2xl bg-white text-maroon-950 hover:bg-maroon-600 hover:text-white group/submit"
+                >
+                  {submitting ? (
+                    <Loader2 className="animate-spin" size={20} />
+                  ) : (
+                    <>
+                      Register Unit Protocol
+                      <ArrowUpRight size={18} className="group-hover/submit:translate-x-1 group-hover/submit:-translate-y-1 transition-transform" />
+                    </>
+                  )}
+                </button>
+              </form>
             </div>
-          </form>
+          </div>
         </div>
 
-        {/* List Content */}
-        <div className="xl:col-span-2 space-y-8">
+        {/* Registry Log Stream */}
+        <div className="xl:col-span-8 space-y-10">
            {loading ? (
-             <div className="space-y-6">
-                {[1, 2, 3].map(i => <div key={i} className="h-32 bg-white animate-pulse rounded-[2.5rem]"></div>)}
+             <div className="space-y-8">
+                {[1, 2, 3].map(i => <div key={i} className="h-40 bg-gray-50/50 animate-pulse rounded-[3rem] border border-gray-100"></div>)}
              </div>
            ) : records.length === 0 ? (
-              <div className="py-32 text-center bg-white rounded-[4rem] border-2 border-dashed border-gray-100">
-                 <Users size={48} className="text-gray-100 mx-auto mb-6" />
-                 <p className="text-xs font-black text-gray-300 uppercase tracking-widest italic">No organizations registered in the database.</p>
+              <div className="py-40 text-center bg-gray-50/50 rounded-[4rem] border border-dashed border-gray-200">
+                 <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-8 text-gray-200 shadow-xl border border-gray-100">
+                    <Database size={48} />
+                 </div>
+                 <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest italic">The organization registry is currently empty.</p>
               </div>
            ) : (
-             <div className="grid grid-cols-1 gap-6">
+             <div className="grid grid-cols-1 gap-8">
                {records.map((record) => (
-                 <div key={record.id} className="group bg-white p-8 rounded-[3rem] shadow-2xl shadow-gray-200/50 border border-gray-50 flex flex-col md:flex-row items-center justify-between gap-8 transition-all hover:shadow-maroon-900/5">
-                    <div className="flex items-center gap-8 flex-1">
-                       <div className="w-24 h-24 bg-gray-50 rounded-[1.5rem] flex-shrink-0 overflow-hidden border border-gray-100 flex items-center justify-center p-4">
+                 <div key={record.id} className="group bg-white p-10 rounded-[3.5rem] shadow-xl shadow-gray-200/30 border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-10 transition-all duration-700 hover:shadow-2xl hover:-translate-y-2">
+                    <div className="flex items-center gap-10 flex-1">
+                       <div className="w-28 h-28 bg-gray-50 rounded-[2rem] flex-shrink-0 overflow-hidden border border-gray-100 flex items-center justify-center p-6 shadow-inner group-hover:scale-105 transition-transform duration-700">
                           {record.logo_url ? (
-                            <img src={record.logo_url} className="w-full h-full object-contain" alt="Logo" />
+                            <img src={record.logo_url} className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-700" alt="Identity" />
                           ) : (
-                            <Users className="text-gray-200" size={32} />
+                            <Users className="text-gray-200" size={40} />
                           )}
                        </div>
                        <div>
-                          <h3 className="text-2xl font-black text-gray-900 uppercase italic tracking-tighter leading-none mb-4 group-hover:text-maroon-800 transition-colors">
+                          <div className="flex items-center gap-3 mb-4">
+                             <div className="w-2 h-2 rounded-full bg-maroon-800 animate-pulse"></div>
+                             <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Active Registry Record</span>
+                          </div>
+                          <h3 className="text-3xl font-bold text-gray-900 tracking-tighter leading-none mb-6 group-hover:text-maroon-800 transition-colors font-['Playfair_Display'] italic">
                             {record.org_name}
                           </h3>
-                          <div className="flex flex-wrap gap-6">
-                             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400">
-                                <Users size={14} className="text-maroon-800" /> {record.adviser_name}
+                          <div className="flex flex-wrap gap-8">
+                             <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                                <UserCheck size={16} className="text-maroon-800" /> Lead: {record.adviser_name}
                              </div>
-                             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400">
-                                <Calendar size={14} className="text-maroon-800" /> {new Date(record.date_established).getFullYear()}
+                             <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                                <Calendar size={16} className="text-maroon-800" /> Established {new Date(record.date_established).getFullYear()}
                              </div>
                           </div>
                        </div>
@@ -241,12 +282,12 @@ const AdminRecognizedOrgs = () => {
                     <div className="flex items-center gap-4">
                        <button 
                         onClick={() => handleDelete(record.id)}
-                        className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-300 hover:text-red-500 transition-all border border-transparent hover:border-red-100"
+                        className="w-14 h-14 rounded-3xl bg-white text-gray-300 hover:text-red-600 hover:shadow-2xl transition-all duration-500 border border-gray-100 flex items-center justify-center group/del"
                        >
-                          <Trash2 size={20} />
+                          <Trash2 size={22} className="group-hover/del:scale-110 transition-transform" />
                        </button>
-                       <button className="w-12 h-12 rounded-2xl bg-gray-900 text-white flex items-center justify-center hover:bg-maroon-900 transition-all shadow-xl shadow-gray-900/20">
-                          <ChevronRight size={20} />
+                       <button className="w-14 h-14 rounded-3xl bg-maroon-950 text-white flex items-center justify-center hover:bg-black transition-all duration-500 shadow-xl shadow-maroon-950/20 group/next">
+                          <ChevronRight size={26} className="group-hover/next:translate-x-1 transition-transform" />
                        </button>
                     </div>
                  </div>

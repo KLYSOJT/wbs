@@ -99,6 +99,8 @@ function App() {
           <Route path="/transparency/tr" element={<Layout><Memorandum tableName="tr" title="TR" /></Layout>} />
           <Route path="/transparency/mooe" element={<Layout><Memorandum tableName="mooe" title="MOOE" /></Layout>} />
           <Route path="/transparency/red-cross" element={<Layout><Memorandum tableName="red_cross" title="Red Cross" /></Layout>} />
+          <Route path="/transparency/sef" element={<Layout><Memorandum tableName="sef" title="SEF Records" /></Layout>} />
+          <Route path="/transparency/year-end-report" element={<Layout><Memorandum tableName="year_end_report" title="Year End Report" /></Layout>} />
           
           <Route path="*" element={<Layout><div className="p-20 text-center">Page under construction</div></Layout>} />
         </Routes>

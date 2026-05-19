@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Menu, X, ChevronDown, UserRound, Sparkles, Command } from 'lucide-react';
+import { Menu, X, ChevronDown, UserRound, ArrowRight } from 'lucide-react';
 import logo from '../assets/imgs/rectologo.png';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const isHomePage = location.pathname === '/';
+  const showDarkNavbar = scrolled || !isHomePage;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -19,7 +20,7 @@ const Navbar = () => {
   const navLinks = [
     { title: 'Home', path: '/' },
     {
-      title: 'Institutional',
+      title: 'About',
       path: '#',
       dropdown: [
         { title: 'Org Structure', path: '/about/organizational-structure' },
@@ -29,13 +30,13 @@ const Navbar = () => {
       ],
     },
     {
-      title: 'Archives',
+      title: 'Resources',
       path: '#',
       dropdown: [
         { title: 'School Memos', path: '/resources/school-memorandum' },
         { title: 'Division Memos', path: '/resources/division-memorandum' },
         { title: 'DepEd Memos', path: '/resources/deped-memorandum' },
-        { title: 'DepEd Orders', path: '/resources/deped-order' },
+        { title: 'DepEd Order', path: '/resources/deped-order' },
         {
           title: 'Learning Modules',
           path: '#',
@@ -68,12 +69,15 @@ const Navbar = () => {
         },
         { title: 'SPTA', path: '/transparency/spta' },
         { title: 'SSLG', path: '/transparency/sslg' },
-        { title: 'BSP / GSP', path: '/transparency/bsp' },
-        { title: 'MOOE / TR', path: '/transparency/mooe' },
+        { title: 'BSP Records', path: '/transparency/bsp' },
+        { title: 'GSP Records', path: '/transparency/gsp' },
+        { title: 'Red Cross', path: '/transparency/red-cross' },
+        { title: 'MOOE', path: '/transparency/mooe' },
+        { title: 'SEF Records', path: '/transparency/sef' },
+        { title: 'Year End Report', path: '/transparency/year-end-report' },
       ],
     },
     { title: 'Research', path: '/research' },
-    { title: 'Location', path: '/location' },
   ];
 
   const toggleDropdown = (title) => {
@@ -84,88 +88,57 @@ const Navbar = () => {
 
   return (
     <nav className={`
-      fixed top-0 z-[100] w-full transition-all duration-500 font-roboto
-      ${scrolled ? 'bg-white/80 backdrop-blur-2xl shadow-[0_10px_40px_rgba(0,0,0,0.05)] py-4' : 'bg-white py-6 border-b border-gray-50'}
+      fixed top-0 z-[100] w-full transition-all duration-500 font-outfit
+      ${showDarkNavbar ? 'bg-white/80 backdrop-blur-xl shadow-sm py-4' : 'bg-transparent py-8'}
     `}>
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <div className="max-w-[1440px] mx-auto px-10 flex items-center justify-between">
         {/* Brand */}
-        <div className="flex items-center gap-12">
-          <Link to="/" className="flex items-center gap-4 group shrink-0">
-             <div className="relative">
-                <div className="absolute inset-0 bg-maroon-800 blur-xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
-                <img src={logo} alt="Logo" className="h-12 w-auto relative z-10 transition-transform group-hover:scale-110" />
-             </div>
-            <div className="flex flex-col leading-none">
-              <span className="text-2xl font-black italic text-gray-900 tracking-tighter group-hover:text-maroon-800 transition-colors">RMNS</span>
-              <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.4em] mt-0.5 italic">Digital Portal</span>
-            </div>
-          </Link>
-
-          {/* Desktop Search */}
-          <div className="hidden xl:flex items-center bg-gray-50 border border-gray-100 rounded-2xl px-6 py-2.5 gap-4 group focus-within:ring-4 focus-within:ring-maroon-50 focus-within:border-maroon-800 transition-all w-80">
-            <Search size={16} className="text-gray-300 group-focus-within:text-maroon-800 transition-colors" />
-            <input
-              type="text"
-              placeholder="Search archives..."
-              className="outline-none text-xs w-full bg-transparent font-black uppercase tracking-widest placeholder:text-gray-300"
-            />
+        <Link to="/" className="flex items-center gap-4 group shrink-0">
+          <div className="bg-white p-2 rounded-2xl shadow-sm group-hover:shadow-lg transition-all">
+            <img src={logo} alt="Logo" className="h-10 w-auto" />
           </div>
-        </div>
-
-        {/* Mobile Toggle */}
-        <button
-          className="lg:hidden p-3 text-maroon-800 bg-gray-50 rounded-2xl"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+          <div className="flex flex-col">
+            <span className={`text-xl font-bold tracking-tight transition-colors duration-500 ${showDarkNavbar ? 'text-gray-900' : 'text-white'}`}>RMNHS</span>
+            <span className={`text-[10px] font-medium uppercase tracking-widest leading-none transition-colors duration-500 ${showDarkNavbar ? 'text-gray-400' : 'text-white/60'}`}>Quezon Province</span>
+          </div>
+        </Link>
 
         {/* Desktop Nav */}
-        <ul className={`
-          fixed inset-0 top-[70px] bg-white flex-col p-10 gap-4 overflow-y-auto lg:static lg:flex lg:flex-row lg:bg-transparent lg:p-0 lg:gap-2 lg:items-center lg:overflow-visible
-          ${isMenuOpen ? 'flex animate-in fade-in slide-in-from-right duration-500' : 'hidden lg:flex'}
+        <div className={`
+          hidden lg:flex items-center gap-1 p-1.5 rounded-full border backdrop-blur-sm transition-all duration-500
+          ${showDarkNavbar ? 'bg-gray-50/50 border-gray-100' : 'bg-white/10 border-white/10'}
         `}>
           {navLinks.map((link) => (
-            <li key={link.title} className="relative group">
+            <div key={link.title} className="relative group">
               {link.dropdown ? (
-                <div className="flex flex-col lg:block">
+                <div className="flex items-center">
                   <button
                     onClick={() => toggleDropdown(link.title)}
                     className={`
-                      flex items-center justify-between w-full lg:w-auto px-6 py-4 lg:px-5 lg:py-2.5 text-xs font-black uppercase tracking-widest text-gray-700 rounded-xl transition-all hover:bg-maroon-900 hover:text-white
-                      ${activeDropdown === link.title ? 'bg-maroon-900 text-white' : ''}
+                      flex items-center gap-1 px-5 py-2 text-[13px] font-medium transition-all rounded-full
+                      ${activeDropdown === link.title 
+                        ? 'bg-white text-maroon-800 shadow-sm' 
+                        : (showDarkNavbar ? 'text-gray-600 hover:text-gray-900 hover:bg-white/50' : 'text-white/80 hover:text-white hover:bg-white/20')
+                      }
                     `}
                   >
                     {link.title}
-                    <ChevronDown size={14} className={`ml-2 transition-transform lg:group-hover:rotate-180 ${activeDropdown === link.title ? 'rotate-180' : ''}`} />
+                    <ChevronDown size={14} className={`transition-transform duration-300 group-hover:rotate-180`} />
                   </button>
 
-                  <ul className={`
-                    lg:absolute lg:top-full lg:left-0 lg:min-w-[280px] lg:bg-white lg:shadow-2xl lg:rounded-[2rem] lg:py-6 lg:mt-4 lg:border lg:border-gray-50 lg:opacity-0 lg:invisible lg:group-hover:opacity-100 lg:group-hover:visible lg:transition-all lg:translate-y-4 lg:group-hover:translate-y-0
-                    ${activeDropdown === link.title ? 'block mt-4 space-y-2' : 'hidden lg:block'}
-                  `}>
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-2 w-4 h-4 bg-white rotate-45 border-l border-t border-gray-50 hidden lg:block"></div>
+                  <ul className="absolute top-full left-0 mt-4 min-w-[240px] bg-white rounded-3xl shadow-2xl border border-gray-100 p-3 opacity-0 invisible translate-y-4 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300">
                     {link.dropdown.map((item) => (
                       <li key={item.title} className="relative group/sub">
                         {item.submenu ? (
-                          <div className="flex flex-col lg:block px-4">
-                            <button
-                              onClick={() => toggleDropdown(item.title)}
-                              className="flex items-center justify-between w-full px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-maroon-800 hover:bg-maroon-50 transition-all"
-                            >
+                          <div className="flex flex-col">
+                            <button className="flex items-center justify-between w-full px-4 py-3 text-[13px] font-medium text-gray-600 hover:text-maroon-800 hover:bg-maroon-50 rounded-2xl transition-all">
                               {item.title}
-                              <ChevronDown size={14} className="lg:-rotate-90" />
+                              <ChevronDown size={14} className="-rotate-90" />
                             </button>
-                            <ul className={`
-                              lg:absolute lg:top-0 lg:left-full lg:min-w-[200px] lg:bg-white lg:shadow-2xl lg:rounded-[1.5rem] lg:py-4 lg:ml-4 lg:border lg:border-gray-50 lg:opacity-0 lg:invisible lg:group-hover/sub:opacity-100 lg:group-hover/sub:visible lg:transition-all lg:translate-x-4 lg:group-hover/sub:translate-x-0
-                              ${activeDropdown === item.title ? 'block mt-2 ml-4 bg-maroon-50/20 rounded-xl overflow-hidden' : 'hidden lg:block'}
-                            `}>
+                            <ul className="absolute top-0 left-full ml-2 min-w-[200px] bg-white rounded-3xl shadow-2xl border border-gray-100 p-3 opacity-0 invisible translate-x-4 group-hover/sub:opacity-100 group-hover/sub:visible group-hover/sub:translate-x-0 transition-all duration-300">
                               {item.submenu.map((sub) => (
                                 <li key={sub.title}>
-                                  <Link
-                                    to={sub.path}
-                                    className="block px-8 py-3 text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-maroon-800 hover:translate-x-2 transition-all"
-                                  >
+                                  <Link to={sub.path} className="block px-4 py-2.5 text-[12px] font-medium text-gray-500 hover:text-maroon-800 hover:bg-maroon-50 rounded-xl transition-all">
                                     {sub.title}
                                   </Link>
                                 </li>
@@ -173,14 +146,9 @@ const Navbar = () => {
                             </ul>
                           </div>
                         ) : (
-                          <div className="px-4">
-                             <Link
-                              to={item.path}
-                              className="block px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-maroon-800 hover:bg-maroon-50 transition-all"
-                            >
-                              {item.title}
-                            </Link>
-                          </div>
+                          <Link to={item.path} className="block px-4 py-3 text-[13px] font-medium text-gray-600 hover:text-maroon-800 hover:bg-maroon-50 rounded-2xl transition-all">
+                            {item.title}
+                          </Link>
                         )}
                       </li>
                     ))}
@@ -190,30 +158,72 @@ const Navbar = () => {
                 <Link
                   to={link.path}
                   className={`
-                    block px-6 py-4 lg:px-5 lg:py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all
-                    ${location.pathname === link.path ? 'bg-maroon-900 text-white shadow-xl' : 'text-gray-700 hover:bg-maroon-900 hover:text-white'}
+                    px-5 py-2 text-[13px] font-medium rounded-full transition-all
+                    ${location.pathname === link.path 
+                      ? 'bg-white text-maroon-800 shadow-sm' 
+                      : (showDarkNavbar ? 'text-gray-600 hover:text-gray-900 hover:bg-white/50' : 'text-white/80 hover:text-white hover:bg-white/20')
+                    }
                   `}
                 >
                   {link.title}
                 </Link>
               )}
-            </li>
+            </div>
           ))}
+        </div>
 
-          {/* User Console Link */}
-          <li className="lg:ml-4">
-            <Link
-              to="/admin/login"
-              className="flex items-center gap-3 bg-gray-900 text-white px-6 py-4 lg:py-3 lg:px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-maroon-900 transition-all shadow-xl shadow-gray-900/10 active:scale-95"
-            >
-              <Command size={16} />
-              <span>Admin Console</span>
-            </Link>
-          </li>
-        </ul>
+        {/* Action Bar */}
+        <div className="flex items-center gap-4">
+          <button className={`hidden lg:flex items-center gap-2 premium-btn !py-2 !px-6 !text-sm ${showDarkNavbar ? 'premium-btn-primary' : 'bg-white text-maroon-800 hover:bg-maroon-50'}`}>
+            Enroll Now <ArrowRight size={16} />
+          </button>
+          
+          <Link to="/admin/login" className={`p-3 rounded-2xl transition-all border ${showDarkNavbar ? 'text-gray-400 bg-gray-50 border-gray-100 hover:text-maroon-800' : 'text-white bg-white/10 border-white/10 hover:bg-white/20'}`}>
+            <UserRound size={20} />
+          </Link>
+
+          <button
+            className={`lg:hidden p-3 rounded-2xl transition-colors ${showDarkNavbar ? 'text-gray-900 bg-gray-50' : 'text-white bg-white/10'}`}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <div className={`
+        fixed inset-0 top-[88px] bg-white z-50 p-6 overflow-y-auto lg:hidden transition-all duration-500
+        ${isMenuOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}
+      `}>
+         <div className="space-y-6">
+            {navLinks.map(link => (
+              <div key={link.title}>
+                 {link.dropdown ? (
+                    <div className="space-y-2">
+                       <button onClick={() => toggleDropdown(link.title)} className="flex items-center justify-between w-full text-xl font-bold text-gray-900">
+                          {link.title}
+                          <ChevronDown size={20} className={activeDropdown === link.title ? 'rotate-180' : ''} />
+                       </button>
+                       {activeDropdown === link.title && (
+                          <div className="pl-4 space-y-3 mt-2 border-l-2 border-maroon-100">
+                             {link.dropdown.map(item => (
+                                <Link key={item.title} to={item.path} className="block text-gray-500 font-medium py-1">{item.title}</Link>
+                             ))}
+                          </div>
+                       )}
+                    </div>
+                 ) : (
+                    <Link to={link.path} className="block text-xl font-bold text-gray-900">{link.title}</Link>
+                 )}
+              </div>
+            ))}
+            <button className="w-full premium-btn premium-btn-primary mt-10">Enroll Now</button>
+         </div>
       </div>
     </nav>
   );
 };
 
 export default Navbar;
+

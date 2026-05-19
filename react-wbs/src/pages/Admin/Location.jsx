@@ -5,12 +5,15 @@ import {
   Phone, 
   Mail, 
   Clock, 
-  Save, 
   Loader2, 
-  CheckCircle2, 
   Navigation,
   Globe,
-  Settings
+  Settings,
+  ArrowUpRight,
+  ShieldCheck,
+  Compass,
+  Map as MapIcon,
+  Fingerprint
 } from 'lucide-react';
 
 const AdminLocation = () => {
@@ -67,96 +70,148 @@ const AdminLocation = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-12 pb-20 font-roboto">
-      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 bg-white p-10 rounded-[3rem] shadow-2xl shadow-gray-200/50 border border-gray-100 relative overflow-hidden">
+    <div className="max-w-5xl mx-auto space-y-12 pb-20 font-outfit">
+      {/* Cinematic Identity Header */}
+      <div className="bg-white p-12 rounded-[3.5rem] shadow-2xl shadow-gray-200/40 border border-gray-100 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(128,0,0,0.03)_0%,transparent_70%)] pointer-events-none transition-transform duration-1000 group-hover:scale-110"></div>
+        
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 relative z-10">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+               <span className="text-maroon-800 font-bold uppercase tracking-[0.5em] text-[10px] bg-maroon-50 px-5 py-2 rounded-full">
+                 Institutional Access
+               </span>
+               <div className="h-px w-12 bg-maroon-100"></div>
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 tracking-tighter leading-none font-['Playfair_Display'] italic">
+              Spatial <span className="text-maroon-800">Identity</span>
+            </h1>
+            <p className="text-gray-400 font-medium italic text-lg max-w-2xl">
+              Official geographic coordination and contact protocols for the administrative and institutional hub.
+            </p>
+          </div>
+
+          <div className="relative bg-maroon-950 px-10 py-8 rounded-[2.5rem] shadow-2xl shadow-maroon-950/20 group/stat hover:bg-black transition-all duration-500 border border-white/5">
+             <div className="flex items-center gap-6">
+                <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-maroon-500 border border-white/10 group-hover/stat:scale-110 transition-transform duration-500">
+                   <MapPin size={28} />
+                </div>
+                <div className="text-right">
+                   <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Status</p>
+                   <p className="text-2xl font-bold text-white tracking-tighter font-['Playfair_Display'] italic">GPS Calibrated</p>
+                </div>
+             </div>
+          </div>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="bg-white rounded-[4rem] p-12 shadow-2xl shadow-gray-200/40 border border-gray-100 relative overflow-hidden group/form">
+        <div className="absolute top-0 right-0 p-12 opacity-[0.02] pointer-events-none group-hover/form:opacity-10 transition-opacity">
+           <Compass size={150} />
+        </div>
+
         <div className="relative z-10">
-          <span className="text-maroon-800 font-black uppercase tracking-[0.4em] text-[10px] mb-4 block italic">Institutional Access</span>
-          <h1 className="text-5xl font-black text-gray-900 uppercase italic tracking-tighter leading-none">Location & Contact</h1>
-          <p className="text-gray-400 mt-4 font-medium italic">Update the official geographic and contact records for the institution.</p>
-        </div>
-        <div className="relative z-10 bg-maroon-50 p-6 rounded-[2rem] border border-maroon-100">
-           <MapPin className="text-maroon-800" size={32} />
-        </div>
-      </header>
-
-      <form onSubmit={handleSubmit} className="bg-white rounded-[3.5rem] p-12 shadow-2xl shadow-gray-200/50 border border-gray-100">
-        <div className="flex items-center gap-4 mb-12">
-          <div className="w-12 h-12 bg-gray-900 rounded-2xl flex items-center justify-center text-white">
-            <Settings size={24} />
-          </div>
-          <h2 className="text-2xl font-black text-gray-900 uppercase italic tracking-tighter">Configuration Portal</h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="space-y-8">
-            <div>
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-4 flex items-center gap-2">
-                <MapPin size={14} className="text-maroon-800" /> Physical Address
-              </label>
-              <textarea 
-                value={data.address}
-                onChange={(e) => setData({...data, address: e.target.value})}
-                className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-bold focus:bg-white focus:ring-4 focus:ring-maroon-50 outline-none transition-all h-24 resize-none"
-              />
+          <div className="flex items-center gap-6 mb-16">
+            <div className="w-16 h-16 bg-maroon-950 rounded-3xl flex items-center justify-center text-white shadow-2xl shadow-maroon-950/20 group-hover/form:rotate-12 transition-transform duration-700">
+              <Settings size={32} />
             </div>
-
             <div>
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-4 flex items-center gap-2">
-                <Phone size={14} className="text-maroon-800" /> Contact Number
-              </label>
-              <input 
-                type="text"
-                value={data.phone}
-                onChange={(e) => setData({...data, phone: e.target.value})}
-                className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-bold focus:bg-white focus:ring-4 focus:ring-maroon-50 outline-none transition-all"
-              />
+               <h2 className="text-3xl font-bold text-gray-900 tracking-tighter font-['Playfair_Display'] italic">Configuration Console</h2>
+               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Identity Protocol v1.2</p>
             </div>
           </div>
 
-          <div className="space-y-8">
-            <div>
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-4 flex items-center gap-2">
-                <Mail size={14} className="text-maroon-800" /> Official Email
-              </label>
-              <input 
-                type="email"
-                value={data.email}
-                onChange={(e) => setData({...data, email: e.target.value})}
-                className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-bold focus:bg-white focus:ring-4 focus:ring-maroon-50 outline-none transition-all"
-              />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="space-y-10">
+              <div className="group/input">
+                <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 mb-4 flex items-center gap-3 group-focus-within/input:text-maroon-800 transition-colors">
+                  <MapIcon size={16} className="text-maroon-800" /> Physical Address
+                </label>
+                <textarea 
+                  value={data.address}
+                  onChange={(e) => setData({...data, address: e.target.value})}
+                  placeholder="Enter official institutional address..."
+                  className="w-full bg-gray-50 border border-gray-100 rounded-[2.5rem] px-8 py-6 text-sm font-bold focus:bg-white focus:ring-4 focus:ring-maroon-50 focus:border-maroon-800 outline-none transition-all h-32 resize-none placeholder:text-gray-300"
+                />
+              </div>
+
+              <div className="group/input">
+                <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 mb-4 flex items-center gap-3 group-focus-within/input:text-maroon-800 transition-colors">
+                  <Phone size={16} className="text-maroon-800" /> Contact Number
+                </label>
+                <input 
+                  type="text"
+                  value={data.phone}
+                  onChange={(e) => setData({...data, phone: e.target.value})}
+                  placeholder="Official mobile or landline..."
+                  className="w-full bg-gray-50 border border-gray-100 rounded-full px-8 py-5 text-sm font-bold focus:bg-white focus:ring-4 focus:ring-maroon-50 focus:border-maroon-800 outline-none transition-all placeholder:text-gray-300"
+                />
+              </div>
             </div>
 
-            <div>
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-4 flex items-center gap-2">
-                <Clock size={14} className="text-maroon-800" /> Administrative Hours
-              </label>
-              <input 
-                type="text"
-                value={data.hours}
-                onChange={(e) => setData({...data, hours: e.target.value})}
-                className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-bold focus:bg-white focus:ring-4 focus:ring-maroon-50 outline-none transition-all"
-              />
+            <div className="space-y-10">
+              <div className="group/input">
+                <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 mb-4 flex items-center gap-3 group-focus-within/input:text-maroon-800 transition-colors">
+                  <Mail size={16} className="text-maroon-800" /> Official Email
+                </label>
+                <input 
+                  type="email"
+                  value={data.email}
+                  onChange={(e) => setData({...data, email: e.target.value})}
+                  placeholder="institutional@domain.gov"
+                  className="w-full bg-gray-50 border border-gray-100 rounded-full px-8 py-5 text-sm font-bold focus:bg-white focus:ring-4 focus:ring-maroon-50 focus:border-maroon-800 outline-none transition-all placeholder:text-gray-300"
+                />
+              </div>
+
+              <div className="group/input">
+                <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 mb-4 flex items-center gap-3 group-focus-within/input:text-maroon-800 transition-colors">
+                  <Clock size={16} className="text-maroon-800" /> Administrative Hours
+                </label>
+                <input 
+                  type="text"
+                  value={data.hours}
+                  onChange={(e) => setData({...data, hours: e.target.value})}
+                  placeholder="e.g. Mon - Fri • 7:30 - 4:30"
+                  className="w-full bg-gray-50 border border-gray-100 rounded-full px-8 py-5 text-sm font-bold focus:bg-white focus:ring-4 focus:ring-maroon-50 focus:border-maroon-800 outline-none transition-all placeholder:text-gray-300"
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="mt-12 pt-12 border-t border-gray-50">
-          <button 
-            type="submit"
-            disabled={submitting}
-            className="w-full py-6 rounded-[2rem] bg-maroon-900 text-white font-black uppercase tracking-[0.3em] text-xs flex items-center justify-center gap-4 transition-all shadow-2xl hover:bg-maroon-800 active:scale-95"
-          >
-            {submitting ? <Loader2 className="animate-spin" size={20} /> : <><Save size={20} /> Commit System Updates</>}
-          </button>
+          <div className="mt-16 pt-12 border-t border-gray-100 flex flex-col items-center">
+            <button 
+              type="submit"
+              disabled={submitting}
+              className="w-full max-w-2xl py-7 rounded-full bg-maroon-950 text-white font-bold uppercase tracking-[0.5em] text-[10px] flex items-center justify-center gap-6 transition-all duration-500 shadow-2xl shadow-maroon-950/20 hover:bg-black active:scale-95 group/submit disabled:opacity-20"
+            >
+              {submitting ? (
+                <Loader2 className="animate-spin" size={24} />
+              ) : (
+                <>
+                  <Fingerprint size={24} className="text-maroon-500" />
+                  Authenticate & Commit Updates
+                  <ArrowUpRight size={20} className="opacity-40 group-hover/submit:opacity-100 group-hover/submit:translate-x-1 group-hover/submit:-translate-y-1 transition-all" />
+                </>
+              )}
+            </button>
+            <p className="mt-6 text-[10px] font-bold text-gray-300 uppercase tracking-widest italic">
+              * Changes will be propagated to the public-facing portal immediately.
+            </p>
+          </div>
         </div>
       </form>
 
-      <div className="flex items-center justify-center gap-8">
-         <div className="flex items-center gap-2 text-[10px] font-black text-gray-300 uppercase tracking-widest">
-            <Globe size={14} /> Regional Synchronized
+      <div className="flex flex-wrap items-center justify-center gap-12 opacity-40 hover:opacity-100 transition-opacity duration-1000">
+         <div className="flex items-center gap-3 text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">
+            <Globe size={18} className="text-maroon-800" /> Regional Synchronized
          </div>
-         <div className="flex items-center gap-2 text-[10px] font-black text-gray-300 uppercase tracking-widest">
-            <Navigation size={14} /> GPS Calibrated
+         <div className="h-1 w-1 bg-gray-300 rounded-full"></div>
+         <div className="flex items-center gap-3 text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">
+            <Navigation size={18} className="text-maroon-800" /> Precise GPS Calibration
+         </div>
+         <div className="h-1 w-1 bg-gray-300 rounded-full"></div>
+         <div className="flex items-center gap-3 text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">
+            <ShieldCheck size={18} className="text-maroon-800" /> SSL Secure Data Transmission
          </div>
       </div>
     </div>
