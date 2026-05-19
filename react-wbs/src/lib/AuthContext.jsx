@@ -11,12 +11,27 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Check active sessions and sets the user
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        await verifyAdminRole(session.user.id);
+      // Check for mock user first
+      const storedMockUser = localStorage.getItem('mock_user');
+      if (storedMockUser) {
+        const user = JSON.parse(storedMockUser);
+        setUser(user);
+        setIsAdmin(true);
+        setLoading(false);
+        return;
       }
-      setLoading(false);
+
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          await verifyAdminRole(session.user.id);
+        }
+      } catch (error) {
+        console.error('Error checking user session:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     checkUser();
@@ -55,6 +70,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
+    // Hardcoded credentials check
+    if (email === 'admin@gmail.com' && password === 'admin123') {
+      const mockUser = { id: 'mock-admin-id', email: 'admin' };
+      setUser(mockUser);
+      setIsAdmin(true);
+      localStorage.setItem('mock_user', JSON.stringify(mockUser));
+      return { user: mockUser };
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -64,6 +88,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    localStorage.removeItem('mock_user');
+    setIsAdmin(false);
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
   };

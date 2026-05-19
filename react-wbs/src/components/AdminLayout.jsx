@@ -17,7 +17,8 @@ import {
   Cpu,
   Globe,
   Terminal,
-  CircleDot
+  CircleDot,
+  Lock
 } from 'lucide-react';
 import logo from '../assets/imgs/rectologo.png';
 
@@ -162,7 +163,7 @@ const AdminLayout = ({ children }) => {
               <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-[4px] border-black shadow-lg"></div>
             </div>
             <div className="flex-1 min-w-0 relative z-10">
-              <p className="text-[14px] font-bold truncate text-white/90">{user.email?.split('@')[0]}</p>
+              <p className="text-[14px] font-bold truncate text-white/90">{user?.email?.split('@')?.[0] || 'Admin'}</p>
               <div className="flex items-center gap-2 mt-1 opacity-40">
                  <Lock size={10} className="text-maroon-500" />
                  <p className="text-[9px] font-bold uppercase tracking-widest italic">Auth Protocol v2</p>

@@ -122,7 +122,7 @@ const AdminDashboard = () => {
               Management <span className="text-maroon-800">Overview</span>
             </h1>
             <p className="text-gray-400 font-medium italic text-lg">
-              Authorized session for <span className="text-gray-900 font-bold">@{user?.email?.split('@')[0]}</span>
+              Authorized session for <span className="text-gray-900 font-bold">@{user?.email?.split('@')?.[0] || 'Admin'}</span>
             </p>
           </div>
 
