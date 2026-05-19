@@ -1,7 +1,7 @@
 const HeroWaveBackground = () => (
   <>
     <svg
-      className="absolute inset-0 h-full w-full opacity-52"
+      className="pointer-events-none absolute inset-0 h-full w-full opacity-52"
       viewBox="0 0 1440 520"
       preserveAspectRatio="none"
       aria-hidden="true"
@@ -38,7 +38,7 @@ const HeroWaveBackground = () => (
         filter="url(#hero-wave-soft-blur)"
       />
     </svg>
-    <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.16),transparent_34%),radial-gradient(circle_at_22%_82%,rgba(255,218,185,0.12),transparent_32%)]"></div>
+    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.16),transparent_34%),radial-gradient(circle_at_22%_82%,rgba(255,218,185,0.12),transparent_32%)]"></div>
   </>
 );
 

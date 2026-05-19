@@ -7,7 +7,7 @@ import schoolseal from '../assets/imgs/schoolseal.png';
 const Footer = () => {
   return (
     <footer className="bg-white font-outfit border-t border-gray-100">
-      <div className="max-w-[1440px] mx-auto px-10 py-24">
+      <div className="user-screen-container py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
           
           {/* Brand Column */}
@@ -111,8 +111,8 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-gray-50 py-10 px-10">
-         <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+      <div className="border-t border-gray-50 py-10">
+         <div className="user-screen-container flex flex-col md:flex-row justify-between items-center gap-6">
             <p className="text-[11px] font-medium text-gray-400 uppercase tracking-[0.2em]">
               &copy; {new Date().getFullYear()} Recto Memorial National High School • All Rights Reserved
             </p>

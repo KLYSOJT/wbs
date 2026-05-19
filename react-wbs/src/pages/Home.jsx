@@ -203,7 +203,7 @@ const Home = () => {
 
       {/* Stats Section */}
       <section className="py-16">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
+        <div className="user-screen-container">
            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {stats.map((stat, idx) => (
                 <div key={idx} className="group flex flex-col gap-2 rounded-[1.5rem] bg-white p-6 shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-maroon-950/10">
@@ -222,7 +222,7 @@ const Home = () => {
 
       {/* Announcements */}
       <section className="announcements py-24">
-        <div className="announcements-container mx-auto max-w-[1440px] px-6 lg:px-10">
+        <div className="announcements-container user-screen-container">
           <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">School Updates</p>
@@ -257,7 +257,7 @@ const Home = () => {
 
       {/* Latest News */}
       <section className="latest-news bg-white py-24">
-        <div className="latest-news-container mx-auto max-w-[1440px] px-6 lg:px-10">
+        <div className="latest-news-container user-screen-container">
           <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-[#fbfbfa] p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">Campus Stories</p>
@@ -289,7 +289,7 @@ const Home = () => {
       {/* Featured Video */}
       <section className="featured-video relative overflow-hidden bg-[radial-gradient(circle_at_88%_16%,rgba(255,255,255,0.10)_0%,transparent_30%),linear-gradient(135deg,#210000_0%,#430505_42%,#120505_72%,#030303_100%)] py-24 text-white">
         <HeroWaveBackground />
-        <div className="featured-video-container relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
+        <div className="featured-video-container user-screen-container relative z-10">
           <div className="featured-video-heading max-w-3xl mb-16">
             <span className="featured-video-kicker text-[10px] font-bold uppercase tracking-[0.3em] text-maroon-200">
               School Media
@@ -370,7 +370,7 @@ const Home = () => {
 
       {/* Facilities Bento Grid */}
       <section className="bg-white py-24">
-         <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
+         <div className="user-screen-container">
             <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-[#fbfbfa] p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
                <div>
                  <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">Campus Facilities</p>

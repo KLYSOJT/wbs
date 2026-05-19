@@ -66,7 +66,7 @@ const LearningMaterials = ({ grade }) => {
         <HeroWaveBackground />
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#f7f7f5] to-transparent"></div>
 
-        <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
+        <div className="user-screen-container relative z-10">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
             <div className="max-w-4xl">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-white/70 backdrop-blur-xl">
@@ -104,7 +104,7 @@ const LearningMaterials = ({ grade }) => {
       </section>
 
       <section className="relative -mt-8 pb-28">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
+        <div className="user-screen-container">
           <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">Learning Directory</p>

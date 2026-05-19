@@ -124,58 +124,56 @@ const AdminLayout = ({ children }) => {
   return (
     <div className="min-h-screen bg-gray-50 flex font-outfit overflow-hidden">
       {/* Admin Sidebar */}
-      <aside className="w-80 bg-gradient-to-b from-[#3A0000] via-[#4A0000] to-black text-white flex flex-col fixed inset-y-0 z-50 shadow-2xl shadow-maroon-950/20 border-r border-white/10">
+      <aside className="w-80 bg-[#140707] text-white flex flex-col fixed inset-y-0 z-50 shadow-2xl shadow-maroon-950/20 border-r border-white/10">
         {/* Sidebar Identity */}
-        <div className="px-7 py-7 flex items-center gap-4 border-b border-white/10">
-          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-black/10">
-             <img src={logo} alt="RMNHS" className="w-9 h-9 object-contain" />
-          </div>
+        <div className="px-7 py-7 flex items-center gap-4 border-b border-white/10 bg-gradient-to-b from-white/[0.07] to-transparent">
+          <img src={logo} alt="RMNHS" className="w-12 h-12 object-contain drop-shadow-[0_10px_24px_rgba(0,0,0,0.28)] shrink-0" />
           <div className="min-w-0">
-            <h1 className="text-lg font-bold tracking-tight leading-none">RMNHS Admin</h1>
-            <p className="text-[11px] font-medium uppercase tracking-widest text-white/50 mt-1">Quezon Province</p>
+            <h1 className="text-lg font-bold tracking-tight leading-none text-white">RMNHS Admin</h1>
+            <p className="text-[11px] font-medium uppercase tracking-widest text-white/45 mt-1.5">Quezon Province</p>
           </div>
         </div>
 
         {/* Management Navigation */}
         <nav className="flex-1 px-4 py-5 space-y-1 overflow-y-auto custom-scrollbar">
           {navItems.map((item, idx) => (
-            <div key={idx} className="space-y-1 pb-3 last:pb-0">
+            <div key={idx} className="space-y-1.5 pb-3 last:pb-0">
               {item.subItems ? (
                 <>
                   <div className="flex items-center gap-3 px-3 pt-3 pb-2">
-                    <span className={`${isItemActive(item) ? 'text-white' : 'text-white/45'}`}>{item.icon}</span>
-                    <span className={`font-semibold uppercase tracking-[0.18em] text-[11px] ${isItemActive(item) ? 'text-white' : 'text-white/45'}`}>{item.title}</span>
+                    <span className={`${isItemActive(item) ? 'text-white' : 'text-white/40'}`}>{item.icon}</span>
+                    <span className={`font-semibold uppercase tracking-[0.18em] text-[11px] ${isItemActive(item) ? 'text-white' : 'text-white/40'}`}>{item.title}</span>
                   </div>
                   {item.subItems.map((sub, sIdx) => (
                     <div key={sIdx} className="space-y-1">
                       <Link
                         to={sub.path}
                         className={`
-                          flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-300 group
+                          flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group border
                           ${isItemActive(sub) 
-                            ? 'bg-white text-maroon-900 shadow-sm' 
-                            : 'text-white/70 hover:bg-white/10 hover:text-white'}
+                            ? 'bg-white text-maroon-950 border-white shadow-lg shadow-black/10' 
+                            : 'text-white/68 border-transparent hover:bg-white/[0.07] hover:text-white hover:border-white/10'}
                         `}
                       >
                         <div className="flex items-center gap-3 min-w-0">
-                          {sub.icon || <CircleDot size={9} className={`shrink-0 ${isItemActive(sub) ? 'text-maroon-700' : 'text-white/25 group-hover:text-white/70'}`} />}
+                          {sub.icon || <CircleDot size={9} className={`shrink-0 ${isItemActive(sub) ? 'text-maroon-800' : 'text-white/22 group-hover:text-white/70'}`} />}
                           <span className="font-medium text-[13px] leading-tight truncate">{sub.title}</span>
                         </div>
                         {isItemActive(sub) && (
-                           <div className="w-1.5 h-1.5 rounded-full bg-maroon-700 shrink-0"></div>
+                           <div className="w-1.5 h-1.5 rounded-full bg-maroon-800 shrink-0"></div>
                         )}
                       </Link>
                       {sub.subItems && (
-                        <div className="ml-5 pl-3 border-l border-white/10 space-y-1">
+                        <div className="ml-5 pl-3 border-l border-white/10 space-y-1.5 py-1">
                           {sub.subItems.map((child, cIdx) => (
                             <Link
                               key={cIdx}
                               to={child.path}
                               className={`
-                                flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 group/child
+                                flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-300 group/child
                                 ${isItemActive(child)
-                                  ? 'text-white bg-white/15'
-                                  : 'text-white/55 hover:text-white hover:bg-white/10'}
+                                  ? 'text-white bg-white/[0.12]'
+                                  : 'text-white/55 hover:text-white hover:bg-white/[0.07]'}
                               `}
                             >
                               <CircleDot size={7} className={`shrink-0 ${isItemActive(child) ? 'text-white' : 'text-white/20 group-hover/child:text-white/70'}`} />
@@ -191,10 +189,10 @@ const AdminLayout = ({ children }) => {
                 <Link
                   to={item.path}
                   className={`
-                    flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group
+                    flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group border
                     ${isItemActive(item) 
-                      ? 'bg-white text-maroon-900 shadow-sm' 
-                      : 'text-white/70 hover:bg-white/10 hover:text-white'}
+                      ? 'bg-white text-maroon-950 border-white shadow-lg shadow-black/10' 
+                      : 'text-white/68 border-transparent hover:bg-white/[0.07] hover:text-white hover:border-white/10'}
                   `}
                 >
                   <span className={`${isItemActive(item) ? 'text-maroon-800' : 'text-white/55 group-hover:text-white'}`}>
@@ -208,9 +206,9 @@ const AdminLayout = ({ children }) => {
         </nav>
 
         {/* Sidebar User */}
-        <div className="p-5 border-t border-white/10 bg-black/20">
-          <div className="flex items-center gap-3 p-3 bg-white/10 rounded-2xl mb-3 border border-white/10">
-            <div className="w-10 h-10 bg-white text-maroon-900 rounded-xl flex items-center justify-center font-bold text-base shrink-0">
+        <div className="p-5 border-t border-white/10 bg-black/25">
+          <div className="flex items-center gap-3 p-3 bg-white/[0.06] rounded-xl mb-3 border border-white/10">
+            <div className="w-10 h-10 bg-white text-maroon-950 rounded-lg flex items-center justify-center font-bold text-base shrink-0">
               {user?.email?.[0]?.toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
@@ -223,7 +221,7 @@ const AdminLayout = ({ children }) => {
           </div>
           <button 
             onClick={logout}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-white/10 text-white/75 hover:bg-white hover:text-maroon-900 transition-all duration-300 font-semibold text-sm border border-white/10"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-transparent text-white/72 hover:bg-white hover:text-maroon-950 transition-all duration-300 font-semibold text-sm border border-white/10"
           >
             <LogOut size={17} /> Logout
           </button>

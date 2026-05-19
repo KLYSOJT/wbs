@@ -92,6 +92,7 @@ const Navbar = () => {
       ],
     },
     { title: 'Research', path: '/research' },
+    { title: 'Location', path: '/location' },
   ];
 
   const toggleDropdown = (title) => {
@@ -113,7 +114,7 @@ const Navbar = () => {
         `}
       />
 
-      <div className="relative z-10 w-full px-4 lg:px-6 flex items-center justify-between">
+      <div className="user-navbar-container relative z-10 flex items-center justify-between gap-4">
         {/* Brand */}
         <Link to="/" className="flex items-center gap-4 group shrink-0">
           <img
@@ -197,8 +198,8 @@ const Navbar = () => {
         </div>
 
         {/* Action Bar */}
-        <div className="flex items-center gap-4">
-          <form className="hidden xl:flex items-center gap-2 w-56 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-white backdrop-blur-md transition-all duration-500 focus-within:border-white/30 focus-within:bg-white/15">
+        <div className="flex items-center gap-3">
+          <form className="hidden xl:flex items-center gap-2 w-64 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-white backdrop-blur-md transition-all duration-500 focus-within:border-white/30 focus-within:bg-white/15">
             <Search size={16} className="text-white/60 shrink-0" />
             <input
               type="search"
