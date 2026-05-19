@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { Calendar, ArrowRight, Award, Users, GraduationCap, Clock } from 'lucide-react';
+import { Calendar, ArrowRight, Award, Users, GraduationCap, Clock, Megaphone, Newspaper } from 'lucide-react';
 import welcomeImg from '../assets/imgs/welcome.png';
 import makingImg from '../assets/imgs/making.png';
 import tatakrectoImg from '../assets/imgs/tatakrecto.png';
@@ -10,17 +10,27 @@ import coveredcourtImg from '../assets/imgs/coveredcourt.jpg';
 
 const Home = () => {
   const [announcements, setAnnouncements] = useState([]);
+  const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [announcementPage, setAnnouncementPage] = useState(1);
+  const [newsPage, setNewsPage] = useState(1);
   
   const slides = [welcomeImg, makingImg, tatakrectoImg];
+  const itemsPerPage = 3;
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const { data: annData } = await supabase.from('announcements').select('*').limit(6).order('created_at', { ascending: false });
+        const [annRes, newsRes] = await Promise.all([
+          supabase.from('announcements').select('*').order('created_at', { ascending: false }),
+          supabase.from('news').select('*').order('created_at', { ascending: false }),
+        ]);
+        const annData = annRes.data;
+        const newsData = newsRes.data;
         if (annData) setAnnouncements(annData);
+        if (newsData) setNews(newsData);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -42,6 +52,80 @@ const Home = () => {
     { icon: <Award className="text-maroon-800" />, label: 'Years of Excellence', value: '25+' },
     { icon: <Clock className="text-maroon-800" />, label: 'Passing Rate', value: '98%' },
   ];
+
+  const paginateItems = (items, page) => {
+    const startIndex = (page - 1) * itemsPerPage;
+    return items.slice(startIndex, startIndex + itemsPerPage);
+  };
+
+  const renderPagination = (totalItems, currentPage, setPage) => {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    if (totalPages <= 1) return null;
+
+    return Array.from({ length: totalPages }, (_, index) => {
+      const pageNumber = index + 1;
+
+      return (
+        <button
+          key={pageNumber}
+          type="button"
+          onClick={() => setPage(pageNumber)}
+          className={`w-10 h-10 rounded-full text-sm font-bold transition-all duration-300 ${
+            currentPage === pageNumber
+              ? 'bg-maroon-800 text-white shadow-lg shadow-maroon-900/20'
+              : 'bg-white text-gray-500 border border-gray-100 hover:text-maroon-800 hover:border-maroon-200'
+          }`}
+        >
+          {pageNumber}
+        </button>
+      );
+    });
+  };
+
+  const AnnouncementCard = ({ item }) => (
+    <article className="group bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-500">
+      <div className="h-64 bg-gray-100 overflow-hidden">
+        {item.image_url ? (
+          <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-maroon-50 text-maroon-800">
+            <Megaphone size={48} />
+          </div>
+        )}
+      </div>
+      <div className="p-8 space-y-4">
+        <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">
+          <Calendar size={12} />
+          {new Date(item.created_at).toLocaleDateString()}
+        </div>
+        <h3 className="text-2xl font-bold text-gray-900 tracking-tight leading-tight">{item.title}</h3>
+        <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">{item.description}</p>
+      </div>
+    </article>
+  );
+
+  const NewsCard = ({ item }) => (
+    <article className="group bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-500">
+      <div className="h-64 bg-gray-100 overflow-hidden">
+        {item.image_url ? (
+          <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-950 text-white">
+            <Newspaper size={48} />
+          </div>
+        )}
+      </div>
+      <div className="p-8 space-y-4">
+        <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">
+          <Calendar size={12} />
+          {new Date(item.created_at).toLocaleDateString()}
+        </div>
+        <h3 className="text-2xl font-bold text-gray-900 tracking-tight leading-tight">{item.title}</h3>
+        <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">{item.description}</p>
+      </div>
+    </article>
+  );
 
   return (
     <div className="flex flex-col w-full bg-white font-outfit overflow-x-hidden">
@@ -106,39 +190,56 @@ const Home = () => {
       </section>
 
       {/* Announcements */}
-      <section className="py-32 bg-subsurface">
-        <div className="max-w-[1440px] mx-auto px-10">
-           <div className="flex items-end justify-between mb-16">
-              <div className="space-y-4">
-                 <h2 className="text-4xl font-bold text-gray-900 tracking-tight italic">Latest Updates & Announcements</h2>
-                 <p className="text-gray-500 max-w-lg">Stay informed with the latest happenings, academic schedules, and school events at RMNHS.</p>
+      <section className="announcements py-32 bg-subsurface">
+        <div className="announcements-container max-w-[1440px] mx-auto px-10">
+          <h2 className="announcements-title text-4xl font-bold text-gray-900 tracking-tight italic mb-16">Announcements</h2>
+          
+          <div className="announcements-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="announcementsGrid">
+            {loading ? (
+              [1, 2, 3].map((item) => (
+                <div key={item} className="h-[420px] bg-gray-200 animate-pulse rounded-[2rem]"></div>
+              ))
+            ) : announcements.length > 0 ? (
+              paginateItems(announcements, announcementPage).map((announcement) => (
+                <AnnouncementCard key={announcement.id} item={announcement} />
+              ))
+            ) : (
+              <div className="col-span-full py-20 text-center bg-white rounded-[2rem] border border-dashed border-gray-200">
+                <p className="text-sm font-medium text-gray-400">No announcements available.</p>
               </div>
-              <div className="flex gap-4">
-                 <button className="w-12 h-12 rounded-full border-2 border-gray-100 flex items-center justify-center hover:bg-white hover:shadow-lg transition-all"><ArrowRight className="rotate-180" size={20} /></button>
-                 <button className="w-12 h-12 rounded-full border-2 border-gray-100 flex items-center justify-center hover:bg-white hover:shadow-lg transition-all"><ArrowRight size={20} /></button>
-              </div>
-           </div>
+            )}
+          </div>
 
-           <div className="flex gap-8 overflow-x-auto pb-10 no-scrollbar">
-              {loading ? (
-                [1,2,3,4].map(i => <div key={i} className="min-w-[400px] h-[500px] bg-gray-200 animate-pulse rounded-[2.5rem]"></div>)
-              ) : announcements.map((ann) => (
-                <div key={ann.id} className="min-w-[400px] group cursor-pointer">
-                   <div className="relative h-[450px] rounded-[2.5rem] overflow-hidden mb-6">
-                      <img src={ann.image_url || makingImg} alt={ann.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
-                      <div className="absolute bottom-8 left-8 right-8 text-white space-y-2">
-                         <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] opacity-80">
-                            <Calendar size={12} />
-                            {new Date(ann.created_at).toLocaleDateString()}
-                         </div>
-                         <h3 className="text-2xl font-bold leading-tight">{ann.title}</h3>
-                      </div>
-                   </div>
-                   <p className="text-gray-500 text-sm line-clamp-2 px-4 leading-relaxed">{ann.description}</p>
-                </div>
-              ))}
-           </div>
+          {/* Pagination */}
+          <div className="pagination flex justify-center gap-3 mt-12" id="paginationContainer">
+            {renderPagination(announcements.length, announcementPage, setAnnouncementPage)}
+          </div>
+        </div>
+      </section>
+
+
+      {/* Latest News */}
+      <section className="latest-news py-32 bg-white">
+        <div className="latest-news-container max-w-[1440px] mx-auto px-10">
+          <h2 className="latest-news-title text-4xl font-bold text-gray-900 tracking-tight italic mb-16">Latest News</h2>
+          <div className="news-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="newsGrid">
+            {loading ? (
+              [1, 2, 3].map((item) => (
+                <div key={item} className="h-[420px] bg-gray-200 animate-pulse rounded-[2rem]"></div>
+              ))
+            ) : news.length > 0 ? (
+              paginateItems(news, newsPage).map((newsItem) => (
+                <NewsCard key={newsItem.id} item={newsItem} />
+              ))
+            ) : (
+              <div className="col-span-full py-20 text-center bg-gray-50 rounded-[2rem] border border-dashed border-gray-200">
+                <p className="text-sm font-medium text-gray-400">No latest news available.</p>
+              </div>
+            )}
+          </div>
+          <div className="pagination flex justify-center gap-3 mt-12" id="newsPaginationContainer">
+            {renderPagination(news.length, newsPage, setNewsPage)}
+          </div>
         </div>
       </section>
 

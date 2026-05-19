@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, UserRound, ArrowRight } from 'lucide-react';
+import { Menu, X, ChevronDown, UserRound, Search } from 'lucide-react';
 import logo from '../assets/imgs/rectologo.png';
 
 const Navbar = () => {
@@ -89,24 +89,22 @@ const Navbar = () => {
   return (
     <nav className={`
       fixed top-0 z-[100] w-full transition-all duration-500 font-outfit
-      ${showDarkNavbar ? 'bg-white/80 backdrop-blur-xl shadow-sm py-4' : 'bg-transparent py-8'}
+      ${showDarkNavbar ? 'bg-gradient-to-r from-[#3A0000]/92 via-[#4A0000]/88 to-black/85 backdrop-blur-2xl shadow-lg shadow-maroon-950/10 border-b border-white/10 py-4' : 'bg-transparent py-8'}
     `}>
-      <div className="max-w-[1440px] mx-auto px-10 flex items-center justify-between">
+      <div className="w-full px-4 lg:px-6 flex items-center justify-between">
         {/* Brand */}
         <Link to="/" className="flex items-center gap-4 group shrink-0">
-          <div className="bg-white p-2 rounded-2xl shadow-sm group-hover:shadow-lg transition-all">
-            <img src={logo} alt="Logo" className="h-10 w-auto" />
-          </div>
+          <img src={logo} alt="Logo" className="h-12 w-auto" />
           <div className="flex flex-col">
-            <span className={`text-xl font-bold tracking-tight transition-colors duration-500 ${showDarkNavbar ? 'text-gray-900' : 'text-white'}`}>RMNHS</span>
-            <span className={`text-[10px] font-medium uppercase tracking-widest leading-none transition-colors duration-500 ${showDarkNavbar ? 'text-gray-400' : 'text-white/60'}`}>Quezon Province</span>
+            <span className={`text-xl font-bold tracking-tight transition-colors duration-500 ${showDarkNavbar ? 'text-white' : 'text-white'}`}>RMNHS</span>
+            <span className={`text-[10px] font-medium uppercase tracking-widest leading-none transition-colors duration-500 ${showDarkNavbar ? 'text-white/50' : 'text-white/60'}`}>Quezon Province</span>
           </div>
         </Link>
 
         {/* Desktop Nav */}
         <div className={`
           hidden lg:flex items-center gap-1 p-1.5 rounded-full border backdrop-blur-sm transition-all duration-500
-          ${showDarkNavbar ? 'bg-gray-50/50 border-gray-100' : 'bg-white/10 border-white/10'}
+          ${showDarkNavbar ? 'bg-white/10 border-white/10' : 'bg-white/10 border-white/10'}
         `}>
           {navLinks.map((link) => (
             <div key={link.title} className="relative group">
@@ -118,7 +116,7 @@ const Navbar = () => {
                       flex items-center gap-1 px-5 py-2 text-[13px] font-medium transition-all rounded-full
                       ${activeDropdown === link.title 
                         ? 'bg-white text-maroon-800 shadow-sm' 
-                        : (showDarkNavbar ? 'text-gray-600 hover:text-gray-900 hover:bg-white/50' : 'text-white/80 hover:text-white hover:bg-white/20')
+                        : (showDarkNavbar ? 'text-white/75 hover:text-white hover:bg-white/15' : 'text-white/80 hover:text-white hover:bg-white/20')
                       }
                     `}
                   >
@@ -161,7 +159,7 @@ const Navbar = () => {
                     px-5 py-2 text-[13px] font-medium rounded-full transition-all
                     ${location.pathname === link.path 
                       ? 'bg-white text-maroon-800 shadow-sm' 
-                      : (showDarkNavbar ? 'text-gray-600 hover:text-gray-900 hover:bg-white/50' : 'text-white/80 hover:text-white hover:bg-white/20')
+                      : (showDarkNavbar ? 'text-white/75 hover:text-white hover:bg-white/15' : 'text-white/80 hover:text-white hover:bg-white/20')
                     }
                   `}
                 >
@@ -174,16 +172,22 @@ const Navbar = () => {
 
         {/* Action Bar */}
         <div className="flex items-center gap-4">
-          <button className={`hidden lg:flex items-center gap-2 premium-btn !py-2 !px-6 !text-sm ${showDarkNavbar ? 'premium-btn-primary' : 'bg-white text-maroon-800 hover:bg-maroon-50'}`}>
-            Enroll Now <ArrowRight size={16} />
-          </button>
-          
-          <Link to="/admin/login" className={`p-3 rounded-2xl transition-all border ${showDarkNavbar ? 'text-gray-400 bg-gray-50 border-gray-100 hover:text-maroon-800' : 'text-white bg-white/10 border-white/10 hover:bg-white/20'}`}>
+          <form className="hidden xl:flex items-center gap-2 w-56 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-white backdrop-blur-md focus-within:border-white/30 focus-within:bg-white/15 transition-all">
+            <Search size={16} className="text-white/60 shrink-0" />
+            <input
+              type="search"
+              aria-label="Search"
+              placeholder="Search"
+              className="w-full bg-transparent text-sm font-medium text-white placeholder:text-white/50 outline-none"
+            />
+          </form>
+
+          <Link to="/admin/login" className={`p-3 rounded-2xl transition-all border ${showDarkNavbar ? 'text-white/70 bg-white/10 border-white/10 hover:text-white hover:bg-white/20' : 'text-white bg-white/10 border-white/10 hover:bg-white/20'}`}>
             <UserRound size={20} />
           </Link>
 
           <button
-            className={`lg:hidden p-3 rounded-2xl transition-colors ${showDarkNavbar ? 'text-gray-900 bg-gray-50' : 'text-white bg-white/10'}`}
+            className={`lg:hidden p-3 rounded-2xl transition-colors ${showDarkNavbar ? 'text-white bg-white/10' : 'text-white bg-white/10'}`}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -218,7 +222,6 @@ const Navbar = () => {
                  )}
               </div>
             ))}
-            <button className="w-full premium-btn premium-btn-primary mt-10">Enroll Now</button>
          </div>
       </div>
     </nav>
