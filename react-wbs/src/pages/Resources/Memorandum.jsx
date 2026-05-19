@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { Search, FileText, ChevronLeft, ChevronRight, Calendar, Filter, Archive, ArrowDownToLine } from 'lucide-react';
+import { Archive, ArrowDownToLine, Calendar, ChevronLeft, ChevronRight, FileText, Filter, Search } from 'lucide-react';
 
 const Memorandum = ({ tableName, title }) => {
   const [records, setRecords] = useState([]);
-  const [filteredRecords, setFilteredRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
@@ -33,230 +32,215 @@ const Memorandum = ({ tableName, title }) => {
     fetchMemos();
   }, [tableName]);
 
-  useEffect(() => {
+  const filteredRecords = useMemo(() => {
     let result = records;
 
     if (searchTerm) {
       const lowerSearch = searchTerm.toLowerCase();
-      result = result.filter(r => 
-        (r.title?.toLowerCase().includes(lowerSearch)) ||
-        (r.description?.toLowerCase().includes(lowerSearch))
-      );
+      result = result.filter((r) => (
+        r.title?.toLowerCase().includes(lowerSearch) ||
+        r.description?.toLowerCase().includes(lowerSearch)
+      ));
     }
 
-    if (selectedYear) {
-      result = result.filter(r => r.date?.startsWith(selectedYear));
-    }
+    if (selectedYear) result = result.filter((r) => r.date?.startsWith(selectedYear));
+    if (selectedMonth) result = result.filter((r) => r.date?.split('-')[1] === selectedMonth);
 
-    if (selectedMonth) {
-      result = result.filter(r => r.date?.split('-')[1] === selectedMonth);
-    }
-
-    setFilteredRecords(result);
-    setCurrentPage(1);
+    return result;
   }, [records, searchTerm, selectedYear, selectedMonth]);
 
-  const years = [...new Set(records.map(r => r.date?.slice(0, 4)).filter(Boolean))].sort((a, b) => b - a);
+  const years = [...new Set(records.map((r) => r.date?.slice(0, 4)).filter(Boolean))].sort((a, b) => b - a);
   const months = [
     { value: '01', label: 'January' }, { value: '02', label: 'February' },
     { value: '03', label: 'March' }, { value: '04', label: 'April' },
     { value: '05', label: 'May' }, { value: '06', label: 'June' },
     { value: '07', label: 'July' }, { value: '08', label: 'August' },
     { value: '09', label: 'September' }, { value: '10', label: 'October' },
-    { value: '11', label: 'November' }, { value: '12', label: 'December' }
+    { value: '11', label: 'November' }, { value: '12', label: 'December' },
   ];
 
   const totalPages = Math.ceil(filteredRecords.length / pageSize);
-  const paginatedRecords = filteredRecords.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const safeCurrentPage = Math.min(currentPage, totalPages || 1);
+  const paginatedRecords = filteredRecords.slice((safeCurrentPage - 1) * pageSize, safeCurrentPage * pageSize);
 
   return (
-    <div className="min-h-screen bg-white font-outfit">
-      {/* Header Section */}
-      <div className="relative py-24 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle,rgba(128,0,0,0.03)_0%,transparent_70%)] pointer-events-none"></div>
-        <div className="max-w-7xl mx-auto px-10 text-center relative z-10">
-          <div className="flex flex-col items-center gap-4 mb-6">
-            <span className="text-maroon-800 font-bold uppercase tracking-[0.4em] text-[10px] bg-maroon-50 px-6 py-2 rounded-full">
-              Official Records Bureau
-            </span>
-            <div className="flex items-baseline justify-center gap-2">
-              <h1 className="text-6xl md:text-8xl font-bold text-gray-900 tracking-tighter font-['Playfair_Display'] leading-none">
-                {title.split(' ')[0]}
+    <main className="min-h-screen bg-[#f7f7f5] font-outfit text-gray-950">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#330000] via-[#520707] to-gray-950 pt-36 pb-20 text-white">
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.12),transparent_38%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.12),transparent_28%)]"></div>
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#f7f7f5] to-transparent"></div>
+
+        <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+            <div className="max-w-4xl">
+              <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-white/70 backdrop-blur-xl">
+                <Archive size={15} />
+                Official Records Bureau
+              </div>
+
+              <h1 className="mt-8 text-5xl font-bold leading-[0.96] tracking-tight md:text-7xl lg:text-8xl">
+                {title}
               </h1>
-              <span className="text-4xl md:text-6xl font-['Dancing_Script'] text-maroon-800 -ml-2 drop-shadow-sm">
-                {title.split(' ').slice(1).join(' ')}
-              </span>
-            </div>
-          </div>
-          <div className="h-1 w-24 bg-maroon-800/20 mx-auto rounded-full overflow-hidden">
-            <div className="h-full w-1/3 bg-maroon-800 rounded-full animate-[progress_3s_ease-in-out_infinite]"></div>
-          </div>
-        </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-10 pb-32">
-        {/* Modern Control Center */}
-        <div className="bg-white p-8 rounded-[3rem] shadow-2xl shadow-gray-200/40 border border-gray-100 mb-12 flex flex-col xl:flex-row items-center gap-6">
-          <div className="relative flex-1 w-full group">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-maroon-800 transition-colors" size={20} />
-            <input 
-              type="text" 
-              placeholder="Search archival database..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-gray-50/50 border border-gray-100 rounded-[1.5rem] pl-16 pr-6 py-5 text-sm font-bold focus:bg-white focus:ring-4 focus:ring-maroon-50 focus:border-maroon-800 outline-none transition-all placeholder:text-gray-300"
-            />
-          </div>
-
-          <div className="flex items-center gap-4 w-full xl:w-auto">
-            <div className="relative flex-1 xl:w-40 group">
-              <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-maroon-800 opacity-40 group-hover:opacity-100 transition-opacity" size={16} />
-              <select 
-                value={selectedYear} 
-                onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl pl-12 pr-4 py-4 text-xs font-bold uppercase tracking-widest focus:ring-4 focus:ring-maroon-50 outline-none appearance-none cursor-pointer hover:bg-white transition-all"
-              >
-                <option value="">Any Year</option>
-                {years.map(y => <option key={y} value={y}>{y}</option>)}
-              </select>
+              <p className="mt-7 max-w-2xl text-base leading-8 text-white/68 md:text-lg">
+                Search, filter, and open official school records from the public archive.
+              </p>
             </div>
 
-            <div className="relative flex-1 xl:w-48 group">
-              <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-maroon-800 opacity-40 group-hover:opacity-100 transition-opacity" size={16} />
-              <select 
-                value={selectedMonth} 
-                onChange={(e) => setSelectedMonth(e.target.value)}
-                className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl pl-12 pr-4 py-4 text-xs font-bold uppercase tracking-widest focus:ring-4 focus:ring-maroon-50 outline-none appearance-none cursor-pointer hover:bg-white transition-all"
-              >
-                <option value="">All Months</option>
-                {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
-              </select>
-            </div>
-            
-            <button 
-              onClick={() => { setSearchTerm(''); setSelectedYear(''); setSelectedMonth(''); }}
-              className="hidden xl:flex w-14 h-14 rounded-2xl bg-gray-50/50 items-center justify-center text-gray-300 hover:text-maroon-800 transition-all border border-gray-100 hover:bg-white hover:shadow-lg"
-            >
-              <Archive size={20} />
-            </button>
-          </div>
-        </div>
-
-        {/* Premium Data Table */}
-        <div className="bg-white rounded-[3.5rem] shadow-2xl shadow-gray-200/40 border border-gray-100 overflow-hidden relative">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="bg-gray-900 text-white uppercase text-[10px] tracking-[0.4em] font-bold">
-                  <th className="px-12 py-10">Archive Date</th>
-                  <th className="px-12 py-10">Document Specification</th>
-                  <th className="px-12 py-10 hidden lg:table-cell">Narrative Summary</th>
-                  <th className="px-12 py-10 text-right">Access Point</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50 font-outfit">
-                {loading ? (
-                  [1, 2, 3, 4, 5, 6].map(i => (
-                    <tr key={i} className="animate-pulse">
-                      <td colSpan={4} className="px-12 py-12 h-24 bg-gray-50/20"></td>
-                    </tr>
-                  ))
-                ) : paginatedRecords.length > 0 ? (
-                  paginatedRecords.map((record) => (
-                    <tr key={record.id} className="hover:bg-maroon-50/30 transition-all group">
-                      <td className="px-12 py-10 whitespace-nowrap">
-                        <div className="flex items-center gap-5">
-                          <div className="w-12 h-12 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-maroon-950 group-hover:bg-maroon-950 group-hover:text-white transition-all duration-500">
-                            <Calendar size={20} />
-                          </div>
-                          <div>
-                             <p className="text-sm font-bold text-gray-900 leading-none">
-                               {record.date ? new Date(record.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
-                             </p>
-                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1.5">Official Registry</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-12 py-10">
-                        <p className="text-sm font-bold text-gray-900 tracking-tight leading-snug group-hover:text-maroon-800 transition-colors font-['Playfair_Display'] italic">
-                          {record.title}
-                        </p>
-                      </td>
-                      <td className="px-12 py-10 hidden lg:table-cell">
-                        <p className="text-xs font-medium text-gray-500 max-w-sm line-clamp-2 leading-relaxed">
-                          {record.description || 'Institutional documentation without supplementary archival narrative.'}
-                        </p>
-                      </td>
-                      <td className="px-12 py-10 text-right">
-                        {record.file ? (
-                          <a 
-                            href={record.file} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-3 bg-gray-950 text-white px-8 py-4 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-maroon-950 transition-all active:scale-95 shadow-xl shadow-gray-900/10 group/btn"
-                          >
-                            <FileText size={16} className="text-maroon-400" /> Secure Link
-                            <ArrowDownToLine size={14} className="opacity-40 group-hover/btn:opacity-100 transition-opacity" />
-                          </a>
-                        ) : (
-                          <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest italic">Physical Vault</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={4} className="px-12 py-40 text-center">
-                      <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-200">
-                        <Archive size={40} />
-                      </div>
-                      <p className="text-xs font-bold text-gray-300 uppercase tracking-widest italic">No matching records found in the {title} archives.</p>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Premium Pagination */}
-          {totalPages > 1 && (
-            <div className="bg-gray-50/50 px-12 py-10 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-10">
-              <div className="flex items-center gap-4">
-                 <div className="w-1.5 h-6 bg-maroon-800 rounded-full"></div>
-                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">
-                   Records Displayed: <span className="text-gray-900">{((currentPage - 1) * pageSize) + 1} — {Math.min(currentPage * pageSize, filteredRecords.length)}</span> of {filteredRecords.length}
-                 </p>
-              </div>
-              
-              <div className="flex items-center gap-8">
-                <button 
-                  onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  disabled={currentPage === 1}
-                  className="w-14 h-14 rounded-full bg-white border border-gray-100 text-maroon-950 shadow-sm disabled:opacity-20 hover:shadow-2xl hover:border-maroon-800 transition-all flex items-center justify-center group"
-                >
-                  <ChevronLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
-                </button>
-                
-                <div className="flex items-center gap-4">
-                   <span className="text-3xl font-bold italic text-maroon-950 font-['Playfair_Display']">{currentPage}</span>
-                   <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">of {totalPages}</span>
+            <div className="rounded-[1.5rem] border border-white/10 bg-white/10 p-5 shadow-2xl shadow-black/20 backdrop-blur-2xl">
+              <div className="flex items-center gap-4 rounded-2xl bg-white px-5 py-5 text-gray-950">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-maroon-50 text-maroon-800">
+                  <FileText size={22} />
                 </div>
+                <div>
+                  <p className="text-3xl font-bold tracking-tight">{loading ? '--' : filteredRecords.length}</p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Archive records</p>
+                </div>
+              </div>
 
-                <button 
-                  onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  disabled={currentPage === totalPages}
-                  className="w-14 h-14 rounded-full bg-white border border-gray-100 text-maroon-950 shadow-sm disabled:opacity-20 hover:shadow-2xl hover:border-maroon-800 transition-all flex items-center justify-center group"
-                >
-                  <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
-                </button>
+              <div className="mt-4 flex items-center gap-3 rounded-2xl border border-white/10 bg-black/18 px-5 py-4">
+                <Search size={18} className="text-white/50" />
+                <p className="text-sm font-medium text-white/68">Filter by keyword, year, or month.</p>
               </div>
             </div>
-          )}
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <section className="relative -mt-8 pb-28">
+        <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
+          <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">Records Directory</p>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-950 md:text-3xl">{title} archive</h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-gray-500">
+              Documents are listed by official archive date, with secure links when digital files are available.
+            </p>
+          </div>
+
+          <div className="mb-6 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5">
+            <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_180px_220px_auto]">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
+                <input
+                  type="text"
+                  placeholder="Search archival database..."
+                  value={searchTerm}
+                  onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+                  className="w-full rounded-2xl border border-gray-100 bg-[#fbfbfa] py-4 pl-12 pr-4 text-sm font-medium outline-none transition-all focus:border-maroon-800 focus:bg-white focus:ring-4 focus:ring-maroon-50"
+                />
+              </div>
+
+              <div className="relative">
+                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-maroon-800/50" size={16} />
+                <select value={selectedYear} onChange={(e) => { setSelectedYear(e.target.value); setCurrentPage(1); }} className="w-full rounded-2xl border border-gray-100 bg-[#fbfbfa] py-4 pl-11 pr-4 text-xs font-bold uppercase tracking-widest outline-none focus:ring-4 focus:ring-maroon-50">
+                  <option value="">Any Year</option>
+                  {years.map((y) => <option key={y} value={y}>{y}</option>)}
+                </select>
+              </div>
+
+              <div className="relative">
+                <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-maroon-800/50" size={16} />
+                <select value={selectedMonth} onChange={(e) => { setSelectedMonth(e.target.value); setCurrentPage(1); }} className="w-full rounded-2xl border border-gray-100 bg-[#fbfbfa] py-4 pl-11 pr-4 text-xs font-bold uppercase tracking-widest outline-none focus:ring-4 focus:ring-maroon-50">
+                  <option value="">All Months</option>
+                  {months.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
+                </select>
+              </div>
+
+              <button type="button" onClick={() => { setSearchTerm(''); setSelectedYear(''); setSelectedMonth(''); setCurrentPage(1); }} className="rounded-2xl border border-gray-100 bg-[#fbfbfa] px-5 py-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 transition-all hover:border-maroon-800 hover:bg-white hover:text-maroon-800">
+                Reset
+              </button>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-gray-950 text-[10px] font-bold uppercase tracking-[0.28em] text-white">
+                    <th className="px-6 py-5">Archive Date</th>
+                    <th className="px-6 py-5">Document</th>
+                    <th className="hidden px-6 py-5 lg:table-cell">Summary</th>
+                    <th className="px-6 py-5 text-right">Access</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {loading ? (
+                    [1, 2, 3, 4].map((i) => (
+                      <tr key={i} className="animate-pulse">
+                        <td colSpan={4} className="h-24 bg-gray-50/60 px-6 py-8"></td>
+                      </tr>
+                    ))
+                  ) : paginatedRecords.length > 0 ? (
+                    paginatedRecords.map((record) => (
+                      <tr key={record.id} className="transition-colors hover:bg-maroon-50/30">
+                        <td className="whitespace-nowrap px-6 py-6">
+                          <div className="flex items-center gap-4">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-maroon-50 text-maroon-800">
+                              <Calendar size={18} />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-gray-950">
+                                {record.date ? new Date(record.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                              </p>
+                              <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">Official Registry</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-6">
+                          <p className="text-sm font-bold leading-6 text-gray-950">{record.title}</p>
+                        </td>
+                        <td className="hidden px-6 py-6 lg:table-cell">
+                          <p className="max-w-md text-sm font-medium leading-6 text-gray-500 line-clamp-2">
+                            {record.description || 'Institutional documentation without supplementary archival narrative.'}
+                          </p>
+                        </td>
+                        <td className="px-6 py-6 text-right">
+                          {record.file ? (
+                            <a href={record.file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 rounded-full bg-gray-950 px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-white transition-all hover:bg-maroon-800">
+                              <FileText size={15} />
+                              Open
+                              <ArrowDownToLine size={14} />
+                            </a>
+                          ) : (
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-300">Physical Vault</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4} className="px-6 py-24 text-center">
+                        <Archive size={40} className="mx-auto mb-5 text-gray-300" />
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">No matching records found in the {title} archives.</p>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {totalPages > 1 && (
+              <div className="flex flex-col justify-between gap-6 border-t border-gray-100 bg-[#fbfbfa] px-6 py-6 md:flex-row md:items-center">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                  Records Displayed: <span className="text-gray-950">{((safeCurrentPage - 1) * pageSize) + 1} - {Math.min(safeCurrentPage * pageSize, filteredRecords.length)}</span> of {filteredRecords.length}
+                </p>
+                <div className="flex items-center gap-6">
+                  <button type="button" onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-maroon-950 shadow-sm ring-1 ring-black/5 disabled:opacity-30">
+                    <ChevronLeft size={20} />
+                  </button>
+                  <p className="text-sm font-bold text-gray-500"><span className="text-xl text-maroon-800">{safeCurrentPage}</span> of {totalPages}</p>
+                  <button type="button" onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-maroon-950 shadow-sm ring-1 ring-black/5 disabled:opacity-30">
+                    <ChevronRight size={20} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+    </main>
   );
 };
 
 export default Memorandum;
-

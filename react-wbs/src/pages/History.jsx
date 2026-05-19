@@ -29,46 +29,45 @@ const History = () => {
   ];
 
   return (
-    <main className="min-h-screen bg-[#f7f7f5] font-outfit text-gray-900 overflow-hidden">
-      <section className="relative bg-gradient-to-r from-[#3A0000] via-[#4A0000] to-black pt-36 pb-24 text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.16),transparent_30%),radial-gradient(circle_at_80%_0%,rgba(128,0,0,0.4),transparent_34%)]"></div>
+    <main className="min-h-screen overflow-hidden bg-[#f7f7f5] font-outfit text-gray-950">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#330000] via-[#520707] to-gray-950 pt-36 pb-20 text-white">
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.12),transparent_38%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.12),transparent_28%)]"></div>
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#f7f7f5] to-transparent"></div>
 
-        <div className="relative z-10 max-w-[1440px] mx-auto px-6 lg:px-10">
-          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_420px] gap-12 items-end">
+        <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
             <div className="max-w-4xl">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-white/70 backdrop-blur-xl">
                 <Landmark size={15} />
                 Historical Profile
               </div>
 
-              <h1 className="mt-8 text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.95]">
-                A legacy shaped by service, resilience, and public education.
+              <h1 className="mt-8 text-5xl font-bold leading-[0.96] tracking-tight md:text-7xl lg:text-8xl">
+                Historical Profile
               </h1>
 
-              <p className="mt-8 max-w-2xl text-base md:text-lg leading-8 text-white/68">
+              <p className="mt-7 max-w-2xl text-base leading-8 text-white/68 md:text-lg">
                 From Tayabas Academy to Recto Memorial National High School, the story of RMNHS follows a community's long commitment to accessible learning in Quezon Province.
               </p>
             </div>
 
-            <div className="rounded-[2rem] border border-white/10 bg-white/10 p-5 backdrop-blur-2xl shadow-2xl shadow-black/20">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-3xl bg-white px-5 py-6 text-gray-950">
-                  <p className="text-4xl font-bold tracking-tight">1941</p>
-                  <p className="mt-2 text-xs font-bold uppercase tracking-widest text-gray-400">First opened</p>
+            <div className="rounded-[1.5rem] border border-white/10 bg-white/10 p-5 shadow-2xl shadow-black/20 backdrop-blur-2xl">
+              <div className="flex items-center gap-4 rounded-2xl bg-white px-5 py-5 text-gray-950">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-maroon-50 text-maroon-800">
+                  <CalendarDays size={22} />
                 </div>
-                <div className="rounded-3xl bg-black/30 px-5 py-6 text-white ring-1 ring-white/10">
-                  <p className="text-4xl font-bold tracking-tight">1970</p>
-                  <p className="mt-2 text-xs font-bold uppercase tracking-widest text-white/40">Public school</p>
+                <div>
+                  <p className="text-3xl font-bold tracking-tight">1941</p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">First opened</p>
                 </div>
               </div>
 
               <button
                 type="button"
                 onClick={() => setLanguage((prev) => (prev === 'EN' ? 'FIL' : 'EN'))}
-                className="mt-4 flex w-full items-center justify-center gap-3 rounded-full border border-white/10 bg-white/10 px-5 py-4 text-sm font-bold text-white transition-all hover:bg-white hover:text-maroon-800 active:scale-[0.98]"
+                className="mt-4 flex w-full items-center gap-3 rounded-2xl border border-white/10 bg-black/18 px-5 py-4 text-left text-sm font-bold text-white/70 transition-all hover:bg-white hover:text-maroon-800 active:scale-[0.98]"
               >
-                <Languages size={18} />
+                <Languages size={18} className="shrink-0" />
                 {isEnglish ? 'Read in Filipino' : 'Read in English'}
               </button>
             </div>
@@ -76,11 +75,26 @@ const History = () => {
         </div>
       </section>
 
-      <section className="relative -mt-10 pb-28">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <section className="relative -mt-8 pb-28">
+        <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
+          <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">
+                {isEnglish ? 'Narrative Record' : 'Tala ng Kasaysayan'}
+              </p>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-950 md:text-3xl">
+                {isEnglish ? 'The story of Recto Memorial National High School' : 'Ang kasaysayan ng Recto Memorial National High School'}
+              </h2>
+            </div>
+            <div className="flex w-fit items-center gap-2 rounded-full bg-gray-950 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white">
+              {language}
+              <ArrowRight size={14} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
             <aside className="lg:col-span-5 lg:sticky lg:top-28 space-y-6">
-              <figure className="overflow-hidden rounded-[2rem] bg-white shadow-xl shadow-maroon-950/10 ring-1 ring-black/5">
+              <figure className="overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5">
                 <img
                   src={oldrecto}
                   alt="Old Recto Memorial National High School"
@@ -95,7 +109,7 @@ const History = () => {
                 </figcaption>
               </figure>
 
-              <div className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-black/5">
+              <div className="rounded-[1.5rem] bg-white p-6 shadow-sm ring-1 ring-black/5">
                 <div className="flex items-center gap-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-maroon-50 text-maroon-800">
                     <CalendarDays size={20} />
@@ -120,23 +134,8 @@ const History = () => {
               </div>
             </aside>
 
-            <article className="lg:col-span-7 rounded-[2rem] bg-white p-6 md:p-10 lg:p-12 shadow-sm ring-1 ring-black/5">
-              <div className="flex flex-col gap-6 border-b border-gray-100 pb-8 md:flex-row md:items-start md:justify-between">
-                <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-maroon-800">
-                    {isEnglish ? 'Narrative Record' : 'Tala ng Kasaysayan'}
-                  </p>
-                  <h2 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-gray-950">
-                    {isEnglish ? 'The story of Recto Memorial National High School' : 'Ang kasaysayan ng Recto Memorial National High School'}
-                  </h2>
-                </div>
-                <div className="flex items-center gap-2 rounded-full bg-gray-950 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white">
-                  {language}
-                  <ArrowRight size={14} />
-                </div>
-              </div>
-
-              <div className="mt-10 space-y-8 text-base md:text-lg leading-8 text-gray-600">
+            <article className="rounded-[1.5rem] bg-white p-6 shadow-sm ring-1 ring-black/5 md:p-10 lg:col-span-7 lg:p-12">
+              <div className="space-y-8 text-base leading-8 text-gray-600 md:text-lg">
                 <div className="relative rounded-[1.5rem] bg-maroon-50 p-6 md:p-8 text-gray-950">
                   <Quote className="mb-5 text-maroon-800" size={30} />
                   <p className="text-xl md:text-2xl font-bold leading-9 tracking-tight">

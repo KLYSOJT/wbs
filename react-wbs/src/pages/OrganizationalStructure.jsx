@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { X, Calendar, ImageIcon, ChevronRight, UserRound, ShieldCheck } from 'lucide-react';
+import { X, Calendar, ImageIcon, ArrowUpRight, UserRound, ShieldCheck, Building2, Search } from 'lucide-react';
 
 // Import local images
 import tle from '../assets/imgs/tle.png';
@@ -51,155 +51,181 @@ const OrganizationalStructure = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white font-outfit">
-      {/* Header Section */}
-      <div className="relative py-24 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle,rgba(128,0,0,0.03)_0%,transparent_70%)] pointer-events-none"></div>
-        <div className="max-w-7xl mx-auto px-10 text-center relative z-10">
-          <div className="flex flex-col items-center gap-4 mb-6">
-            <span className="text-maroon-800 font-bold uppercase tracking-[0.4em] text-[10px] bg-maroon-50 px-6 py-2 rounded-full">
-              Institutional Hierarchy
-            </span>
-            <div className="flex items-baseline justify-center gap-2">
-              <h1 className="text-6xl md:text-8xl font-bold text-gray-900 tracking-tighter font-['Playfair_Display'] leading-none">
-                Organizational
+    <main className="min-h-screen bg-[#f7f7f5] font-outfit text-gray-950">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#330000] via-[#520707] to-gray-950 pt-36 pb-20 text-white">
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.12),transparent_38%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.12),transparent_28%)]"></div>
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#f7f7f5] to-transparent"></div>
+
+        <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+            <div className="max-w-4xl">
+              <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-white/70 backdrop-blur-xl">
+                <Building2 size={15} />
+                Institutional Hierarchy
+              </div>
+
+              <h1 className="mt-8 text-5xl font-bold leading-[0.96] tracking-tight md:text-7xl lg:text-8xl">
+                Organizational Structure
               </h1>
-              <span className="text-4xl md:text-6xl font-['Dancing_Script'] text-maroon-800 -ml-2 drop-shadow-sm">
-                Structure
-              </span>
+
+              <p className="mt-7 max-w-2xl text-base leading-8 text-white/68 md:text-lg">
+                Browse the academic department charts and view the latest official structure uploaded by the school administration.
+              </p>
+            </div>
+
+            <div className="rounded-[1.5rem] border border-white/10 bg-white/10 p-5 shadow-2xl shadow-black/20 backdrop-blur-2xl">
+              <div className="flex items-center gap-4 rounded-2xl bg-white px-5 py-5 text-gray-950">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-maroon-50 text-maroon-800">
+                  <ShieldCheck size={22} />
+                </div>
+                <div>
+                  <p className="text-3xl font-bold tracking-tight">{departments.length}</p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Academic departments</p>
+                </div>
+              </div>
+
+              <div className="mt-4 flex items-center gap-3 rounded-2xl border border-white/10 bg-black/18 px-5 py-4">
+                <Search size={18} className="text-white/50" />
+                <p className="text-sm font-medium text-white/68">Select a department to open its chart.</p>
+              </div>
             </div>
           </div>
-          <div className="h-1 w-24 bg-maroon-800/20 mx-auto rounded-full overflow-hidden">
-            <div className="h-full w-1/3 bg-maroon-800 rounded-full animate-[progress_3s_ease-in-out_infinite]"></div>
-          </div>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-7xl mx-auto px-10 pb-32">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <section className="relative -mt-8 pb-28">
+        <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
+          <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">Department Directory</p>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-950 md:text-3xl">Academic organizational charts</h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-gray-500">
+              These records are maintained by the administration and may be updated as personnel assignments change.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {departments.map((dept) => (
-            <div 
+            <button
+              type="button"
               key={dept.id} 
               onClick={() => openModal(dept)}
-              className="group relative bg-white rounded-[3rem] overflow-hidden shadow-xl shadow-gray-200/40 border border-gray-100 cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
+              className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] bg-white text-left shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-maroon-950/10 hover:ring-maroon-800/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-maroon-800"
             >
-              <div className="aspect-[4/3] bg-gray-50/50 flex items-center justify-center p-12 overflow-hidden relative border-b border-gray-50">
-                <div className="absolute inset-0 bg-maroon-950 opacity-0 group-hover:opacity-5 transition-opacity duration-500"></div>
+              <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-[#fbfbfa] p-9">
+                <div className="absolute inset-x-6 bottom-0 h-px bg-gray-100"></div>
                 <img 
                   src={dept.image} 
                   alt={dept.name} 
-                  className="w-full h-full object-contain transition-all duration-700 group-hover:scale-110 group-hover:rotate-3" 
+                  className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105" 
                 />
               </div>
-              <div className="p-8 text-center transition-all duration-500 bg-white group-hover:bg-maroon-950">
-                <div className="flex flex-col items-center gap-1">
-                   <span className="text-[10px] font-bold text-maroon-800 group-hover:text-maroon-400 uppercase tracking-widest mb-1">Academy Division</span>
-                   <h3 className="font-bold text-sm text-gray-900 group-hover:text-white transition-colors leading-tight font-['Playfair_Display'] italic">
-                    {dept.name}
+              <div className="flex flex-1 flex-col justify-between gap-6 p-6">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-maroon-800">Academic Department</span>
+                  <h3 className="mt-3 text-lg font-bold leading-tight tracking-tight text-gray-950">
+                    {dept.name.replace(' DEPARTMENT', '')}
                   </h3>
+                  <p className="mt-2 text-sm font-medium text-gray-500">Department structure and reporting chart</p>
                 </div>
-                <div className="mt-6 flex justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
-                   <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20">
-                      <ChevronRight size={20} />
-                   </div>
+                <div className="flex items-center justify-between border-t border-gray-100 pt-5">
+                  <span className="text-xs font-bold uppercase tracking-widest text-gray-400">View chart</span>
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-950 text-white transition-colors group-hover:bg-maroon-800">
+                    <ArrowUpRight size={18} />
+                  </span>
                 </div>
               </div>
-            </div>
+            </button>
           ))}
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Modern Department Modal */}
       {selectedDept && (
         <div 
-          className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-gray-950/90 backdrop-blur-2xl animate-in fade-in duration-500"
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-gray-950/80 p-4 backdrop-blur-xl animate-in fade-in duration-300 md:p-6"
           onClick={() => setSelectedDept(null)}
         >
           <div 
-            className="bg-white w-full max-w-6xl h-[85vh] rounded-[4rem] overflow-hidden shadow-2xl relative animate-in zoom-in-95 slide-in-from-bottom-10 duration-500"
+            className="relative flex max-h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-[1.75rem] bg-white shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-6 duration-300"
             onClick={(e) => e.stopPropagation()}
           >
             <button 
-              className="absolute top-10 right-10 w-12 h-12 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 hover:text-maroon-800 hover:bg-gray-50 transition-all z-20 group"
+              type="button"
+              aria-label="Close organizational chart"
+              className="absolute right-4 top-4 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-gray-50 hover:text-maroon-800 md:right-6 md:top-6"
               onClick={() => setSelectedDept(null)}
             >
-              <X size={24} className="group-hover:rotate-90 transition-transform duration-500" />
+              <X size={22} />
             </button>
 
-            <div className="flex flex-col lg:flex-row h-full overflow-hidden">
-              {/* Info Side */}
-              <div className="lg:w-1/3 bg-gray-50/50 p-16 flex flex-col justify-between border-r border-gray-100 overflow-y-auto">
-                <div>
-                  <div className="flex items-center gap-3 mb-8">
-                     <div className="w-10 h-10 bg-maroon-950 rounded-xl flex items-center justify-center text-white shadow-xl">
-                        <ShieldCheck size={20} />
-                     </div>
-                     <span className="text-maroon-800 font-bold uppercase tracking-[0.3em] text-[10px]">Verified Registry</span>
+            <div className="grid overflow-y-auto lg:grid-cols-[360px_minmax(0,1fr)]">
+              <aside className="border-b border-gray-100 bg-[#fbfbfa] p-6 md:p-8 lg:border-b-0 lg:border-r">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-maroon-800 text-white">
+                    <ShieldCheck size={20} />
                   </div>
-                  
-                  <h2 className="text-5xl font-bold text-gray-900 tracking-tighter leading-tight mb-8 font-['Playfair_Display'] italic">
-                    {selectedDept.name.split(' ').map((word, i) => (
-                      <React.Fragment key={i}>
-                        {word} <br />
-                      </React.Fragment>
-                    ))}
-                  </h2>
-                  <p className="text-gray-500 font-medium leading-relaxed italic text-lg mb-10">
-                    The official reporting structure for the {selectedDept.name.toLowerCase()}, established by the RMNHS Board of Governors.
-                  </p>
-
-                  <div className="space-y-4">
-                     <div className="flex items-center gap-4 p-5 bg-white rounded-3xl border border-gray-100 shadow-sm">
-                        <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400">
-                           <UserRound size={18} />
-                        </div>
-                        <div>
-                           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">Supervisor</p>
-                           <p className="text-sm font-bold text-gray-900">Department Head</p>
-                        </div>
-                     </div>
-                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.26em] text-maroon-800">Verified Registry</span>
                 </div>
+                
+                <h2 className="mt-8 text-4xl font-bold leading-tight tracking-tight text-gray-950 md:text-5xl">
+                  {selectedDept.name.replace(' DEPARTMENT', '')}
+                </h2>
+                <p className="mt-4 text-base font-medium leading-7 text-gray-500">
+                  Official reporting structure for the {selectedDept.name.toLowerCase()}.
+                </p>
 
-                {!loading && modalData?.updated_at && (
-                  <div className="flex items-center gap-4 p-6 bg-maroon-950 rounded-[2rem] shadow-2xl mt-12">
-                    <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-maroon-400">
-                      <Calendar size={20} />
+                <div className="mt-8 space-y-3">
+                  <div className="flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50 text-gray-500">
+                      <UserRound size={18} />
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest leading-none mb-1">Effective As Of</p>
-                      <p className="text-xs font-bold text-white">
-                        {new Date(modalData.updated_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                      </p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Supervisor</p>
+                      <p className="text-sm font-bold text-gray-950">{selectedDept.head}</p>
                     </div>
                   </div>
-                )}
-              </div>
 
-              {/* Chart Side */}
-              <div className="lg:w-2/3 p-12 bg-white flex items-center justify-center overflow-hidden">
-                <div className="w-full h-full bg-gray-50/50 rounded-[3rem] border border-dashed border-gray-200 flex items-center justify-center relative overflow-hidden group/chart">
+                  {!loading && modalData?.updated_at && (
+                    <div className="flex items-center gap-4 rounded-2xl bg-gray-950 p-4 text-white shadow-lg">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-maroon-200">
+                        <Calendar size={18} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-white/40">Updated</p>
+                        <p className="text-sm font-bold">
+                          {new Date(modalData.updated_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </aside>
+
+              <div className="min-h-[520px] bg-white p-5 md:p-8">
+                <div className="flex h-full min-h-[480px] items-center justify-center overflow-hidden rounded-[1.5rem] border border-gray-200 bg-[#fbfbfa]">
                   {loading ? (
-                    <div className="flex flex-col items-center gap-6">
-                      <div className="w-12 h-12 border-2 border-maroon-800 border-t-transparent rounded-full animate-spin"></div>
-                      <p className="text-gray-400 font-bold uppercase tracking-[0.2em] text-[10px]">Accessing Archival Records...</p>
+                    <div className="flex flex-col items-center gap-5">
+                      <div className="h-11 w-11 animate-spin rounded-full border-2 border-maroon-800 border-t-transparent"></div>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-gray-400">Loading chart</p>
                     </div>
                   ) : modalData?.image ? (
-                    <div className="w-full h-full p-12 transition-transform duration-1000 group-hover/chart:scale-105">
+                    <div className="h-full w-full p-4 md:p-8">
                       <img 
                         src={modalData.image} 
                         alt={selectedDept.name} 
-                        className="w-full h-full object-contain mix-blend-multiply" 
+                        className="h-full max-h-[68vh] w-full object-contain" 
                       />
                     </div>
                   ) : (
-                    <div className="text-center p-16">
-                      <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-8 text-gray-200 shadow-xl border border-gray-50">
-                        <ImageIcon size={48} />
+                    <div className="max-w-md px-6 py-16 text-center">
+                      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-white text-gray-300 shadow-sm ring-1 ring-black/5">
+                        <ImageIcon size={38} />
                       </div>
-                      <h4 className="text-2xl font-bold text-gray-900 uppercase tracking-tighter mb-4 font-['Playfair_Display'] italic">Chart Pending Review</h4>
-                      <p className="text-gray-400 font-medium italic text-sm max-w-sm mx-auto">
-                        The current departmental layout is undergoing administrative updates. Please contact the Records Office for more information.
+                      <h4 className="text-2xl font-bold tracking-tight text-gray-950">Chart pending upload</h4>
+                      <p className="mx-auto mt-3 max-w-sm text-sm font-medium leading-6 text-gray-500">
+                        This department does not have a published organizational chart yet.
                       </p>
                     </div>
                   )}
@@ -209,7 +235,7 @@ const OrganizationalStructure = () => {
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 };
 

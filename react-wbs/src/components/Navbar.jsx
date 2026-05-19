@@ -8,14 +8,28 @@ const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-  const isHomePage = location.pathname === '/';
-  const showDarkNavbar = scrolled || !isHomePage;
+  const showDarkNavbar = scrolled;
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    let ticking = false;
+
+    const updateScrollState = () => {
+      const nextScrolled = window.scrollY > 24;
+      setScrolled((current) => (current === nextScrolled ? current : nextScrolled));
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateScrollState);
+        ticking = true;
+      }
+    };
+
+    updateScrollState();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [location.pathname]);
 
   const navLinks = [
     { title: 'Home', path: '/' },
@@ -88,13 +102,25 @@ const Navbar = () => {
 
   return (
     <nav className={`
-      fixed top-0 z-[100] w-full transition-all duration-500 font-outfit
-      ${showDarkNavbar ? 'bg-gradient-to-r from-[#3A0000]/92 via-[#4A0000]/88 to-black/85 backdrop-blur-2xl shadow-lg shadow-maroon-950/10 border-b border-white/10 py-4' : 'bg-transparent py-8'}
+      fixed top-0 z-[100] w-full overflow-visible font-outfit transition-[padding,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]
+      ${showDarkNavbar ? 'py-3.5' : 'py-7'}
     `}>
-      <div className="w-full px-4 lg:px-6 flex items-center justify-between">
+      <div
+        aria-hidden="true"
+        className={`
+          pointer-events-none absolute inset-0 border-b transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]
+          ${showDarkNavbar ? 'border-white/10 bg-gradient-to-r from-[#3A0000]/94 via-[#4A0000]/90 to-black/88 opacity-100 shadow-[0_18px_55px_rgba(30,0,0,0.18)] backdrop-blur-2xl' : 'border-transparent bg-transparent opacity-0 shadow-none backdrop-blur-0'}
+        `}
+      />
+
+      <div className="relative z-10 w-full px-4 lg:px-6 flex items-center justify-between">
         {/* Brand */}
         <Link to="/" className="flex items-center gap-4 group shrink-0">
-          <img src={logo} alt="Logo" className="h-12 w-auto" />
+          <img
+            src={logo}
+            alt="Logo"
+            className={`w-auto transition-[height,filter,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${showDarkNavbar ? 'h-11 drop-shadow-sm' : 'h-12'}`}
+          />
           <div className="flex flex-col">
             <span className={`text-xl font-bold tracking-tight transition-colors duration-500 ${showDarkNavbar ? 'text-white' : 'text-white'}`}>RMNHS</span>
             <span className={`text-[10px] font-medium uppercase tracking-widest leading-none transition-colors duration-500 ${showDarkNavbar ? 'text-white/50' : 'text-white/60'}`}>Quezon Province</span>
@@ -103,8 +129,8 @@ const Navbar = () => {
 
         {/* Desktop Nav */}
         <div className={`
-          hidden lg:flex items-center gap-1 p-1.5 rounded-full border backdrop-blur-sm transition-all duration-500
-          ${showDarkNavbar ? 'bg-white/10 border-white/10' : 'bg-white/10 border-white/10'}
+          hidden lg:flex items-center gap-1 p-1.5 rounded-full border backdrop-blur-md transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]
+          ${showDarkNavbar ? 'bg-white/10 border-white/10 shadow-sm shadow-black/10' : 'bg-white/[0.07] border-white/[0.08] shadow-none'}
         `}>
           {navLinks.map((link) => (
             <div key={link.title} className="relative group">
@@ -113,7 +139,7 @@ const Navbar = () => {
                   <button
                     onClick={() => toggleDropdown(link.title)}
                     className={`
-                      flex items-center gap-1 px-5 py-2 text-[13px] font-medium transition-all rounded-full
+                      flex items-center gap-1 px-5 py-2 text-[13px] font-medium transition-all duration-300 rounded-full
                       ${activeDropdown === link.title 
                         ? 'bg-white text-maroon-800 shadow-sm' 
                         : (showDarkNavbar ? 'text-white/75 hover:text-white hover:bg-white/15' : 'text-white/80 hover:text-white hover:bg-white/20')
@@ -156,7 +182,7 @@ const Navbar = () => {
                 <Link
                   to={link.path}
                   className={`
-                    px-5 py-2 text-[13px] font-medium rounded-full transition-all
+                    px-5 py-2 text-[13px] font-medium rounded-full transition-all duration-300
                     ${location.pathname === link.path 
                       ? 'bg-white text-maroon-800 shadow-sm' 
                       : (showDarkNavbar ? 'text-white/75 hover:text-white hover:bg-white/15' : 'text-white/80 hover:text-white hover:bg-white/20')
@@ -172,7 +198,7 @@ const Navbar = () => {
 
         {/* Action Bar */}
         <div className="flex items-center gap-4">
-          <form className="hidden xl:flex items-center gap-2 w-56 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-white backdrop-blur-md focus-within:border-white/30 focus-within:bg-white/15 transition-all">
+          <form className="hidden xl:flex items-center gap-2 w-56 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-white backdrop-blur-md transition-all duration-500 focus-within:border-white/30 focus-within:bg-white/15">
             <Search size={16} className="text-white/60 shrink-0" />
             <input
               type="search"
@@ -182,12 +208,12 @@ const Navbar = () => {
             />
           </form>
 
-          <Link to="/admin/login" className={`p-3 rounded-2xl transition-all border ${showDarkNavbar ? 'text-white/70 bg-white/10 border-white/10 hover:text-white hover:bg-white/20' : 'text-white bg-white/10 border-white/10 hover:bg-white/20'}`}>
+          <Link to="/admin/login" className={`p-3 rounded-2xl transition-all duration-500 border ${showDarkNavbar ? 'text-white/70 bg-white/10 border-white/10 hover:text-white hover:bg-white/20' : 'text-white bg-white/[0.08] border-white/[0.08] hover:bg-white/20'}`}>
             <UserRound size={20} />
           </Link>
 
           <button
-            className={`lg:hidden p-3 rounded-2xl transition-colors ${showDarkNavbar ? 'text-white bg-white/10' : 'text-white bg-white/10'}`}
+            className={`lg:hidden p-3 rounded-2xl transition-all duration-500 ${showDarkNavbar ? 'text-white bg-white/10' : 'text-white bg-white/[0.08]'}`}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}

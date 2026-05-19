@@ -108,8 +108,8 @@ const Home = () => {
   };
 
   const AnnouncementCard = ({ item }) => (
-    <article className="group bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-500">
-      <div className="h-64 bg-gray-100 overflow-hidden">
+    <article className="group overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-maroon-950/10">
+      <div className="h-60 overflow-hidden bg-[#fbfbfa]">
         {item.image_url ? (
           <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
         ) : (
@@ -118,14 +118,14 @@ const Home = () => {
           </div>
         )}
       </div>
-      <div className="p-8 space-y-4">
+      <div className="space-y-4 p-6">
         <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">
           <Calendar size={12} />
           {new Date(item.created_at).toLocaleDateString()}
         </div>
-        <h3 className="text-2xl font-bold text-gray-900 tracking-tight leading-tight">{item.title}</h3>
+        <h3 className="text-2xl font-bold text-gray-950 tracking-tight leading-tight">{item.title}</h3>
         <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">{item.description}</p>
-        <button className="read-more-btn premium-btn premium-btn-outline w-fit text-sm">
+        <button className="inline-flex w-fit items-center gap-3 rounded-full border border-gray-200 px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-600 transition-all hover:border-maroon-800 hover:text-maroon-800">
           Read more <ArrowRight size={16} />
         </button>
       </div>
@@ -133,8 +133,8 @@ const Home = () => {
   );
 
   const NewsCard = ({ item }) => (
-    <article className="group bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-500">
-      <div className="h-64 bg-gray-100 overflow-hidden">
+    <article className="group overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-maroon-950/10">
+      <div className="h-60 overflow-hidden bg-[#fbfbfa]">
         {item.image_url ? (
           <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
         ) : (
@@ -143,14 +143,14 @@ const Home = () => {
           </div>
         )}
       </div>
-      <div className="p-8 space-y-4">
+      <div className="space-y-4 p-6">
         <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">
           <Calendar size={12} />
           {new Date(item.created_at).toLocaleDateString()}
         </div>
-        <h3 className="text-2xl font-bold text-gray-900 tracking-tight leading-tight">{item.title}</h3>
+        <h3 className="text-2xl font-bold text-gray-950 tracking-tight leading-tight">{item.title}</h3>
         <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">{item.description}</p>
-        <button className="read-more-btn premium-btn premium-btn-outline w-fit text-sm">
+        <button className="inline-flex w-fit items-center gap-3 rounded-full border border-gray-200 px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-600 transition-all hover:border-maroon-800 hover:text-maroon-800">
           Read more <ArrowRight size={16} />
         </button>
       </div>
@@ -158,7 +158,7 @@ const Home = () => {
   );
 
   return (
-    <div className="flex flex-col w-full bg-white font-outfit overflow-x-hidden">
+    <main className="flex w-full flex-col overflow-x-hidden bg-[#f7f7f5] font-outfit text-gray-950">
       
       {/* Cinematic Hero Section */}
       <section className="relative h-screen w-full overflow-hidden bg-black">
@@ -201,16 +201,16 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-[1440px] mx-auto px-10">
-           <div className="grid grid-cols-2 lg:grid-cols-4 gap-10">
+      <section className="py-16">
+        <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
+           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {stats.map((stat, idx) => (
-                <div key={idx} className="flex flex-col gap-2 p-8 rounded-[2rem] bg-subsurface hover:bg-white hover:shadow-xl transition-all duration-500 group border border-transparent hover:border-gray-100">
-                   <div className="w-12 h-12 flex items-center justify-center bg-white rounded-2xl shadow-sm group-hover:scale-110 transition-transform">
+                <div key={idx} className="group flex flex-col gap-2 rounded-[1.5rem] bg-white p-6 shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-maroon-950/10">
+                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-maroon-50 shadow-sm transition-transform group-hover:scale-105">
                       {stat.icon}
                    </div>
                    <div className="mt-4">
-                      <h4 className="text-4xl font-bold text-gray-900">{stat.value}</h4>
+                      <h4 className="text-4xl font-bold text-gray-950">{stat.value}</h4>
                       <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mt-1">{stat.label}</p>
                    </div>
                 </div>
@@ -220,21 +220,27 @@ const Home = () => {
       </section>
 
       {/* Announcements */}
-      <section className="announcements py-32 bg-subsurface">
-        <div className="announcements-container max-w-[1440px] mx-auto px-10">
-          <h2 className="announcements-title text-4xl font-bold text-gray-900 tracking-tight italic mb-16">Announcements</h2>
+      <section className="announcements py-24">
+        <div className="announcements-container mx-auto max-w-[1440px] px-6 lg:px-10">
+          <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">School Updates</p>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-950 md:text-3xl">Announcements</h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-gray-500">Latest advisories and official notices from the RMNHS community.</p>
+          </div>
           
           <div className="announcements-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="announcementsGrid">
             {loading ? (
               [1, 2, 3].map((item) => (
-                <div key={item} className="h-[420px] bg-gray-200 animate-pulse rounded-[2rem]"></div>
+                <div key={item} className="h-[420px] animate-pulse rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5"></div>
               ))
             ) : announcements.length > 0 ? (
               paginateItems(announcements, announcementPage).map((announcement) => (
                 <AnnouncementCard key={announcement.id} item={announcement} />
               ))
             ) : (
-              <div className="col-span-full py-20 text-center bg-white rounded-[2rem] border border-dashed border-gray-200">
+              <div className="col-span-full rounded-[1.5rem] border border-dashed border-gray-200 bg-white py-20 text-center shadow-sm ring-1 ring-black/5">
                 <p className="text-sm font-medium text-gray-400">No announcements available.</p>
               </div>
             )}
@@ -249,20 +255,26 @@ const Home = () => {
 
 
       {/* Latest News */}
-      <section className="latest-news py-32 bg-white">
-        <div className="latest-news-container max-w-[1440px] mx-auto px-10">
-          <h2 className="latest-news-title text-4xl font-bold text-gray-900 tracking-tight italic mb-16">Latest News</h2>
+      <section className="latest-news bg-white py-24">
+        <div className="latest-news-container mx-auto max-w-[1440px] px-6 lg:px-10">
+          <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-[#fbfbfa] p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">Campus Stories</p>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-950 md:text-3xl">Latest News</h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-gray-500">Recent highlights, activities, and official stories from the school.</p>
+          </div>
           <div className="news-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="newsGrid">
             {loading ? (
               [1, 2, 3].map((item) => (
-                <div key={item} className="h-[420px] bg-gray-200 animate-pulse rounded-[2rem]"></div>
+                <div key={item} className="h-[420px] animate-pulse rounded-[1.5rem] bg-gray-100"></div>
               ))
             ) : news.length > 0 ? (
               paginateItems(news, newsPage).map((newsItem) => (
                 <NewsCard key={newsItem.id} item={newsItem} />
               ))
             ) : (
-              <div className="col-span-full py-20 text-center bg-gray-50 rounded-[2rem] border border-dashed border-gray-200">
+              <div className="col-span-full rounded-[1.5rem] border border-dashed border-gray-200 bg-[#fbfbfa] py-20 text-center">
                 <p className="text-sm font-medium text-gray-400">No latest news available.</p>
               </div>
             )}
@@ -274,9 +286,9 @@ const Home = () => {
       </section>
 
       {/* Featured Video */}
-      <section className="featured-video relative overflow-hidden py-32 bg-gradient-to-r from-[#3A0000] via-[#4A0000] to-black text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,rgba(255,255,255,0.12),transparent_28%),radial-gradient(circle_at_72%_10%,rgba(128,0,0,0.42),transparent_34%)] pointer-events-none"></div>
-        <div className="featured-video-container relative z-10 max-w-[1440px] mx-auto px-10">
+      <section className="featured-video relative overflow-hidden bg-gradient-to-br from-[#330000] via-[#520707] to-gray-950 py-24 text-white">
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.12),transparent_38%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.12),transparent_28%)] pointer-events-none"></div>
+        <div className="featured-video-container relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
           <div className="featured-video-heading max-w-3xl mb-16">
             <span className="featured-video-kicker text-[10px] font-bold uppercase tracking-[0.3em] text-maroon-200">
               School Media
@@ -291,7 +303,7 @@ const Home = () => {
 
           <div className="featured-video-grid grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_420px] gap-8 items-start">
             <div className="featured-main">
-              <div className="video-wrapper aspect-video overflow-hidden rounded-[2rem] bg-black border border-white/10 shadow-2xl">
+              <div className="video-wrapper aspect-video overflow-hidden rounded-[1.5rem] bg-black border border-white/10 shadow-2xl">
                 <iframe
                   id="mainVideo"
                   title={selectedVideo.title}
@@ -318,7 +330,7 @@ const Home = () => {
               </div>
             </div>
 
-            <div className="video-list-panel rounded-[2rem] border border-white/10 bg-white/[0.04] p-6">
+            <div className="video-list-panel rounded-[1.5rem] border border-white/10 bg-white/[0.06] p-5">
               <div className="video-list-panel-header flex items-end justify-between gap-4 mb-6">
                 <h3 className="text-2xl font-bold tracking-tight">Playlist</h3>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">
@@ -356,15 +368,18 @@ const Home = () => {
       </section>
 
       {/* Facilities Bento Grid */}
-      <section className="py-32 bg-white">
-         <div className="max-w-[1440px] mx-auto px-10">
-            <div className="text-center mb-20 space-y-4">
-               <h2 className="text-5xl font-bold tracking-tight italic">Our Campus Facilities</h2>
-               <p className="text-gray-500 max-w-2xl mx-auto">Providing a conducive learning environment equipped with state-of-the-art laboratories and recreation areas.</p>
+      <section className="bg-white py-24">
+         <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
+            <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-[#fbfbfa] p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
+               <div>
+                 <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">Campus Facilities</p>
+                 <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-950 md:text-3xl">Our Campus Facilities</h2>
+               </div>
+               <p className="max-w-xl text-sm leading-6 text-gray-500">Providing a conducive learning environment equipped with laboratories and recreation areas.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 h-[900px]">
-               <div className="md:col-span-8 relative group overflow-hidden rounded-[3rem] bento-card">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-12 md:h-[820px]">
+               <div className="group relative overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5 md:col-span-8">
                   <img src={speechlabImg} alt="Speech Lab" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                   <div className="absolute bottom-12 left-12 text-white">
@@ -374,7 +389,7 @@ const Home = () => {
                   </div>
                </div>
 
-               <div className="md:col-span-4 relative group overflow-hidden rounded-[3rem] bento-card">
+               <div className="group relative overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5 md:col-span-4">
                   <img src={comlabImg} alt="Computer Lab" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                   <div className="absolute bottom-10 left-10 text-white">
@@ -383,7 +398,7 @@ const Home = () => {
                   </div>
                </div>
 
-               <div className="md:col-span-5 relative group overflow-hidden rounded-[3rem] bento-card">
+               <div className="group relative overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5 md:col-span-5">
                   <img src={coveredcourtImg} alt="Court" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                   <div className="absolute bottom-10 left-10 text-white">
@@ -392,12 +407,12 @@ const Home = () => {
                   </div>
                </div>
 
-               <div className="md:col-span-7 relative group overflow-hidden rounded-[3rem] bento-card">
+               <div className="group relative overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5 md:col-span-7">
                   <img src={makingImg} alt="Innovation" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
                   <div className="absolute inset-0 bg-gradient-to-t from-maroon-900/40 to-transparent"></div>
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-12">
                      <h3 className="text-5xl font-bold text-white tracking-tighter italic">Innovating Education for the Future.</h3>
-                     <button className="premium-btn premium-btn-primary mt-8">Explore More <ArrowRight size={18} /></button>
+                     <button className="mt-8 inline-flex items-center gap-3 rounded-full bg-maroon-800 px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white transition-all hover:bg-maroon-900">Explore More <ArrowRight size={18} /></button>
                   </div>
                </div>
             </div>
@@ -405,13 +420,13 @@ const Home = () => {
       </section>
 
       {/* Quote Section */}
-      <section className="py-40 bg-subsurface overflow-hidden relative">
+      <section className="relative overflow-hidden py-28">
          <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40rem] font-bold italic select-none">"</div>
          </div>
-         <div className="max-w-4xl mx-auto px-10 text-center relative z-10 space-y-12">
+         <div className="relative z-10 mx-auto max-w-4xl px-6 text-center lg:px-10 space-y-12">
             <GraduationCap size={64} className="mx-auto text-maroon-800 opacity-20" />
-            <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight italic tracking-tight">
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-950 leading-tight tracking-tight">
                "Education is the most powerful weapon which you can use to change the world."
             </h2>
             <div className="space-y-2">
@@ -421,7 +436,7 @@ const Home = () => {
          </div>
       </section>
 
-    </div>
+    </main>
   );
 };
 
