@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
 import { 
@@ -13,7 +14,9 @@ import {
   ArrowUpRight,
   Activity,
   Globe,
-  Terminal,
+  Menu,
+  X,
+  ChevronDown,
   CircleDot,
   Lock,
   ClipboardList
@@ -23,6 +26,8 @@ import logo from '../assets/imgs/rectologo.png';
 const AdminLayout = ({ children }) => {
   const { user, isAdmin, loading, logout } = useAuth();
   const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [openSections, setOpenSections] = useState({});
 
   if (loading) {
     return (
@@ -41,9 +46,9 @@ const AdminLayout = ({ children }) => {
         <div className="text-center space-y-4 relative z-10">
            <div className="flex items-center justify-center gap-3 mb-2">
               <div className="w-2 h-2 rounded-full bg-maroon-800 animate-ping"></div>
-              <p className="text-gray-900 font-bold uppercase tracking-[0.6em] text-[11px]">Initializing Secure Shell</p>
+              <p className="text-gray-900 font-bold uppercase tracking-[0.45em] text-[11px]">Loading Admin Portal</p>
            </div>
-           <p className="text-gray-400 text-[9px] uppercase tracking-[0.4em] italic opacity-60">Synchronizing Institutional Mainframe...</p>
+           <p className="text-gray-400 text-[10px] uppercase tracking-[0.28em] opacity-70">Preparing website management tools</p>
         </div>
       </div>
     );
@@ -109,7 +114,13 @@ const AdminLayout = ({ children }) => {
         { title: 'Red Cross', path: '/admin/transparency?table=red_cross' },
       ]
     },
-    { title: 'Research', path: '/admin/research', icon: <BookOpen size={20} /> },
+    {
+      title: 'Research',
+      icon: <BookOpen size={20} />,
+      subItems: [
+        { title: 'Research Archive', path: '/admin/research' },
+      ]
+    },
   ];
 
   const currentPathName = location.pathname.split('/').pop()?.replace(/-/g, ' ') || 'Dashboard';
@@ -120,63 +131,113 @@ const AdminLayout = ({ children }) => {
     }
     return item.subItems?.some(isItemActive) || false;
   };
+  const isSectionOpen = (item) => openSections[item.title] ?? isItemActive(item);
+  const toggleSection = (item) => {
+    setOpenSections((current) => ({
+      ...current,
+      [item.title]: !(current[item.title] ?? isItemActive(item))
+    }));
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex font-outfit overflow-hidden">
+    <div className="min-h-screen bg-[#f8f7f3] font-outfit text-gray-900">
+      {sidebarOpen && (
+        <button
+          type="button"
+          className="fixed inset-0 z-40 bg-gray-950/45 lg:hidden"
+          aria-label="Close admin menu"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Admin Sidebar */}
-      <aside className="w-80 bg-[#140707] text-white flex flex-col fixed inset-y-0 z-50 shadow-2xl shadow-maroon-950/20 border-r border-white/10">
+      <aside className={`fixed inset-y-0 left-0 z-50 flex w-[19rem] max-w-[85vw] flex-col overflow-hidden border-r border-gray-200 bg-white text-gray-900 shadow-2xl shadow-gray-950/10 transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         {/* Sidebar Identity */}
-        <div className="px-7 py-7 flex items-center gap-4 border-b border-white/10 bg-gradient-to-b from-white/[0.07] to-transparent">
-          <img src={logo} alt="RMNHS" className="w-12 h-12 object-contain drop-shadow-[0_10px_24px_rgba(0,0,0,0.28)] shrink-0" />
-          <div className="min-w-0">
-            <h1 className="text-lg font-bold tracking-tight leading-none text-white">RMNHS Admin</h1>
-            <p className="text-[11px] font-medium uppercase tracking-widest text-white/45 mt-1.5">Quezon Province</p>
+        <div className="border-b border-gray-200 bg-white px-5 py-5">
+          <div className="flex items-center gap-4">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-maroon-100 bg-maroon-50 p-1.5 shadow-sm">
+            <img src={logo} alt="RMNHS" className="h-full w-full object-contain" />
           </div>
+          <div className="min-w-0">
+            <h1 className="text-lg font-bold leading-none tracking-tight text-gray-950">RMNHS Admin</h1>
+            <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-widest text-maroon-800/70">School Website CMS</p>
+          </div>
+          <button
+            type="button"
+            className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-600 lg:hidden"
+            aria-label="Close admin menu"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <X size={18} />
+          </button>
+          </div>
+          <div className="mt-4 h-1 w-20 rounded-full bg-maroon-800" />
         </div>
 
         {/* Management Navigation */}
-        <nav className="flex-1 px-4 py-5 space-y-1 overflow-y-auto custom-scrollbar">
+        <nav className="custom-scrollbar flex-1 space-y-1 overflow-y-auto px-4 py-5">
           {navItems.map((item, idx) => (
-            <div key={idx} className="space-y-1.5 pb-3 last:pb-0">
-              {item.subItems ? (
-                <>
-                  <div className="flex items-center gap-3 px-3 pt-3 pb-2">
-                    <span className={`${isItemActive(item) ? 'text-white' : 'text-white/40'}`}>{item.icon}</span>
-                    <span className={`font-semibold uppercase tracking-[0.18em] text-[11px] ${isItemActive(item) ? 'text-white' : 'text-white/40'}`}>{item.title}</span>
-                  </div>
+            <div key={idx} className="space-y-1.5">
+              <button
+                type="button"
+                onClick={() => toggleSection(item)}
+                className={`
+                  group flex w-full items-center justify-between gap-3 rounded-xl px-4 py-3 text-left transition-all duration-300
+                  ${isItemActive(item)
+                    ? 'bg-maroon-800 text-white shadow-sm'
+                    : 'text-gray-700 hover:bg-maroon-50 hover:text-maroon-900'}
+                `}
+                aria-expanded={isSectionOpen(item)}
+              >
+                <span className="flex min-w-0 items-center gap-3">
+                  <span className={`${isItemActive(item) ? 'text-white' : 'text-gray-400 group-hover:text-maroon-800'}`}>
+                    {item.icon}
+                  </span>
+                  <span className="truncate text-sm font-semibold">{item.title}</span>
+                </span>
+                <ChevronDown
+                  size={17}
+                className={`shrink-0 transition-transform duration-300 ${isSectionOpen(item) ? 'rotate-180' : ''}`}
+                />
+              </button>
+
+              {isSectionOpen(item) && (
+                <div className="space-y-1 pl-3">
                   {item.subItems.map((sub, sIdx) => (
                     <div key={sIdx} className="space-y-1">
                       <Link
                         to={sub.path}
                         className={`
-                          flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group border
+                          group flex items-center justify-between rounded-xl border px-4 py-3 transition-all duration-200
                           ${isItemActive(sub) 
-                            ? 'bg-white text-maroon-950 border-white shadow-lg shadow-black/10' 
-                            : 'text-white/68 border-transparent hover:bg-white/[0.07] hover:text-white hover:border-white/10'}
+                            ? 'border-maroon-100 bg-maroon-50 text-maroon-950 shadow-sm' 
+                            : 'border-transparent text-gray-600 hover:bg-maroon-50/70 hover:text-gray-950'}
                         `}
+                        onClick={() => setSidebarOpen(false)}
                       >
                         <div className="flex items-center gap-3 min-w-0">
-                          {sub.icon || <CircleDot size={9} className={`shrink-0 ${isItemActive(sub) ? 'text-maroon-800' : 'text-white/22 group-hover:text-white/70'}`} />}
+                          {sub.icon || <CircleDot size={9} className={`shrink-0 ${isItemActive(sub) ? 'text-maroon-800' : 'text-gray-300 group-hover:text-maroon-700'}`} />}
                           <span className="font-medium text-[13px] leading-tight truncate">{sub.title}</span>
                         </div>
                         {isItemActive(sub) && (
-                           <div className="w-1.5 h-1.5 rounded-full bg-maroon-800 shrink-0"></div>
+                           <div className="h-6 w-1 shrink-0 rounded-full bg-maroon-800"></div>
                         )}
                       </Link>
                       {sub.subItems && (
-                        <div className="ml-5 pl-3 border-l border-white/10 space-y-1.5 py-1">
+                        <div className="ml-5 space-y-1.5 border-l border-gray-200 py-1 pl-3">
                           {sub.subItems.map((child, cIdx) => (
                             <Link
                               key={cIdx}
                               to={child.path}
                               className={`
-                                flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-300 group/child
+                                group/child flex items-center gap-3 rounded-lg px-4 py-2.5 transition-all duration-200
                                 ${isItemActive(child)
-                                  ? 'text-white bg-white/[0.12]'
-                                  : 'text-white/55 hover:text-white hover:bg-white/[0.07]'}
+                                  ? 'bg-maroon-50 text-maroon-950'
+                                  : 'text-gray-500 hover:bg-maroon-50/70 hover:text-gray-900'}
                               `}
+                              onClick={() => setSidebarOpen(false)}
                             >
-                              <CircleDot size={7} className={`shrink-0 ${isItemActive(child) ? 'text-white' : 'text-white/20 group-hover/child:text-white/70'}`} />
+                              <CircleDot size={7} className={`shrink-0 ${isItemActive(child) ? 'text-maroon-800' : 'text-gray-300 group-hover/child:text-maroon-700'}`} />
                               <span className="font-medium text-[12px] leading-tight">{child.title}</span>
                             </Link>
                           ))}
@@ -184,36 +245,21 @@ const AdminLayout = ({ children }) => {
                       )}
                     </div>
                   ))}
-                </>
-              ) : (
-                <Link
-                  to={item.path}
-                  className={`
-                    flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group border
-                    ${isItemActive(item) 
-                      ? 'bg-white text-maroon-950 border-white shadow-lg shadow-black/10' 
-                      : 'text-white/68 border-transparent hover:bg-white/[0.07] hover:text-white hover:border-white/10'}
-                  `}
-                >
-                  <span className={`${isItemActive(item) ? 'text-maroon-800' : 'text-white/55 group-hover:text-white'}`}>
-                    {item.icon}
-                  </span>
-                  <span className="font-medium text-[13px]">{item.title}</span>
-                </Link>
+                </div>
               )}
             </div>
           ))}
         </nav>
 
         {/* Sidebar User */}
-        <div className="p-5 border-t border-white/10 bg-black/25">
-          <div className="flex items-center gap-3 p-3 bg-white/[0.06] rounded-xl mb-3 border border-white/10">
-            <div className="w-10 h-10 bg-white text-maroon-950 rounded-lg flex items-center justify-center font-bold text-base shrink-0">
+        <div className="border-t border-gray-200 bg-[#fbfbfa] p-5">
+          <div className="mb-3 flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-maroon-800 text-base font-bold text-white">
               {user?.email?.[0]?.toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold truncate text-white">{user?.email?.split('@')?.[0] || 'Admin'}</p>
-              <div className="flex items-center gap-1.5 mt-0.5 text-white/45">
+              <p className="truncate text-sm font-semibold text-gray-950">{user?.email?.split('@')?.[0] || 'Admin'}</p>
+              <div className="mt-0.5 flex items-center gap-1.5 text-gray-400">
                  <Lock size={11} />
                  <p className="text-[10px] font-medium uppercase tracking-widest">Admin access</p>
               </div>
@@ -221,7 +267,7 @@ const AdminLayout = ({ children }) => {
           </div>
           <button 
             onClick={logout}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-transparent text-white/72 hover:bg-white hover:text-maroon-950 transition-all duration-300 font-semibold text-sm border border-white/10"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white py-3 text-sm font-semibold text-gray-600 transition-all duration-200 hover:border-red-200 hover:bg-red-50 hover:text-red-700"
           >
             <LogOut size={17} /> Logout
           </button>
@@ -229,16 +275,21 @@ const AdminLayout = ({ children }) => {
       </aside>
 
       {/* Main Admin Area */}
-      <main className="flex-1 ml-80 min-h-screen flex flex-col relative">
-        <header className="h-20 bg-white/90 backdrop-blur-xl border-b border-gray-100 flex items-center justify-between px-8 sticky top-0 z-40">
+        <main className="relative flex min-h-screen flex-col lg:ml-[19rem]">
+        <header className="sticky top-0 z-30 flex min-h-20 items-center justify-between border-b border-gray-200 bg-white/92 px-4 py-3 shadow-sm shadow-gray-950/[0.03] backdrop-blur-xl md:px-8">
           <div className="flex items-center gap-4">
-            <div className="w-11 h-11 bg-maroon-50 rounded-2xl flex items-center justify-center text-maroon-800 border border-maroon-100">
-               <Terminal size={20} />
-            </div>
+            <button
+              type="button"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-600 lg:hidden"
+              aria-label="Open admin menu"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <Menu size={20} />
+            </button>
             <div>
                <div className="flex items-center gap-2 mb-1">
                   <Activity size={10} className="text-maroon-800" />
-                  <h2 className="text-[10px] font-semibold uppercase tracking-[0.24em] text-gray-400 leading-none">Admin panel</h2>
+                  <h2 className="text-[10px] font-bold uppercase tracking-[0.24em] text-maroon-800/70 leading-none">Website management</h2>
                </div>
                <p className="text-2xl font-bold text-gray-900 tracking-tight leading-none capitalize">
                  {currentPathName}
@@ -247,7 +298,7 @@ const AdminLayout = ({ children }) => {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="hidden lg:flex items-center gap-3 px-4 py-2.5 bg-gray-50 rounded-full border border-gray-100 focus-within:bg-white focus-within:ring-4 focus-within:ring-maroon-50 focus-within:border-maroon-200 transition-all group">
+            <div className="hidden items-center gap-3 rounded-xl border border-gray-200 bg-[#fbfbfa] px-4 py-2.5 transition-all focus-within:border-maroon-200 focus-within:bg-white focus-within:ring-4 focus-within:ring-maroon-50 xl:flex">
               <Search className="text-gray-400 group-focus-within:text-maroon-800 transition-colors" size={18} />
               <input 
                 type="text" 
@@ -256,28 +307,28 @@ const AdminLayout = ({ children }) => {
               />
             </div>
             
-            <button className="w-11 h-11 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-gray-500 hover:text-maroon-900 hover:border-maroon-100 hover:bg-maroon-50 transition-all relative">
+            <button className="relative hidden h-11 w-11 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition-all hover:border-maroon-100 hover:bg-maroon-50 hover:text-maroon-900 sm:flex">
               <Bell size={19} />
               <span className="absolute top-3 right-3 w-2 h-2 bg-maroon-600 rounded-full border-2 border-white"></span>
             </button>
             <Link 
               to="/" 
               target="_blank" 
-              className="flex items-center gap-2 bg-gradient-to-r from-[#3A0000] via-[#4A0000] to-black text-white px-5 py-3 rounded-full text-[12px] font-semibold hover:shadow-lg hover:shadow-maroon-950/20 transition-all"
+              className="flex items-center gap-2 rounded-xl bg-maroon-800 px-4 py-3 text-[12px] font-semibold text-white shadow-sm transition-all hover:bg-maroon-900 md:px-5"
             >
-              <Sparkles size={15} /> View Site <ArrowUpRight size={16} className="opacity-70" />
+              <Sparkles size={15} /> <span className="hidden sm:inline">View Site</span> <ArrowUpRight size={16} className="opacity-70" />
             </Link>
           </div>
         </header>
 
         {/* Content Viewport */}
-        <div className="p-8 flex-1 relative z-10">
+        <div className="relative z-10 flex-1 p-4 md:p-8">
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
              {children}
           </div>
         </div>
 
-        <footer className="px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-gray-100 bg-white">
+        <footer className="flex flex-col items-center justify-between gap-4 border-t border-gray-200 bg-white px-8 py-6 md:flex-row">
            <div className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-widest text-gray-400">
               <div className="w-2 h-2 rounded-full bg-maroon-800"></div>
               RMNHS Admin

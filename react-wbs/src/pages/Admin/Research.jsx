@@ -1,31 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { 
-  Upload, 
-  Trash2, 
-  FileText, 
-  Loader2, 
-  Plus, 
+import {
+  Upload,
+  Trash2,
+  Loader2,
+  Plus,
   BookOpen,
   Tag,
-  Calendar,
-  ChevronRight,
   GraduationCap,
   ImageIcon,
-  ArrowUpRight,
-  Clock,
   ExternalLink,
   BookMarked,
   FlaskConical,
-  Award
+  FileText,
+  Search
 } from 'lucide-react';
 
 const AdminResearch = () => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // Form states
   const [title, setTitle] = useState('');
   const [department, setDepartment] = useState('');
   const [grade, setGrade] = useState('');
@@ -34,14 +30,10 @@ const AdminResearch = () => {
   const [file, setFile] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
-  useEffect(() => {
-    fetchRecords();
-  }, []);
-
-  const fetchRecords = async () => {
+  const fetchRecords = useCallback(async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('research')
         .select('*')
         .order('created_at', { ascending: false });
@@ -51,16 +43,32 @@ const AdminResearch = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const handleUpload = async (file, bucket) => {
-    if (!file) return null;
-    const fileExt = file.name.split('.').pop();
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      fetchRecords();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [fetchRecords]);
+
+  const handleUpload = async (selectedFile, bucket) => {
+    if (!selectedFile) return null;
+    const fileExt = selectedFile.name.split('.').pop();
     const fileName = `${bucket}-${Date.now()}.${fileExt}`;
-    const { data, error } = await supabase.storage.from(bucket).upload(fileName, file);
+    const { error } = await supabase.storage.from(bucket).upload(fileName, selectedFile);
     if (error) throw error;
     const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(fileName);
     return publicUrl;
+  };
+
+  const resetForm = () => {
+    setTitle('');
+    setDepartment('');
+    setGrade('');
+    setFile(null);
+    setImageFile(null);
   };
 
   const handleSubmit = async (e) => {
@@ -84,12 +92,7 @@ const AdminResearch = () => {
       const { error } = await supabase.from('research').insert([payload]);
       if (error) throw error;
 
-      // Reset
-      setTitle('');
-      setDepartment('');
-      setGrade('');
-      setFile(null);
-      setImageFile(null);
+      resetForm();
       await fetchRecords();
       alert('Research paper published successfully!');
     } catch (err) {
@@ -104,255 +107,263 @@ const AdminResearch = () => {
     try {
       await supabase.from('research').delete().eq('id', id);
       await fetchRecords();
-    } catch (err) {
+    } catch {
       alert('Delete failed');
     }
   };
 
+  const filteredRecords = records.filter((record) => {
+    const query = searchTerm.trim().toLowerCase();
+    if (!query) return true;
+
+    return [record.title, record.department, record.grade, record.category, record.year]
+      .filter(Boolean)
+      .some((value) => String(value).toLowerCase().includes(query));
+  });
+
   return (
-    <div className="max-w-[1600px] mx-auto space-y-12 pb-20 font-outfit">
-      {/* Cinematic Identity Header */}
-      <div className="bg-white p-12 rounded-[3.5rem] shadow-2xl shadow-gray-200/40 border border-gray-100 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(128,0,0,0.03)_0%,transparent_70%)] pointer-events-none transition-transform duration-1000 group-hover:scale-110"></div>
-        
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 relative z-10">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-               <span className="text-maroon-800 font-bold uppercase tracking-[0.5em] text-[10px] bg-maroon-50 px-5 py-2 rounded-full">
-                 Academic Repository
-               </span>
-               <div className="h-px w-12 bg-maroon-100"></div>
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 tracking-tighter leading-none font-['Playfair_Display'] italic">
-              Innovation <span className="text-maroon-800">Vault</span>
-            </h1>
-            <p className="text-gray-400 font-medium italic text-lg max-w-2xl">
-              Secure preservation protocol for institutional scholarly works, action research, and pedagogical innovations.
+    <main className="mx-auto max-w-[1500px] space-y-6 pb-16 font-outfit text-gray-900">
+      <section className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+          <div>
+            <span className="inline-flex items-center rounded-md bg-maroon-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-maroon-800">
+              Academic Repository
+            </span>
+            <h1 className="mt-3 text-3xl font-bold tracking-tight text-gray-950">Research Management</h1>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-gray-500">
+              Upload and maintain scholarly works, action research, and innovation records for the public research archive.
             </p>
           </div>
 
-          <div className="relative bg-maroon-950 px-10 py-8 rounded-[2.5rem] shadow-2xl shadow-maroon-950/20 group/stat hover:bg-black transition-all duration-500 border border-white/5">
-             <div className="flex items-center gap-6">
-                <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-maroon-500 border border-white/10 group-hover/stat:scale-110 transition-transform duration-500">
-                   <FlaskConical size={28} />
-                </div>
-                <div className="text-right">
-                   <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Digital Papers</p>
-                   <p className="text-4xl font-bold text-white tracking-tighter font-['Playfair_Display'] italic">{records.length}</p>
-                </div>
-             </div>
+          <div className="grid grid-cols-2 gap-3 xl:min-w-[360px]">
+            <div className="rounded-lg border border-gray-200 bg-gray-50 px-5 py-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Research Papers</p>
+              <p className="mt-1 text-3xl font-bold text-gray-950">{records.length}</p>
+            </div>
+            <div className="rounded-lg border border-maroon-100 bg-maroon-50 px-5 py-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-maroon-700">Archive Type</p>
+              <p className="mt-1 text-2xl font-bold text-maroon-950">PDF</p>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-12">
-        {/* Sidebar: Publisher Console */}
-        <div className="xl:col-span-4">
-          <div className="bg-gray-950 rounded-[4rem] p-12 shadow-2xl shadow-gray-900/40 text-white sticky top-32 border border-white/5 overflow-hidden group/form">
-            <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none group-hover/form:opacity-10 transition-opacity">
-               <Award size={200} />
+      <section className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div className="flex flex-col gap-4 border-b border-gray-200 bg-gray-50/70 px-6 py-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-md bg-white text-maroon-800 shadow-sm ring-1 ring-gray-200">
+              <Plus size={21} />
             </div>
-            
-            <div className="relative z-10">
-              <div className="flex items-center gap-4 mb-12">
-                <div className="w-14 h-14 bg-maroon-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-maroon-600/40">
-                  <Plus size={28} />
-                </div>
-                <div>
-                   <h2 className="text-3xl font-bold tracking-tighter font-['Playfair_Display'] italic">Archive Paper</h2>
-                   <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.4em]">Scholarly Asset Entry</p>
-                </div>
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-gray-950">Add Research Paper</h2>
+              <p className="text-sm text-gray-500">Create a research record and attach its PDF and optional cover image.</p>
+            </div>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5 p-6">
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-700">Research Title</label>
+            <input
+              type="text"
+              required
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter full research title"
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-maroon-600 focus:ring-4 focus:ring-maroon-100"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-4">
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-gray-700">Department</label>
+              <select
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition focus:border-maroon-600 focus:ring-4 focus:ring-maroon-100"
+              >
+                <option value="">Select department</option>
+                <option value="science">Science</option>
+                <option value="math">Mathematics</option>
+                <option value="english">English</option>
+                <option value="ap">Social Studies</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-gray-700">Grade Level</label>
+              <select
+                value={grade}
+                onChange={(e) => setGrade(e.target.value)}
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition focus:border-maroon-600 focus:ring-4 focus:ring-maroon-100"
+              >
+                <option value="">Select grade</option>
+                <option value="grade-7">Grade 7</option>
+                <option value="grade-8">Grade 8</option>
+                <option value="grade-9">Grade 9</option>
+                <option value="grade-10">Grade 10</option>
+                <option value="grade-11">Grade 11</option>
+                <option value="grade-12">Grade 12</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-gray-700">Category</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition focus:border-maroon-600 focus:ring-4 focus:ring-maroon-100"
+              >
+                <option value="Action Research">Action Research</option>
+                <option value="Applied Research">Applied Research</option>
+                <option value="Case Study">Case Study</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-gray-700">Year</label>
+              <input
+                type="number"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition focus:border-maroon-600 focus:ring-4 focus:ring-maroon-100"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-gray-700">Research PDF</label>
+              <label className="flex min-h-[128px] cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 p-5 text-center transition hover:border-maroon-300 hover:bg-maroon-50/40">
+                <Upload size={22} className="text-gray-500" />
+                <span className="mt-3 w-full truncate text-sm font-bold text-gray-800">
+                  {file ? file.name : 'Choose PDF File'}
+                </span>
+                <span className="mt-1 text-xs text-gray-500">PDF file for public viewing</span>
+                <input type="file" className="hidden" accept=".pdf,application/pdf" onChange={(e) => setFile(e.target.files[0])} />
+              </label>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-gray-700">Cover Image</label>
+              <label className="flex min-h-[128px] cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 p-5 text-center transition hover:border-maroon-300 hover:bg-maroon-50/40">
+                <ImageIcon size={22} className="text-gray-500" />
+                <span className="mt-3 w-full truncate text-sm font-bold text-gray-800">
+                  {imageFile ? imageFile.name : 'Choose Cover Image'}
+                </span>
+                <span className="mt-1 text-xs text-gray-500">Optional JPG, PNG, or WEBP image</span>
+                <input type="file" className="hidden" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} />
+              </label>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="flex w-full items-center justify-center gap-2 rounded-md bg-maroon-800 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-maroon-900 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {submitting ? <Loader2 className="animate-spin" size={20} /> : <BookOpen size={18} />}
+            Publish Research
+          </button>
+        </form>
+      </section>
+
+      <section className="min-w-0 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div className="flex flex-col gap-4 border-b border-gray-200 px-6 py-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-md bg-gray-100 text-gray-700">
+              <FlaskConical size={21} />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-gray-950">Research Registry</h2>
+              <p className="text-sm text-gray-500">{filteredRecords.length} visible records</p>
+            </div>
+          </div>
+
+          <div className="relative w-full lg:max-w-sm">
+            <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <input
+              type="search"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search research"
+              className="w-full rounded-md border border-gray-300 bg-white py-2.5 pl-10 pr-3 text-sm outline-none transition placeholder:text-gray-400 focus:border-maroon-600 focus:ring-4 focus:ring-maroon-100"
+            />
+          </div>
+        </div>
+
+        <div className="divide-y divide-gray-100">
+          {loading ? (
+            [1, 2, 3].map((item) => (
+              <div key={item} className="h-28 animate-pulse bg-gray-50" />
+            ))
+          ) : filteredRecords.length === 0 ? (
+            <div className="p-12 text-center">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-md bg-gray-50 text-gray-300">
+                <BookMarked size={28} />
               </div>
-
-              <form onSubmit={handleSubmit} className="space-y-8">
-                <div className="space-y-6">
-                  <div className="group/input">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block group-focus-within/input:text-maroon-500 transition-colors">Research Title</label>
-                    <input 
-                      type="text"
-                      required
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      placeholder="Enter full research title..."
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:bg-white/10 focus:ring-4 focus:ring-maroon-600/20 outline-none transition-all placeholder:text-white/10"
-                    />
+              <p className="text-sm font-medium text-gray-500">No research records found.</p>
+            </div>
+          ) : (
+            filteredRecords.map((record) => (
+              <article key={record.id} className="flex flex-col gap-4 p-5 transition hover:bg-gray-50 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex min-w-0 gap-4">
+                  <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-md border border-gray-200 bg-gray-50">
+                    {record.image ? (
+                      <img src={record.image} className="h-full w-full object-cover" alt="Research cover" />
+                    ) : (
+                      <FileText size={28} className="text-gray-300" />
+                    )}
                   </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="group/input">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block">Department</label>
-                      <select 
-                        value={department}
-                        onChange={(e) => setDepartment(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-[10px] font-bold uppercase tracking-widest focus:bg-white/10 outline-none appearance-none cursor-pointer text-white/60"
-                      >
-                        <option value="">Select</option>
-                        <option value="science">Science</option>
-                        <option value="math">Mathematics</option>
-                        <option value="english">English</option>
-                        <option value="ap">Social Studies</option>
-                      </select>
-                    </div>
-                    <div className="group/input">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block">Level</label>
-                      <select 
-                        value={grade}
-                        onChange={(e) => setGrade(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-[10px] font-bold uppercase tracking-widest focus:bg-white/10 outline-none appearance-none cursor-pointer text-white/60"
-                      >
-                        <option value="">Select</option>
-                        <option value="grade-7">Grade 7</option>
-                        <option value="grade-8">Grade 8</option>
-                        <option value="grade-9">Grade 9</option>
-                        <option value="grade-10">Grade 10</option>
-                        <option value="grade-11">Grade 11</option>
-                        <option value="grade-12">Grade 12</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="group/input">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block">Category</label>
-                      <select 
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-[10px] font-bold uppercase tracking-widest focus:bg-white/10 outline-none appearance-none cursor-pointer text-white/60"
-                      >
-                        <option value="Action Research">Action Research</option>
-                        <option value="Applied Research">Applied Research</option>
-                        <option value="Case Study">Case Study</option>
-                      </select>
-                    </div>
-                    <div className="group/input">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block">Year</label>
-                      <input 
-                        type="number"
-                        value={year}
-                        onChange={(e) => setYear(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-xs font-bold focus:bg-white/10 outline-none text-white/60"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block">Full PDF</label>
-                      <label className="flex flex-col items-center justify-center bg-white/5 border border-dashed border-white/10 rounded-2xl p-6 cursor-pointer hover:bg-white/10 hover:border-maroon-600/40 transition-all group/upload relative overflow-hidden h-32">
-                        <Upload size={24} className="text-white/10 group-hover/upload:text-maroon-500 transition-all mb-2" />
-                        <span className="text-[9px] font-bold uppercase tracking-widest text-white/40 truncate w-full text-center px-4">
-                          {file ? file.name : 'Upload PDF'}
-                        </span>
-                        <input type="file" className="hidden" accept=".pdf" onChange={(e) => setFile(e.target.files[0])} />
-                      </label>
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block">Cover Image</label>
-                      <label className="flex flex-col items-center justify-center bg-white/5 border border-dashed border-white/10 rounded-2xl p-6 cursor-pointer hover:bg-white/10 hover:border-maroon-600/40 transition-all group/upload relative overflow-hidden h-32">
-                        <ImageIcon size={24} className="text-white/10 group-hover/upload:text-maroon-500 transition-all mb-2" />
-                        <span className="text-[9px] font-bold uppercase tracking-widest text-white/40 truncate w-full text-center px-4">
-                          {imageFile ? imageFile.name : 'Upload Image'}
-                        </span>
-                        <input type="file" className="hidden" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} />
-                      </label>
+                  <div className="min-w-0">
+                    <h3 className="line-clamp-2 text-base font-bold text-gray-950">{record.title}</h3>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span className="inline-flex items-center gap-1.5 rounded-md bg-maroon-50 px-2.5 py-1 text-xs font-semibold text-maroon-800">
+                        <BookOpen size={13} />
+                        {record.category || 'Uncategorized'}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 rounded-md bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600">
+                        <GraduationCap size={13} />
+                        {record.grade || 'No grade'}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 rounded-md bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600">
+                        <Tag size={13} />
+                        {record.department || 'No department'}
+                      </span>
+                      <span className="inline-flex rounded-md bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600">
+                        {record.year || 'No year'}
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                <button 
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full py-6 rounded-full font-bold uppercase tracking-[0.4em] text-[10px] flex items-center justify-center gap-4 transition-all duration-500 active:scale-95 shadow-2xl bg-white text-maroon-950 hover:bg-maroon-600 hover:text-white group/submit"
-                >
-                  {submitting ? (
-                    <Loader2 className="animate-spin" size={20} />
-                  ) : (
-                    <>
-                      Archive Scholarly Paper
-                      <ArrowUpRight size={18} className="group-hover/submit:translate-x-1 group-hover/submit:-translate-y-1 transition-transform" />
-                    </>
+                <div className="flex flex-wrap justify-end gap-2">
+                  {record.file && (
+                    <a
+                      href={record.file}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-600 transition hover:border-maroon-200 hover:bg-maroon-50 hover:text-maroon-800"
+                    >
+                      <ExternalLink size={15} />
+                      View
+                    </a>
                   )}
-                </button>
-              </form>
-            </div>
-          </div>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(record.id)}
+                    className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700"
+                  >
+                    <Trash2 size={15} />
+                    Delete
+                  </button>
+                </div>
+              </article>
+            ))
+          )}
         </div>
-
-        {/* Scholarly Registry Stream */}
-        <div className="xl:col-span-8 space-y-10">
-           {loading ? (
-             <div className="space-y-8">
-                {[1, 2, 3].map(i => <div key={i} className="h-48 bg-gray-50/50 animate-pulse rounded-[3rem] border border-gray-100"></div>)}
-             </div>
-           ) : records.length === 0 ? (
-              <div className="py-40 text-center bg-gray-50/50 rounded-[4rem] border border-dashed border-gray-200">
-                 <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-8 text-gray-200 shadow-xl border border-gray-100">
-                    <BookMarked size={48} />
-                 </div>
-                 <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest italic">The innovation vault is currently empty.</p>
-              </div>
-           ) : (
-             <div className="grid grid-cols-1 gap-8">
-               {records.map((record) => (
-                 <article key={record.id} className="group bg-white p-10 rounded-[3.5rem] shadow-xl shadow-gray-200/30 border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-10 transition-all duration-700 hover:shadow-2xl hover:-translate-y-2">
-                    <div className="flex items-center gap-10 flex-1 min-w-0">
-                       <div className="w-36 h-36 bg-gray-50 rounded-[2.5rem] flex-shrink-0 overflow-hidden border border-gray-100 relative group/cover shadow-inner">
-                          {record.image ? (
-                            <img src={record.image} className="w-full h-full object-cover grayscale group-hover/cover:grayscale-0 transition-all duration-700 group-hover/cover:scale-110" alt="Identity" />
-                          ) : (
-                            <BookOpen className="w-full h-full p-10 text-gray-200" />
-                          )}
-                          <div className="absolute top-4 left-4">
-                             <div className="bg-maroon-900/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-[8px] font-bold uppercase tracking-widest shadow-2xl">
-                                {record.category}
-                             </div>
-                          </div>
-                       </div>
-                       <div className="min-w-0">
-                          <div className="flex items-center gap-3 mb-4">
-                             <div className="w-2 h-2 rounded-full bg-maroon-800 animate-pulse"></div>
-                             <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Digital Scholarly Asset</span>
-                          </div>
-                          <h3 className="text-3xl font-bold text-gray-900 tracking-tighter leading-tight mb-6 group-hover:text-maroon-800 transition-colors font-['Playfair_Display'] italic line-clamp-2">
-                            {record.title}
-                          </h3>
-                          <div className="flex flex-wrap gap-8">
-                             <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                                <GraduationCap size={16} className="text-maroon-800" /> {record.grade}
-                             </div>
-                             <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                                <Tag size={16} className="text-maroon-800" /> {record.department}
-                             </div>
-                             <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                                <Clock size={16} className="text-maroon-800" /> {record.year}
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                       <button 
-                        onClick={() => handleDelete(record.id)}
-                        className="w-14 h-14 rounded-3xl bg-white text-gray-300 hover:text-red-600 hover:shadow-2xl transition-all duration-500 border border-gray-100 flex items-center justify-center group/del"
-                       >
-                          <Trash2 size={22} className="group-hover/del:scale-110 transition-transform" />
-                       </button>
-                       <a 
-                        href={record.file}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-14 h-14 rounded-3xl bg-maroon-950 text-white flex items-center justify-center hover:bg-black transition-all duration-500 shadow-xl shadow-maroon-950/20 group/next"
-                       >
-                          <ExternalLink size={24} className="group-hover/next:scale-110 transition-transform" />
-                       </a>
-                    </div>
-                 </article>
-               ))}
-             </div>
-           )}
-        </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

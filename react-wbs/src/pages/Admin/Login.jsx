@@ -1,18 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../lib/AuthContext';
-import { 
-  Mail, 
-  Eye, 
-  EyeOff, 
-  ArrowLeft, 
-  Loader2, 
+import {
+  Mail,
+  Eye,
+  EyeOff,
+  ArrowLeft,
+  Loader2,
   ShieldCheck,
   ArrowUpRight,
   ShieldAlert,
-  Fingerprint,
   KeyRound,
-  Command
+  LayoutDashboard
 } from 'lucide-react';
 import logo from '../../assets/imgs/rectologo.png';
 
@@ -42,147 +41,131 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4 md:p-8 font-outfit overflow-hidden relative">
-      {/* Cinematic Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_-20%,rgba(128,0,0,0.15),transparent_50%)] pointer-events-none"></div>
-      <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-[radial-gradient(circle_at_100%_100%,rgba(128,0,0,0.05),transparent_50%)] pointer-events-none"></div>
-      
-      <div className="w-full max-w-6xl bg-white rounded-[4rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col lg:flex-row relative border border-white/10">
-        
-        {/* Left Side: Brand Identity */}
-        <div className="lg:w-[45%] bg-maroon-950 p-12 md:p-20 text-white flex flex-col justify-between relative overflow-hidden group">
-          {/* Decorative Elements */}
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(255,255,255,0.03)_0%,transparent_70%)] pointer-events-none transition-transform duration-1000 group-hover:scale-110"></div>
-          
-          <Link to="/" className="inline-flex items-center gap-3 text-white/40 hover:text-white transition-all duration-500 group/back z-10">
-            <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover/back:bg-white group-hover/back:text-maroon-950 transition-all">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f8f7f3] p-4 font-outfit md:p-8">
+      <div className="absolute inset-x-0 top-0 h-80 bg-[#390606]" />
+      <div className="absolute inset-x-0 top-80 h-px bg-[#d9b35d]/40" />
+
+      <div className="relative flex w-full max-w-6xl overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-2xl shadow-gray-950/10">
+        <div className="hidden w-[42%] flex-col justify-between bg-[#390606] p-10 text-white lg:flex">
+          <Link to="/" className="inline-flex w-fit items-center gap-3 text-white/70 transition hover:text-white">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/[0.08]">
               <ArrowLeft size={18} />
             </div>
-            <span className="font-bold uppercase tracking-[0.3em] text-[10px]">Return to Portal</span>
+            <span className="text-xs font-semibold">Back to website</span>
           </Link>
 
-          <div className="z-10 space-y-10">
-            <div className="relative inline-block">
-               <div className="absolute -inset-4 bg-white/5 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
-               <img src={logo} alt="RMNHS Logo" className="w-32 h-32 relative drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-transform duration-700 group-hover:scale-105" />
+          <div className="space-y-8">
+            <div className="flex h-28 w-28 items-center justify-center rounded-3xl border border-[#d9b35d]/30 bg-white p-3 shadow-sm">
+              <img src={logo} alt="RMNHS Logo" className="h-full w-full object-contain" />
             </div>
-            
-            <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                 <div className="h-px w-8 bg-maroon-500"></div>
-                 <span className="text-maroon-400 font-bold uppercase tracking-[0.5em] text-[10px]">Institutional Gateway</span>
-              </div>
-              <h1 className="text-5xl md:text-6xl font-bold tracking-tighter leading-[0.9] font-['Playfair_Display'] italic">
-                Recto Memorial <br />
-                <span className="text-maroon-500">National</span> <br />
-                High School
+            <div className="space-y-4">
+              <span className="inline-flex rounded-md border border-[#d9b35d]/20 bg-[#d9b35d]/10 px-3 py-1 text-xs font-semibold text-[#f3d98a]">
+                School Website Administration
+              </span>
+              <h1 className="text-4xl font-bold leading-tight tracking-tight">
+                Recto Memorial National High School
               </h1>
-              <p className="text-white/40 font-medium text-lg leading-relaxed max-w-sm italic">
-                Authorized access only. Secure operational environment for institutional management.
+              <p className="max-w-sm text-sm leading-6 text-white/70">
+                Manage announcements, documents, learning materials, organizations, research records, and school contact information.
               </p>
             </div>
           </div>
 
-          <div className="z-10 flex items-center justify-between">
-            <div className="text-[9px] font-bold uppercase tracking-[0.4em] text-white/20">
-              &copy; 2026 RMNS INFRASTRUCTURE
-            </div>
-            <div className="flex items-center gap-4 opacity-20">
-               <ShieldCheck size={16} />
-               <Fingerprint size={16} />
+          <div className="flex items-center justify-between border-t border-white/10 pt-6 text-xs text-white/60">
+            <span>RMNHS Admin</span>
+            <div className="flex items-center gap-2">
+              <ShieldCheck size={16} className="text-[#d9b35d]" />
+              Secure access
             </div>
           </div>
         </div>
 
-        {/* Right Side: Authentication Console */}
-        <div className="lg:w-[55%] p-10 md:p-24 flex flex-col justify-center relative bg-white">
-          <div className="max-w-md mx-auto w-full relative z-10">
-            <header className="mb-16">
-              <div className="flex items-center gap-4 mb-8">
-                 <div className="w-12 h-12 bg-maroon-50 rounded-2xl flex items-center justify-center text-maroon-900 shadow-xl border border-maroon-100">
-                    <Command size={24} />
-                 </div>
-                 <div>
-                    <h2 className="text-4xl font-bold text-gray-900 tracking-tighter font-['Playfair_Display'] italic leading-none">Access Portal</h2>
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Command Center Login</p>
-                 </div>
+        <div className="flex min-h-[680px] flex-1 flex-col justify-center bg-white p-8 md:p-14">
+          <div className="mx-auto w-full max-w-md">
+            <Link to="/" className="mb-10 inline-flex items-center gap-2 text-sm font-semibold text-gray-500 transition hover:text-maroon-800 lg:hidden">
+              <ArrowLeft size={17} />
+              Back to website
+            </Link>
+
+            <header className="mb-10">
+              <div className="mb-7 flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-maroon-100 bg-maroon-50 text-maroon-900">
+                  <LayoutDashboard size={23} />
+                </div>
+                <div>
+                  <h2 className="text-3xl font-bold tracking-tight text-gray-950">Admin Login</h2>
+                  <p className="mt-1 text-sm text-gray-500">Sign in to manage official school website content.</p>
+                </div>
               </div>
             </header>
 
             {error && (
-              <div className="mb-10 p-6 bg-red-50 rounded-[2rem] border border-red-100 text-red-900 text-[11px] font-bold flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
-                <div className="w-10 h-10 bg-red-100 rounded-2xl flex items-center justify-center text-red-600 flex-shrink-0 shadow-lg shadow-red-200/50">
-                   <ShieldAlert size={20} />
+              <div className="mb-6 flex items-center gap-4 rounded-lg border border-red-100 bg-red-50 p-4 text-sm font-semibold text-red-900">
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-600">
+                  <ShieldAlert size={20} />
                 </div>
                 <div className="flex flex-col">
-                   <span className="uppercase tracking-widest opacity-40 mb-0.5">Authentication Error</span>
-                   {error}
+                  <span className="mb-0.5 text-xs uppercase tracking-wide opacity-60">Authentication Error</span>
+                  {error}
                 </div>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-10">
-              <div className="space-y-4">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] ml-6 block">Administrative ID</label>
-                <div className="relative group/input">
-                  <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within/input:text-maroon-800 transition-colors" size={20} />
-                  <input 
-                    type="email" 
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700">Email address</label>
+                <div className="group/input relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within/input:text-maroon-800" size={19} />
+                  <input
+                    type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="admin@rmnhs.edu.ph"
-                    className="w-full bg-gray-50 border border-gray-100 rounded-full pl-16 pr-8 py-6 text-sm font-bold focus:bg-white focus:ring-[12px] focus:ring-maroon-50 focus:border-maroon-800 outline-none transition-all placeholder:text-gray-300"
+                    className="w-full rounded-xl border border-gray-300 bg-white py-3.5 pl-12 pr-4 text-sm font-medium text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-maroon-700 focus:ring-4 focus:ring-maroon-100"
                   />
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] ml-6 block">Access Key</label>
-                <div className="relative group/input">
-                  <KeyRound className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within/input:text-maroon-800 transition-colors" size={20} />
-                  <input 
-                    type={showPassword ? 'text' : 'password'} 
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700">Password</label>
+                <div className="group/input relative">
+                  <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within/input:text-maroon-800" size={19} />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••••••"
-                    className="w-full bg-gray-50 border border-gray-100 rounded-full pl-16 pr-16 py-6 text-sm font-bold focus:bg-white focus:ring-[12px] focus:ring-maroon-50 focus:border-maroon-800 outline-none transition-all placeholder:text-gray-300"
+                    placeholder="Enter your password"
+                    className="w-full rounded-xl border border-gray-300 bg-white py-3.5 pl-12 pr-12 text-sm font-medium text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-maroon-700 focus:ring-4 focus:ring-maroon-100"
                   />
-                  <button 
+                  <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-300 hover:text-maroon-800 transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-maroon-800"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-2 px-4">
-                <label className="flex items-center gap-3 cursor-pointer group">
-                  <div className="relative">
-                    <input type="checkbox" className="peer hidden" />
-                    <div className="w-6 h-6 border-2 border-gray-100 rounded-lg bg-gray-50 peer-checked:bg-maroon-900 peer-checked:border-maroon-900 transition-all duration-300 flex items-center justify-center">
-                       <ShieldCheck size={14} className="text-white opacity-0 peer-checked:opacity-100 transition-opacity" />
-                    </div>
-                  </div>
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-gray-900 transition-colors">Trust this terminal</span>
-                </label>
-              </div>
+              <label className="flex cursor-pointer items-center gap-3">
+                <input type="checkbox" className="h-4 w-4 rounded border-gray-300 accent-maroon-800" />
+                <span className="text-sm font-medium text-gray-500">Keep me signed in</span>
+              </label>
 
-              <button 
+              <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-maroon-950 text-white py-7 rounded-full font-bold uppercase tracking-[0.5em] text-[10px] shadow-2xl shadow-maroon-950/20 hover:bg-black active:scale-95 disabled:opacity-20 transition-all duration-500 flex items-center justify-center gap-6 group/submit relative overflow-hidden"
+                className="flex w-full items-center justify-center gap-3 rounded-xl bg-maroon-800 px-4 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-maroon-900 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading ? (
-                  <Loader2 className="animate-spin" size={24} />
+                  <Loader2 className="animate-spin" size={22} />
                 ) : (
                   <>
-                    <Fingerprint size={24} className="text-maroon-500" />
-                    Initialize Command Access
-                    <ArrowUpRight size={20} className="opacity-40 group-hover/submit:opacity-100 group-hover/submit:translate-x-1 group-hover/submit:-translate-y-1 transition-all" />
+                    Sign in
+                    <ArrowUpRight size={18} />
                   </>
                 )}
               </button>
