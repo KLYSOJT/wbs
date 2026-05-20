@@ -28,7 +28,7 @@ const TransparencyInfo = () => {
               </div>
 
               <h1 className="mt-8 text-5xl font-bold leading-[0.96] tracking-tight md:text-7xl lg:text-8xl">
-                Transparency Seal
+                Transparency Information
               </h1>
 
               <p className="mt-7 max-w-2xl text-base leading-8 text-white/68 md:text-lg">
@@ -73,7 +73,7 @@ const TransparencyInfo = () => {
               <div className="mx-auto flex max-w-xs items-center justify-center">
                 <img
                   src={transparencySeal}
-                  alt="Transparency Seal"
+                  alt="Transparency Information"
                   className="w-72 max-w-full drop-shadow-[0_24px_48px_rgba(124,10,2,0.12)]"
                 />
               </div>
@@ -107,7 +107,7 @@ const TransparencyInfo = () => {
                   </div>
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/40">Sec. 93</p>
-                    <h3 className="mt-1 text-3xl font-bold tracking-tight">Transparency Seal</h3>
+                    <h3 className="mt-1 text-3xl font-bold tracking-tight">Transparency Information</h3>
                   </div>
                 </div>
 
@@ -156,10 +156,15 @@ const TransparencyInfo = () => {
                   </div>
                   <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Official Compliance Protocol v2.4</span>
                 </div>
-                <button className="inline-flex items-center justify-center gap-3 rounded-full bg-gray-950 px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white transition-all hover:bg-maroon-800">
+                <a
+                  href="https://blgf.gov.ph/govph-megamenu/national-budget-circular-542/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-3 rounded-full bg-gray-950 px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-white transition-all hover:bg-maroon-800"
+                >
                   <Sparkles size={14} />
                   View Full Digital Circular
-                </button>
+                </a>
               </div>
             </div>
           </div>

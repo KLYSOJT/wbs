@@ -67,7 +67,7 @@ const Navbar = () => {
       title: 'Transparency',
       path: '#',
       dropdown: [
-        { title: 'Transparency Seal', path: '/transparency/info' },
+        { title: 'Transparency Information', path: '/transparency/info' },
         {
           title: 'Procurement',
           path: '#',
@@ -85,10 +85,9 @@ const Navbar = () => {
         { title: 'SSLG', path: '/transparency/sslg' },
         { title: 'BSP Records', path: '/transparency/bsp' },
         { title: 'GSP Records', path: '/transparency/gsp' },
+        { title: 'TR', path: '/transparency/tr' },
         { title: 'Red Cross', path: '/transparency/red-cross' },
         { title: 'MOOE', path: '/transparency/mooe' },
-        { title: 'SEF Records', path: '/transparency/sef' },
-        { title: 'Year End Report', path: '/transparency/year-end-report' },
       ],
     },
     { title: 'Research', path: '/research' },

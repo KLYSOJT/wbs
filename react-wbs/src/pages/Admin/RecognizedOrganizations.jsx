@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../../lib/supabase';
 import { 
   Upload, 
   Trash2, 
+  Pencil,
   ImageIcon, 
   Loader2, 
   Plus, 
   Users,
   Calendar,
-  ChevronRight,
-  ArrowUpRight,
-  Zap,
-  UserCheck
+  UserCheck,
+  Building2,
+  Landmark,
+  FileImage
 } from 'lucide-react';
 
 const AdminRecognizedOrgs = () => {
@@ -27,33 +28,80 @@ const AdminRecognizedOrgs = () => {
   const [logoFile, setLogoFile] = useState(null);
   const [chartFile, setChartFile] = useState(null);
 
-  useEffect(() => {
-    fetchRecords();
+  const queryRecords = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('recognized-structure')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
   }, []);
 
-  const fetchRecords = async () => {
+  const fetchRecords = useCallback(async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('recognized-structure')
-        .select('*')
-        .order('created_at', { ascending: false });
-      setRecords(data || []);
+      setRecords(await queryRecords());
     } catch (err) {
       console.error('Error fetching records:', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [queryRecords]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadRecords = async () => {
+      try {
+        const data = await queryRecords();
+        if (isMounted) setRecords(data);
+      } catch (err) {
+        console.error('Error fetching records:', err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    loadRecords();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [queryRecords]);
 
   const handleUpload = async (file, bucket) => {
     if (!file) return null;
     const fileExt = file.name.split('.').pop();
     const fileName = `${bucket}-${Date.now()}.${fileExt}`;
-    const { data, error } = await supabase.storage.from(bucket).upload(fileName, file);
+    const { error } = await supabase.storage.from(bucket).upload(fileName, file);
     if (error) throw error;
     const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(fileName);
     return publicUrl;
+  };
+
+  const resetForm = () => {
+    setEditingId(null);
+    setOrgName('');
+    setAdviserName('');
+    setDateEstablished('');
+    setLogoFile(null);
+    setChartFile(null);
+  };
+
+  const getDateInputValue = (dateValue) => {
+    if (!dateValue) return '';
+    return String(dateValue).split('T')[0];
+  };
+
+  const handleEdit = (record) => {
+    setEditingId(record.id);
+    setOrgName(record.org_name || '');
+    setAdviserName(record.adviser_name || '');
+    setDateEstablished(getDateInputValue(record.date_established));
+    setLogoFile(null);
+    setChartFile(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSubmit = async (e) => {
@@ -66,23 +114,20 @@ const AdminRecognizedOrgs = () => {
       const payload = {
         org_name: orgName,
         adviser_name: adviserName,
-        date_established: dateEstablished,
-        created_at: new Date().toISOString()
+        date_established: dateEstablished
       };
 
       if (logoUrl) payload.logo_url = logoUrl;
       if (chartUrl) payload.chart_url = chartUrl;
 
-      const { error } = await supabase.from('recognized-structure').insert([payload]);
+      const { error } = editingId
+        ? await supabase.from('recognized-structure').update(payload).eq('id', editingId)
+        : await supabase.from('recognized-structure').insert([{ ...payload, created_at: new Date().toISOString() }]);
       if (error) throw error;
 
-      setOrgName('');
-      setAdviserName('');
-      setDateEstablished('');
-      setLogoFile(null);
-      setChartFile(null);
+      resetForm();
       await fetchRecords();
-      alert('Organization added successfully!');
+      alert(`Organization ${editingId ? 'updated' : 'added'} successfully!`);
     } catch (err) {
       alert(`Operation failed: ${err.message}`);
     } finally {
@@ -95,208 +140,300 @@ const AdminRecognizedOrgs = () => {
     try {
       await supabase.from('recognized-structure').delete().eq('id', id);
       await fetchRecords();
-    } catch (err) {
+    } catch {
       alert('Delete failed');
     }
   };
 
+  const withLogoCount = records.filter((record) => record.logo_url).length;
+  const withChartCount = records.filter((record) => record.chart_url).length;
+  const formatEstablishedDate = (dateValue) => {
+    if (!dateValue) return '--';
+
+    return new Date(dateValue).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
   return (
-    <div className="max-w-7xl mx-auto space-y-12 pb-20 font-outfit">
-      {/* Cinematic Identity Header */}
-      <div className="bg-white p-12 rounded-[3.5rem] shadow-2xl shadow-gray-200/40 border border-gray-100 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(128,0,0,0.03)_0%,transparent_70%)] pointer-events-none transition-transform duration-1000 group-hover:scale-110"></div>
-        
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 relative z-10">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-               <span className="text-maroon-800 font-bold uppercase tracking-[0.5em] text-[10px] bg-maroon-50 px-5 py-2 rounded-full">
-                 Student Affairs Unit
-               </span>
-               <div className="h-px w-12 bg-maroon-100"></div>
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 tracking-tighter leading-none font-['Playfair_Display'] italic">
-              Organization <span className="text-maroon-800">Registry</span>
-            </h1>
-            <p className="text-gray-400 font-medium italic text-lg max-w-2xl">
-              Official management portal for recognized institutional groups, student organizations, and academic councils.
-            </p>
-          </div>
+    <main className="mx-auto max-w-[1440px] pb-16 font-outfit text-gray-900">
+      <div className="space-y-8">
+        <section className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <span className="inline-flex items-center rounded-md bg-maroon-50 px-3 py-1 text-xs font-semibold text-maroon-800">
+            About Section
+          </span>
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">
+            Recognized Organizations
+          </h1>
+        </section>
 
-          <div className="relative bg-maroon-950 px-10 py-8 rounded-[2.5rem] shadow-2xl shadow-maroon-950/20 group/stat hover:bg-black transition-all duration-500 border border-white/5">
-             <div className="flex items-center gap-6">
-                <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-maroon-500 border border-white/10 group-hover/stat:scale-110 transition-transform duration-500">
-                   <Users size={28} />
-                </div>
-                <div className="text-right">
-                   <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Active Units</p>
-                   <p className="text-4xl font-bold text-white tracking-tighter font-['Playfair_Display'] italic">{records.length}</p>
-                </div>
-             </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-12">
-        {/* Sidebar: Registration Console */}
-        <div className="xl:col-span-4">
-          <div className="bg-gray-950 rounded-[4rem] p-12 shadow-2xl shadow-gray-900/40 text-white sticky top-32 border border-white/5 overflow-hidden group/form">
-            <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none group-hover/form:opacity-10 transition-opacity">
-               <Zap size={200} />
-            </div>
-            
-            <div className="relative z-10">
-              <div className="flex items-center gap-4 mb-12">
-                <div className="w-14 h-14 bg-maroon-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-maroon-600/40">
-                  <Plus size={28} />
+        <section className="space-y-6">
+          <aside className="space-y-5">
+            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-maroon-50 text-maroon-800">
+                  <Building2 size={22} />
                 </div>
                 <div>
-                   <h2 className="text-3xl font-bold tracking-tighter font-['Playfair_Display'] italic">Register</h2>
-                   <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.4em]">Unit Identity Portal</p>
+                  <h2 className="text-xl font-bold tracking-tight text-gray-950">Organization Overview</h2>
+                  <p className="mt-2 text-sm leading-6 text-gray-500">
+                    Manage the records used for the public recognized organizations display.
+                  </p>
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-8">
-                <div className="space-y-6">
-                  <div className="group/input">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block group-focus-within/input:text-maroon-500 transition-colors">Official Name</label>
-                    <input 
+              <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-3">
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-5">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">Registered Groups</span>
+                  <strong className="mt-3 block text-3xl font-bold text-gray-950">{records.length}</strong>
+                  <small className="mt-2 block text-sm leading-6 text-gray-500">
+                    Active organization records saved in the recognition registry.
+                  </small>
+                </div>
+                <div className="rounded-lg border border-maroon-100 bg-maroon-50 p-5">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-maroon-700">Logo Assets</span>
+                  <strong className="mt-3 block text-3xl font-bold text-maroon-950">{withLogoCount}</strong>
+                  <small className="mt-2 block text-sm leading-6 text-maroon-700/80">
+                    Records with uploaded identity logos for public profile cards.
+                  </small>
+                </div>
+                <div className="rounded-lg border border-gray-200 bg-white p-5">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">Structure Charts</span>
+                  <strong className="mt-3 block text-3xl font-bold text-gray-950">{withChartCount}</strong>
+                  <small className="mt-2 block text-sm leading-6 text-gray-500">
+                    Uploaded organization charts available for profile viewing.
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-5">
+              <h3 className="text-base font-bold text-amber-950">Upload Tip</h3>
+              <p className="mt-2 text-sm leading-6 text-amber-800">
+                Use clear logo files and readable structure charts so public organization profiles stay consistent on every screen.
+              </p>
+            </div>
+          </aside>
+
+          <section className="space-y-6">
+            <div>
+              <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+                <div className="flex items-start gap-4 border-b border-gray-200 p-6">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-maroon-50 text-maroon-800">
+                    <Plus size={22} />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold tracking-tight text-gray-950">
+                      {editingId ? 'Edit Group' : 'Register Group'}
+                    </h2>
+                    <p className="mt-2 text-sm leading-6 text-gray-500">
+                      {editingId
+                        ? 'Update the selected organization record. Existing images stay unchanged unless replaced.'
+                        : 'Add a recognized organization with its adviser, logo, and structure chart.'}
+                    </p>
+                  </div>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-5 p-6">
+                  <div>
+                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">Official Name</label>
+                    <input
                       type="text"
                       required
                       value={orgName}
                       onChange={(e) => setOrgName(e.target.value)}
                       placeholder="e.g. Science Research Council"
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:bg-white/10 focus:ring-4 focus:ring-maroon-600/20 outline-none transition-all placeholder:text-white/10"
+                      className="w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-900 outline-none transition focus:border-maroon-200 focus:ring-4 focus:ring-maroon-50"
                     />
                   </div>
 
-                  <div className="group/input">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block group-focus-within/input:text-maroon-500 transition-colors">Faculty Lead / Adviser</label>
-                    <input 
+                  <div>
+                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">Faculty Lead / Adviser</label>
+                    <input
                       type="text"
                       required
                       value={adviserName}
                       onChange={(e) => setAdviserName(e.target.value)}
-                      placeholder="Full Name of Adviser"
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:bg-white/10 focus:ring-4 focus:ring-maroon-600/20 outline-none transition-all placeholder:text-white/10"
+                      placeholder="Full name of adviser"
+                      className="w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-900 outline-none transition focus:border-maroon-200 focus:ring-4 focus:ring-maroon-50"
                     />
                   </div>
 
-                  <div className="group/input">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block">Establishment Date</label>
-                    <input 
+                  <div>
+                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">Establishment Date</label>
+                    <input
                       type="date"
                       required
                       value={dateEstablished}
                       onChange={(e) => setDateEstablished(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:bg-white/10 focus:ring-4 focus:ring-maroon-600/20 outline-none transition-all"
+                      className="w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-900 outline-none transition focus:border-maroon-200 focus:ring-4 focus:ring-maroon-50"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div>
-                      <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block">Identity Logo</label>
-                      <label className="flex flex-col items-center justify-center bg-white/5 border border-dashed border-white/10 rounded-2xl p-6 cursor-pointer hover:bg-white/10 hover:border-maroon-600/40 transition-all group/upload relative overflow-hidden h-32">
-                        <ImageIcon size={24} className="text-white/10 group-hover/upload:text-maroon-500 transition-all mb-2" />
-                        <span className="text-[9px] font-bold uppercase tracking-widest text-white/40 truncate w-full text-center px-4">
-                          {logoFile ? logoFile.name : 'Upload Asset'}
+                      <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">Identity Logo</label>
+                      <label className="flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-gray-200 bg-gray-50 p-4 text-center transition hover:border-maroon-200 hover:bg-maroon-50/60">
+                        <ImageIcon size={24} className="text-maroon-800" />
+                        <span className="mt-3 w-full truncate text-xs font-semibold text-gray-500">
+                          {logoFile ? logoFile.name : 'Upload Logo'}
                         </span>
                         <input type="file" className="hidden" accept="image/*" onChange={(e) => setLogoFile(e.target.files[0])} />
                       </label>
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-3 block">Structural Map</label>
-                      <label className="flex flex-col items-center justify-center bg-white/5 border border-dashed border-white/10 rounded-2xl p-6 cursor-pointer hover:bg-white/10 hover:border-maroon-600/40 transition-all group/upload relative overflow-hidden h-32">
-                        <Upload size={24} className="text-white/10 group-hover/upload:text-maroon-500 transition-all mb-2" />
-                        <span className="text-[9px] font-bold uppercase tracking-widest text-white/40 truncate w-full text-center px-4">
-                          {chartFile ? chartFile.name : 'Upload Map'}
+                      <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">Structure Chart</label>
+                      <label className="flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-gray-200 bg-gray-50 p-4 text-center transition hover:border-maroon-200 hover:bg-maroon-50/60">
+                        <Upload size={24} className="text-maroon-800" />
+                        <span className="mt-3 w-full truncate text-xs font-semibold text-gray-500">
+                          {chartFile ? chartFile.name : 'Upload Chart'}
                         </span>
                         <input type="file" className="hidden" accept="image/*" onChange={(e) => setChartFile(e.target.files[0])} />
                       </label>
                     </div>
                   </div>
+
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-maroon-800 px-4 py-3 text-sm font-semibold text-white transition hover:bg-maroon-900 disabled:cursor-not-allowed disabled:opacity-70"
+                    >
+                      {submitting ? <Loader2 className="animate-spin" size={16} /> : editingId ? <Pencil size={16} /> : <Plus size={16} />}
+                      {editingId ? 'Update Organization' : 'Add Organization'}
+                    </button>
+                    {editingId && (
+                      <button
+                        type="button"
+                        onClick={resetForm}
+                        className="inline-flex items-center justify-center rounded-md border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div>
+              <section className="rounded-lg border border-gray-200 bg-white shadow-sm">
+                <div className="flex flex-col gap-4 border-b border-gray-200 p-6 lg:flex-row lg:items-center lg:justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold tracking-tight text-gray-950">Organization Registry</h2>
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-500">
+                      Review registered groups and remove records that should no longer appear on the public page.
+                    </p>
+                  </div>
+                  <div className="inline-flex w-fit items-center gap-2 rounded-md border border-maroon-100 bg-maroon-50 px-3 py-2 text-sm font-semibold text-maroon-800">
+                    <Landmark size={16} />
+                    About Section
+                  </div>
                 </div>
 
-                <button 
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full py-6 rounded-full font-bold uppercase tracking-[0.4em] text-[10px] flex items-center justify-center gap-4 transition-all duration-500 active:scale-95 shadow-2xl bg-white text-maroon-950 hover:bg-maroon-600 hover:text-white group/submit"
-                >
-                  {submitting ? (
-                    <Loader2 className="animate-spin" size={20} />
+                <div className="grid grid-cols-1 gap-5 p-6 2xl:grid-cols-2">
+                  {loading ? (
+                    [1, 2, 3, 4].map((item) => (
+                      <div key={item} className="h-64 animate-pulse rounded-lg border border-gray-200 bg-gray-50" />
+                    ))
+                  ) : records.length === 0 ? (
+                    <div className="col-span-full rounded-lg border border-dashed border-gray-200 bg-gray-50 p-12 text-center">
+                      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-md bg-white text-gray-300 shadow-sm">
+                        <Users size={28} />
+                      </div>
+                      <p className="mt-4 text-sm font-semibold text-gray-500">The organization registry is currently empty.</p>
+                    </div>
                   ) : (
-                    <>
-                      Register Unit Protocol
-                      <ArrowUpRight size={18} className="group-hover/submit:translate-x-1 group-hover/submit:-translate-y-1 transition-transform" />
-                    </>
-                  )}
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        {/* Registry Log Stream */}
-        <div className="xl:col-span-8 space-y-10">
-           {loading ? (
-             <div className="space-y-8">
-                {[1, 2, 3].map(i => <div key={i} className="h-40 bg-gray-50/50 animate-pulse rounded-[3rem] border border-gray-100"></div>)}
-             </div>
-           ) : records.length === 0 ? (
-              <div className="py-40 text-center bg-gray-50/50 rounded-[4rem] border border-dashed border-gray-200">
-                 <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-8 text-gray-200 shadow-xl border border-gray-100">
-                    <Database size={48} />
-                 </div>
-                 <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest italic">The organization registry is currently empty.</p>
-              </div>
-           ) : (
-             <div className="grid grid-cols-1 gap-8">
-               {records.map((record) => (
-                 <div key={record.id} className="group bg-white p-10 rounded-[3.5rem] shadow-xl shadow-gray-200/30 border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-10 transition-all duration-700 hover:shadow-2xl hover:-translate-y-2">
-                    <div className="flex items-center gap-10 flex-1">
-                       <div className="w-28 h-28 bg-gray-50 rounded-[2rem] flex-shrink-0 overflow-hidden border border-gray-100 flex items-center justify-center p-6 shadow-inner group-hover:scale-105 transition-transform duration-700">
-                          {record.logo_url ? (
-                            <img src={record.logo_url} className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-700" alt="Identity" />
+                    records.map((record) => (
+                      <article
+                        key={record.id}
+                        className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-maroon-200 hover:shadow-md"
+                      >
+                        <div className="flex aspect-[16/9] items-center justify-center overflow-hidden bg-gray-50">
+                          {record.chart_url ? (
+                            <img
+                              src={record.chart_url}
+                              alt={`${record.org_name} structure chart`}
+                              className="h-full w-full object-cover"
+                            />
                           ) : (
-                            <Users className="text-gray-200" size={40} />
+                            <div className="text-center">
+                              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-md bg-white text-gray-300 shadow-sm">
+                                <FileImage size={28} />
+                              </div>
+                              <p className="mt-3 text-sm font-semibold text-gray-500">No chart uploaded</p>
+                            </div>
                           )}
-                       </div>
-                       <div>
-                          <div className="flex items-center gap-3 mb-4">
-                             <div className="w-2 h-2 rounded-full bg-maroon-800 animate-pulse"></div>
-                             <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Active Registry Record</span>
-                          </div>
-                          <h3 className="text-3xl font-bold text-gray-900 tracking-tighter leading-none mb-6 group-hover:text-maroon-800 transition-colors font-['Playfair_Display'] italic">
-                            {record.org_name}
-                          </h3>
-                          <div className="flex flex-wrap gap-8">
-                             <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                                <UserCheck size={16} className="text-maroon-800" /> Lead: {record.adviser_name}
-                             </div>
-                             <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                                <Calendar size={16} className="text-maroon-800" /> Established {new Date(record.date_established).getFullYear()}
-                             </div>
-                          </div>
-                       </div>
-                    </div>
+                        </div>
 
-                    <div className="flex items-center gap-4">
-                       <button 
-                        onClick={() => handleDelete(record.id)}
-                        className="w-14 h-14 rounded-3xl bg-white text-gray-300 hover:text-red-600 hover:shadow-2xl transition-all duration-500 border border-gray-100 flex items-center justify-center group/del"
-                       >
-                          <Trash2 size={22} className="group-hover/del:scale-110 transition-transform" />
-                       </button>
-                       <button className="w-14 h-14 rounded-3xl bg-maroon-950 text-white flex items-center justify-center hover:bg-black transition-all duration-500 shadow-xl shadow-maroon-950/20 group/next">
-                          <ChevronRight size={26} className="group-hover/next:translate-x-1 transition-transform" />
-                       </button>
-                    </div>
-                 </div>
-               ))}
-             </div>
-           )}
-        </div>
+                        <div className="border-t border-gray-100 p-5">
+                          <div className="flex items-start gap-4">
+                            <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-md border border-gray-200 bg-gray-50 p-3">
+                              {record.logo_url ? (
+                                <img src={record.logo_url} className="h-full w-full object-contain" alt={`${record.org_name} logo`} />
+                              ) : (
+                                <Users className="text-gray-300" size={28} />
+                              )}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-start justify-between gap-3">
+                                <div className="min-w-0">
+                                  <h3 className="truncate text-lg font-bold text-gray-950">{record.org_name}</h3>
+                                  <p className="mt-1 text-sm text-gray-500">
+                                    Established: {formatEstablishedDate(record.date_established)}
+                                  </p>
+                                </div>
+                                <span className={`shrink-0 rounded-md px-2.5 py-1 text-xs font-semibold ${record.chart_url ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                                  {record.chart_url ? 'Live' : 'Draft'}
+                                </span>
+                              </div>
+
+                              <div className="mt-4 flex flex-wrap gap-3">
+                                <div className="inline-flex items-center gap-2 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-500">
+                                  <UserCheck size={14} className="text-maroon-800" />
+                                  {record.adviser_name}
+                                </div>
+                                <div className="inline-flex items-center gap-2 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-500">
+                                  <Calendar size={14} className="text-maroon-800" />
+                                  {new Date(record.date_established).getFullYear() || '--'}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mt-5 flex flex-wrap justify-end gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleEdit(record)}
+                              className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-500 transition hover:border-maroon-200 hover:bg-maroon-50 hover:text-maroon-800"
+                              aria-label={`Edit ${record.org_name}`}
+                            >
+                              <Pencil size={16} />
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(record.id)}
+                              className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700"
+                              aria-label={`Delete ${record.org_name}`}
+                            >
+                              <Trash2 size={16} />
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </article>
+                    ))
+                  )}
+                </div>
+              </section>
+            </div>
+          </section>
+        </section>
       </div>
-    </div>
+    </main>
   );
 };
 
