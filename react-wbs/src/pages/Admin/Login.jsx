@@ -1,17 +1,16 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../lib/AuthContext';
 import {
   Mail,
   Eye,
   EyeOff,
-  ArrowLeft,
+  ArrowRight,
   Loader2,
-  ShieldCheck,
-  ArrowUpRight,
   ShieldAlert,
   KeyRound,
-  LayoutDashboard
+  ShieldCheck,
+  Home
 } from 'lucide-react';
 import logo from '../../assets/imgs/rectologo.png';
 
@@ -41,138 +40,131 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f8f7f3] p-4 font-outfit md:p-8">
-      <div className="absolute inset-x-0 top-0 h-80 bg-[#390606]" />
-      <div className="absolute inset-x-0 top-80 h-px bg-[#d9b35d]/40" />
+    <div className="h-screen overflow-hidden bg-[#f7f7f5] font-outfit text-gray-950">
+      <main className="flex h-full flex-col items-center justify-center px-5 py-4">
+        <section className="flex w-full max-w-[460px] flex-col items-center">
+          <img src={logo} alt="RMNHS Logo" className="mb-2.5 h-[50px] w-auto object-contain" />
 
-      <div className="relative flex w-full max-w-6xl overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-2xl shadow-gray-950/10">
-        <div className="hidden w-[42%] flex-col justify-between bg-[#390606] p-10 text-white lg:flex">
-          <Link to="/" className="inline-flex w-fit items-center gap-3 text-white/70 transition hover:text-white">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/[0.08]">
-              <ArrowLeft size={18} />
-            </div>
-            <span className="text-xs font-semibold">Back to website</span>
-          </Link>
+          <header className="mb-4 text-center">
+            <h1 className="text-[26px] font-extrabold leading-none tracking-tight text-gray-950 sm:text-[29px]">
+              RMNHS Admin
+            </h1>
+            <p className="mt-2.5 text-[10px] font-bold uppercase tracking-[0.3em] text-maroon-800/70 sm:text-[11px]">
+              School Website CMS
+            </p>
+          </header>
 
-          <div className="space-y-8">
-            <div className="flex h-28 w-28 items-center justify-center rounded-3xl border border-[#d9b35d]/30 bg-white p-3 shadow-sm">
-              <img src={logo} alt="RMNHS Logo" className="h-full w-full object-contain" />
-            </div>
-            <div className="space-y-4">
-              <span className="inline-flex rounded-md border border-[#d9b35d]/20 bg-[#d9b35d]/10 px-3 py-1 text-xs font-semibold text-[#f3d98a]">
-                School Website Administration
-              </span>
-              <h1 className="text-4xl font-bold leading-tight tracking-tight">
-                Recto Memorial National High School
-              </h1>
-              <p className="max-w-sm text-sm leading-6 text-white/70">
-                Manage announcements, documents, learning materials, organizations, research records, and school contact information.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between border-t border-white/10 pt-6 text-xs text-white/60">
-            <span>RMNHS Admin</span>
-            <div className="flex items-center gap-2">
-              <ShieldCheck size={16} className="text-[#d9b35d]" />
-              Secure access
-            </div>
-          </div>
-        </div>
-
-        <div className="flex min-h-[680px] flex-1 flex-col justify-center bg-white p-8 md:p-14">
-          <div className="mx-auto w-full max-w-md">
-            <Link to="/" className="mb-10 inline-flex items-center gap-2 text-sm font-semibold text-gray-500 transition hover:text-maroon-800 lg:hidden">
-              <ArrowLeft size={17} />
-              Back to website
-            </Link>
-
-            <header className="mb-10">
-              <div className="mb-7 flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-maroon-100 bg-maroon-50 text-maroon-900">
-                  <LayoutDashboard size={23} />
-                </div>
-                <div>
-                  <h2 className="text-3xl font-bold tracking-tight text-gray-950">Admin Login</h2>
-                  <p className="mt-1 text-sm text-gray-500">Sign in to manage official school website content.</p>
+          <div className="w-full rounded-[1.35rem] border border-gray-200 bg-white p-5 text-gray-950 shadow-[0_24px_80px_rgba(15,23,42,0.10)] sm:p-6">
+            <header className="mb-6">
+              <div className="mb-3 flex justify-end">
+                <div className="inline-flex items-center gap-2 rounded-full bg-maroon-50 px-3.5 py-1.5 text-[9px] font-bold uppercase tracking-[0.18em] text-maroon-800">
+                  <ShieldCheck size={14} />
+                  Secure Portal
                 </div>
               </div>
+              <h2 className="text-center text-[23px] font-extrabold leading-none tracking-tight text-gray-950">Welcome back</h2>
+              <p className="mx-auto mt-2.5 max-w-sm text-center text-[13px] font-semibold leading-5 text-gray-500">
+                Sign in to manage official school website content and resources.
+              </p>
             </header>
 
-            {error && (
-              <div className="mb-6 flex items-center gap-4 rounded-lg border border-red-100 bg-red-50 p-4 text-sm font-semibold text-red-900">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-600">
-                  <ShieldAlert size={20} />
+              {error && (
+                <div className="mb-4 flex items-start gap-3 rounded-2xl border border-red-100 bg-red-50 p-3 text-xs font-bold text-red-900">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-red-100 text-red-600">
+                    <ShieldAlert size={16} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-red-500">Authentication Error</p>
+                    <p className="mt-1 leading-5">{error}</p>
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <span className="mb-0.5 text-xs uppercase tracking-wide opacity-60">Authentication Error</span>
-                  {error}
-                </div>
-              </div>
-            )}
+              )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Email address</label>
+            <form onSubmit={handleSubmit}>
+              <div>
+                <label className="mb-2 block text-[11px] font-extrabold uppercase tracking-[0.24em] text-gray-500" htmlFor="admin-email">
+                    Email address
+                </label>
                 <div className="group/input relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within/input:text-maroon-800" size={19} />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within/input:text-maroon-800" size={18} />
                   <input
+                    id="admin-email"
                     type="email"
                     required
+                    autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="admin@rmnhs.edu.ph"
-                    className="w-full rounded-xl border border-gray-300 bg-white py-3.5 pl-12 pr-4 text-sm font-medium text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-maroon-700 focus:ring-4 focus:ring-maroon-100"
+                    className="h-[50px] w-full rounded-[1rem] border border-gray-200 bg-[#fbfbfa] pl-[50px] pr-4 text-[13px] font-bold text-gray-950 outline-none transition placeholder:text-gray-400 hover:border-gray-300 focus:border-maroon-700 focus:bg-white focus:ring-4 focus:ring-maroon-100"
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Password</label>
-                <div className="group/input relative">
-                  <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within/input:text-maroon-800" size={19} />
+              <div className="mt-5">
+                <div className="flex items-center justify-between gap-4">
+                  <label className="block text-[11px] font-extrabold uppercase tracking-[0.24em] text-gray-500" htmlFor="admin-password">
+                    Password
+                  </label>
+                  <button type="button" className="text-[11px] font-extrabold uppercase tracking-wide text-maroon-800 transition hover:text-maroon-950">
+                    Forgot?
+                  </button>
+                </div>
+                <div className="group/input relative mt-2">
+                  <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within/input:text-maroon-800" size={18} />
                   <input
+                    id="admin-password"
                     type={showPassword ? 'text' : 'password'}
                     required
+                    autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    className="w-full rounded-xl border border-gray-300 bg-white py-3.5 pl-12 pr-12 text-sm font-medium text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-maroon-700 focus:ring-4 focus:ring-maroon-100"
+                    placeholder="Password"
+                    className="h-[50px] w-full rounded-[1rem] border border-gray-200 bg-[#fbfbfa] pl-[50px] pr-14 text-[13px] font-bold text-gray-950 outline-none transition placeholder:text-gray-400 hover:border-gray-300 focus:border-maroon-700 focus:bg-white focus:ring-4 focus:ring-maroon-100"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-maroon-800"
+                    className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-xl text-gray-400 transition hover:bg-maroon-50 hover:text-maroon-800"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
                   </button>
                 </div>
               </div>
 
-              <label className="flex cursor-pointer items-center gap-3">
-                <input type="checkbox" className="h-4 w-4 rounded border-gray-300 accent-maroon-800" />
-                <span className="text-sm font-medium text-gray-500">Keep me signed in</span>
-              </label>
-
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full items-center justify-center gap-3 rounded-xl bg-maroon-800 px-4 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-maroon-900 disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-7 flex h-[52px] w-full items-center justify-center gap-3 rounded-full bg-maroon-800 px-5 text-[13px] font-extrabold text-white shadow-lg shadow-maroon-950/25 transition hover:-translate-y-0.5 hover:bg-maroon-900 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-65"
               >
                 {loading ? (
-                  <Loader2 className="animate-spin" size={22} />
+                  <>
+                    <Loader2 className="animate-spin" size={20} />
+                    Logging in
+                  </>
                 ) : (
                   <>
-                    Sign in
-                    <ArrowUpRight size={18} />
+                    Login to System
+                    <ArrowRight size={18} />
                   </>
                 )}
               </button>
+
+              <Link
+                to="/"
+                className="mt-3 flex h-11 w-full items-center justify-center gap-2.5 rounded-full border border-gray-200 bg-white px-5 text-[10px] font-extrabold uppercase tracking-[0.18em] text-gray-500 transition hover:border-maroon-100 hover:bg-maroon-50 hover:text-maroon-800"
+              >
+                <Home size={15} />
+                Back to Website
+              </Link>
             </form>
           </div>
-        </div>
-      </div>
+
+          <p className="mt-4 text-center text-[10px] font-bold uppercase tracking-[0.22em] text-gray-400">
+            Recto Memorial National High School
+          </p>
+        </section>
+      </main>
     </div>
   );
 };

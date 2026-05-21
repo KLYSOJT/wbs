@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, UserRound, Search } from 'lucide-react';
+import { Menu, X, ChevronDown, UserRound } from 'lucide-react';
 import logo from '../assets/imgs/rectologo.png';
 
 const Navbar = () => {
@@ -37,8 +37,8 @@ const Navbar = () => {
       title: 'About',
       path: '#',
       dropdown: [
-        { title: 'Org Structure', path: '/about/organizational-structure' },
-        { title: 'Recognized Units', path: '/about/recognized-organizations' },
+        { title: 'Organizational Structure', path: '/about/organizational-structure' },
+        { title: 'Recognized Organization', path: '/about/recognized-organizations' },
         { title: 'Historical Profile', path: '/about/history' },
         { title: 'Vision & Mission', path: '/about/vmc' },
       ],
@@ -198,16 +198,6 @@ const Navbar = () => {
 
         {/* Action Bar */}
         <div className="flex items-center gap-3">
-          <form className="hidden xl:flex items-center gap-2 w-64 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-white backdrop-blur-md transition-all duration-500 focus-within:border-white/30 focus-within:bg-white/15">
-            <Search size={16} className="text-white/60 shrink-0" />
-            <input
-              type="search"
-              aria-label="Search"
-              placeholder="Search"
-              className="w-full bg-transparent text-sm font-medium text-white placeholder:text-white/50 outline-none"
-            />
-          </form>
-
           <Link to="/admin/login" className={`p-3 rounded-2xl transition-all duration-500 border ${showDarkNavbar ? 'text-white/70 bg-white/10 border-white/10 hover:text-white hover:bg-white/20' : 'text-white bg-white/[0.08] border-white/[0.08] hover:bg-white/20'}`}>
             <UserRound size={20} />
           </Link>

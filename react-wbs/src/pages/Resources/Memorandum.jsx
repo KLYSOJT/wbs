@@ -71,14 +71,14 @@ const Memorandum = ({ tableName, title }) => {
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#f7f7f5] to-transparent"></div>
 
         <div className="user-screen-container relative z-10">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+          <div>
             <div className="max-w-4xl">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-white/70 backdrop-blur-xl">
                 <Archive size={15} />
                 Official Records Bureau
               </div>
 
-              <h1 className="mt-8 text-5xl font-bold leading-[0.96] tracking-tight md:text-7xl lg:text-8xl">
+              <h1 className="mt-8 whitespace-nowrap text-[clamp(1.5rem,7.5vw,6rem)] font-bold leading-[0.96] tracking-tight sm:text-[clamp(2.25rem,7.5vw,6rem)]">
                 {title}
               </h1>
 
@@ -86,37 +86,48 @@ const Memorandum = ({ tableName, title }) => {
                 Search, filter, and open official school records from the public archive.
               </p>
             </div>
-
-            <div className="rounded-[1.5rem] border border-white/10 bg-white/10 p-5 shadow-2xl shadow-black/20 backdrop-blur-2xl">
-              <div className="flex items-center gap-4 rounded-2xl bg-white px-5 py-5 text-gray-950">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-maroon-50 text-maroon-800">
-                  <FileText size={22} />
-                </div>
-                <div>
-                  <p className="text-3xl font-bold tracking-tight">{loading ? '--' : filteredRecords.length}</p>
-                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Archive records</p>
-                </div>
-              </div>
-
-              <div className="mt-4 flex items-center gap-3 rounded-2xl border border-white/10 bg-black/18 px-5 py-4">
-                <Search size={18} className="text-white/50" />
-                <p className="text-sm font-medium text-white/68">Filter by keyword, year, or month.</p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
       <section className="relative -mt-8 pb-28">
         <div className="user-screen-container">
-          <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">Records Directory</p>
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-950 md:text-3xl">{title} archive</h2>
+          <div className="mb-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+            <div className="max-w-3xl">
+              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">Records Desk</p>
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">
+                Search the {title.toLowerCase()} archive with date controls.
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-gray-500 md:text-base">
+                Combine keywords, year, and month filters to locate circulars, memoranda, and other official files.
+              </p>
             </div>
-            <p className="max-w-xl text-sm leading-6 text-gray-500">
-              Documents are listed by official archive date, with secure links when digital files are available.
-            </p>
+
+            <div className="grid min-w-full grid-cols-1 gap-3 sm:grid-cols-3 lg:min-w-[520px]">
+              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-maroon-50 text-maroon-800">
+                  <Archive size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">{loading ? '--' : filteredRecords.length}</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Records shown</p>
+              </div>
+
+              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-950 text-white">
+                  <Calendar size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">{years.length || '--'}</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Archive years</p>
+              </div>
+
+              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f4f0eb] text-gray-950">
+                  <FileText size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">Files</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Download ready</p>
+              </div>
+            </div>
           </div>
 
           <div className="mb-6 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5">

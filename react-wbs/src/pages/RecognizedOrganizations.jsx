@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { X, Calendar, FileText, ShieldCheck, UserRound, ArrowUpRight, Building2, Search } from 'lucide-react';
+import { X, Calendar, FileText, ShieldCheck, UserRound, ArrowUpRight, Building2 } from 'lucide-react';
 import HeroWaveBackground from '../components/HeroWaveBackground';
 
 const RecognizedOrganizations = () => {
@@ -60,14 +60,14 @@ const RecognizedOrganizations = () => {
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#f7f7f5] to-transparent"></div>
 
         <div className="user-screen-container relative z-10">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+          <div>
             <div className="max-w-4xl">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-white/70 backdrop-blur-xl">
                 <Building2 size={15} />
                 Student & Faculty Groups
               </div>
 
-              <h1 className="mt-8 text-5xl font-bold leading-[0.96] tracking-tight md:text-7xl lg:text-8xl">
+              <h1 className="mt-8 whitespace-nowrap text-[clamp(1.5rem,7.5vw,6rem)] font-bold leading-[0.96] tracking-tight sm:text-[clamp(2.25rem,7.5vw,6rem)]">
                 Recognized Organizations
               </h1>
 
@@ -75,37 +75,48 @@ const RecognizedOrganizations = () => {
                 Browse official school organizations, view their structure charts, and open available accomplishment reports.
               </p>
             </div>
-
-            <div className="rounded-[1.5rem] border border-white/10 bg-white/10 p-5 shadow-2xl shadow-black/20 backdrop-blur-2xl">
-              <div className="flex items-center gap-4 rounded-2xl bg-white px-5 py-5 text-gray-950">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-maroon-50 text-maroon-800">
-                  <ShieldCheck size={22} />
-                </div>
-                <div>
-                  <p className="text-3xl font-bold tracking-tight">{loading ? '--' : records.length}</p>
-                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Recognized groups</p>
-                </div>
-              </div>
-
-              <div className="mt-4 flex items-center gap-3 rounded-2xl border border-white/10 bg-black/18 px-5 py-4">
-                <Search size={18} className="text-white/50" />
-                <p className="text-sm font-medium text-white/68">Select an organization to view its profile.</p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
       <section className="relative -mt-8 pb-28">
         <div className="user-screen-container">
-          <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">Organization Directory</p>
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-950 md:text-3xl">Recognized school groups</h2>
+          <div className="mb-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+            <div className="max-w-3xl">
+              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">Campus Roster</p>
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">
+                Open each group profile from the recognition board.
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-gray-500 md:text-base">
+                Profiles collect advisers, official logos, structure charts, and accomplishment files in one public view.
+              </p>
             </div>
-            <p className="max-w-xl text-sm leading-6 text-gray-500">
-              These profiles are maintained for student organizations, faculty groups, and academic councils with active records.
-            </p>
+
+            <div className="grid min-w-full grid-cols-1 gap-3 sm:grid-cols-3 lg:min-w-[520px]">
+              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-maroon-50 text-maroon-800">
+                  <Building2 size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">{loading ? '--' : records.length}</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Groups listed</p>
+              </div>
+
+              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-950 text-white">
+                  <ShieldCheck size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">Verified</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Recognition status</p>
+              </div>
+
+              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f4f0eb] text-gray-950">
+                  <FileText size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">Reports</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Linked files</p>
+              </div>
+            </div>
           </div>
 
           {loading ? (

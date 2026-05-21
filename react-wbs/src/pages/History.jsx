@@ -36,14 +36,14 @@ const History = () => {
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#f7f7f5] to-transparent"></div>
 
         <div className="user-screen-container relative z-10">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+          <div>
             <div className="max-w-4xl">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-white/70 backdrop-blur-xl">
                 <Landmark size={15} />
                 Historical Profile
               </div>
 
-              <h1 className="mt-8 text-5xl font-bold leading-[0.96] tracking-tight md:text-7xl lg:text-8xl">
+              <h1 className="mt-8 whitespace-nowrap text-[clamp(1.5rem,7.5vw,6rem)] font-bold leading-[0.96] tracking-tight sm:text-[clamp(2.25rem,7.5vw,6rem)]">
                 Historical Profile
               </h1>
 
@@ -51,45 +51,49 @@ const History = () => {
                 From Tayabas Academy to Recto Memorial National High School, the story of RMNHS follows a community's long commitment to accessible learning in Quezon Province.
               </p>
             </div>
-
-            <div className="rounded-[1.5rem] border border-white/10 bg-white/10 p-5 shadow-2xl shadow-black/20 backdrop-blur-2xl">
-              <div className="flex items-center gap-4 rounded-2xl bg-white px-5 py-5 text-gray-950">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-maroon-50 text-maroon-800">
-                  <CalendarDays size={22} />
-                </div>
-                <div>
-                  <p className="text-3xl font-bold tracking-tight">1941</p>
-                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">First opened</p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setLanguage((prev) => (prev === 'EN' ? 'FIL' : 'EN'))}
-                className="mt-4 flex w-full items-center gap-3 rounded-2xl border border-white/10 bg-black/18 px-5 py-4 text-left text-sm font-bold text-white/70 transition-all hover:bg-white hover:text-maroon-800 active:scale-[0.98]"
-              >
-                <Languages size={18} className="shrink-0" />
-                {isEnglish ? 'Read in Filipino' : 'Read in English'}
-              </button>
-            </div>
           </div>
         </div>
       </section>
 
       <section className="relative -mt-8 pb-28">
         <div className="user-screen-container">
-          <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
-            <div>
+          <div className="mb-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+            <div className="max-w-3xl">
               <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">
-                {isEnglish ? 'Narrative Record' : 'Tala ng Kasaysayan'}
+                {isEnglish ? 'Heritage Trail' : 'Daan ng Pamana'}
               </p>
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-950 md:text-3xl">
-                {isEnglish ? 'The story of Recto Memorial National High School' : 'Ang kasaysayan ng Recto Memorial National High School'}
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">
+                {isEnglish ? 'Follow the school story through archive, timeline, and memory.' : 'Subaybayan ang kuwento ng paaralan sa larawan, panahon, at alaala.'}
               </h2>
+              <p className="mt-4 text-sm leading-7 text-gray-500 md:text-base">
+                {isEnglish ? 'Switch languages anytime while exploring the milestones that shaped Recto Memorial National High School.' : 'Maaaring magpalit ng wika habang binabasa ang mahahalagang yugto ng Recto Memorial National High School.'}
+              </p>
             </div>
-            <div className="flex w-fit items-center gap-2 rounded-full bg-gray-950 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white">
-              {language}
-              <ArrowRight size={14} />
+
+            <div className="grid min-w-full grid-cols-1 gap-3 sm:grid-cols-3 lg:min-w-[520px]">
+              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-maroon-50 text-maroon-800">
+                  <Landmark size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">1941</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">First chapter</p>
+              </div>
+
+              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-950 text-white">
+                  <CalendarDays size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">{timeline.length}</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Milestones</p>
+              </div>
+
+              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f4f0eb] text-gray-950">
+                  <Languages size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">{language}</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Reading mode</p>
+              </div>
             </div>
           </div>
 
@@ -109,6 +113,15 @@ const History = () => {
                   <BookOpenText className="text-maroon-800" size={22} />
                 </figcaption>
               </figure>
+
+              <button
+                type="button"
+                onClick={() => setLanguage((prev) => (prev === 'EN' ? 'FIL' : 'EN'))}
+                className="flex w-full items-center justify-center gap-3 rounded-[1.25rem] bg-maroon-800 px-5 py-4 text-sm font-bold text-white shadow-sm transition-all hover:bg-maroon-900 active:scale-[0.98]"
+              >
+                <Languages size={18} className="shrink-0" />
+                {isEnglish ? 'Read in Filipino' : 'Read in English'}
+              </button>
 
               <div className="rounded-[1.5rem] bg-white p-6 shadow-sm ring-1 ring-black/5">
                 <div className="flex items-center gap-3">

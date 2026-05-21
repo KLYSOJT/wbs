@@ -223,12 +223,42 @@ const Home = () => {
       {/* Announcements */}
       <section className="announcements py-24">
         <div className="announcements-container user-screen-container">
-          <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">School Updates</p>
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-950 md:text-3xl">Announcements</h2>
+          <div className="mb-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+            <div className="max-w-3xl">
+              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">Notice Board</p>
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">
+                Important advisories for students, parents, and staff.
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-gray-500 md:text-base">
+                Check the latest official reminders, schedules, and campus announcements from the RMNHS community.
+              </p>
             </div>
-            <p className="max-w-xl text-sm leading-6 text-gray-500">Latest advisories and official notices from the RMNHS community.</p>
+
+            <div className="grid min-w-full grid-cols-1 gap-3 sm:grid-cols-3 lg:min-w-[520px]">
+              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-maroon-50 text-maroon-800">
+                  <Megaphone size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">{loading ? '--' : announcements.length}</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Notices posted</p>
+              </div>
+
+              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-950 text-white">
+                  <Calendar size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">Latest</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Sorted updates</p>
+              </div>
+
+              <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f4f0eb] text-gray-950">
+                  <ArrowRight size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">Read</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Full notices</p>
+              </div>
+            </div>
           </div>
           
           <div className="announcements-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="announcementsGrid">
@@ -258,12 +288,42 @@ const Home = () => {
       {/* Latest News */}
       <section className="latest-news bg-white py-24">
         <div className="latest-news-container user-screen-container">
-          <div className="mb-8 flex flex-col justify-between gap-4 rounded-[1.5rem] bg-[#fbfbfa] p-5 shadow-sm ring-1 ring-black/5 md:flex-row md:items-center">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">Campus Stories</p>
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-950 md:text-3xl">Latest News</h2>
+          <div className="mb-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+            <div className="max-w-3xl">
+              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-maroon-800">Campus Journal</p>
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">
+                Stories from classrooms, programs, and school events.
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-gray-500 md:text-base">
+                Follow recent highlights and achievements that show learning, service, and collaboration in motion.
+              </p>
             </div>
-            <p className="max-w-xl text-sm leading-6 text-gray-500">Recent highlights, activities, and official stories from the school.</p>
+
+            <div className="grid min-w-full grid-cols-1 gap-3 sm:grid-cols-3 lg:min-w-[520px]">
+              <div className="rounded-2xl border border-black/5 bg-[#fbfbfa] p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-maroon-50 text-maroon-800">
+                  <Newspaper size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">{loading ? '--' : news.length}</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Stories posted</p>
+              </div>
+
+              <div className="rounded-2xl border border-black/5 bg-[#fbfbfa] p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-950 text-white">
+                  <Award size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">Campus</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Highlights</p>
+              </div>
+
+              <div className="rounded-2xl border border-black/5 bg-[#fbfbfa] p-4 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f4f0eb] text-gray-950">
+                  <ArrowRight size={18} />
+                </div>
+                <p className="mt-4 text-2xl font-bold tracking-tight text-gray-950">Open</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Story cards</p>
+              </div>
+            </div>
           </div>
           <div className="news-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="newsGrid">
             {loading ? (
