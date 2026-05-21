@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { 
@@ -14,7 +14,7 @@ import {
   PlayCircle,
   Video
 } from 'lucide-react';
-import { useAuth } from '../../lib/AuthContext';
+import { useAuth } from '../../lib/useAuth';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -23,6 +23,8 @@ const AdminDashboard = () => {
   const [news, setNews] = useState([]);
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+  const lastAutoFetchKeyRef = useRef('');
   const sectionParam = searchParams.get('section');
   const activeSection = ['announcement', 'news', 'videos'].includes(sectionParam) ? sectionParam : 'announcement';
   const isNewsSection = activeSection === 'news';
@@ -69,8 +71,6 @@ const AdminDashboard = () => {
           Icon: Megaphone,
           iconClass: 'bg-maroon-50 text-maroon-800'
         };
-  const SectionIcon = sectionMeta.Icon;
-
   // Form states
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -81,41 +81,38 @@ const AdminDashboard = () => {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setLoadError('');
     try {
-      const [annRes, newsRes, vidRes] = await Promise.all([
-        supabase.from('announcements').select('*').order('created_at', { ascending: false }).limit(8),
-        supabase.from('news').select('*').order('created_at', { ascending: false }).limit(8),
-        supabase.from('featured_videos').select('*').order('created_at', { ascending: false }).limit(8)
-      ]);
-      setAnnouncements(annRes.data || []);
-      setNews(newsRes.data || []);
-      setVideos(vidRes.data || []);
+      const table = isVideoSection ? 'featured_videos' : isNewsSection ? 'news' : 'announcements';
+      const { data, error } = await supabase
+        .from(table)
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(8);
+
+      if (error) throw error;
+
+      if (isVideoSection) {
+        setVideos(data || []);
+      } else if (isNewsSection) {
+        setNews(data || []);
+      } else {
+        setAnnouncements(data || []);
+      }
     } catch (err) {
       console.error('Error fetching dashboard data:', err);
+      setLoadError(err.message || 'Unable to load dashboard content.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isNewsSection, isVideoSection]);
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      fetchData();
-    }, 0);
+    if (lastAutoFetchKeyRef.current === activeSection) return;
+    lastAutoFetchKeyRef.current = activeSection;
 
-    return () => window.clearTimeout(timeoutId);
-  }, [fetchData]);
-
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setTitle('');
-      setDescription('');
-      setFile(null);
-      setVideoType('file');
-      setVideoUrl('');
-    }, 0);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [activeSection]);
+    fetchData();
+  }, [activeSection, fetchData]);
 
   const handlePublish = async (e) => {
     e.preventDefault();
@@ -188,7 +185,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="mx-auto max-w-[1440px] space-y-8 pb-16 font-outfit text-gray-900">
+    <div className="admin-page mx-auto max-w-[1440px] space-y-8 pb-16 font-outfit text-gray-900">
       <header className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
@@ -208,7 +205,7 @@ const AdminDashboard = () => {
               <div className="flex items-center justify-between gap-6">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Live assets</p>
-                  <p className="mt-1 text-3xl font-bold text-gray-950">{announcements.length + news.length + videos.length}</p>
+                  <p className="mt-1 text-3xl font-bold text-gray-950">{activeRecords.length}</p>
                 </div>
                 <div className="flex h-10 w-10 items-center justify-center rounded-md bg-white text-maroon-800 shadow-sm">
                   <BarChart3 size={20} />
@@ -235,7 +232,7 @@ const AdminDashboard = () => {
         <article className="overview-tile rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
           <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">Publishing Areas</span>
           <strong className="mt-3 block text-3xl font-bold text-gray-950">3</strong>
-          <small className="mt-2 block text-sm leading-6 text-gray-500">Announcements, news, and featured videos.</small>
+          <small className="mt-2 block text-sm leading-6 text-gray-500">Current records in this section.</small>
         </article>
         <article className="overview-tile rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
           <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">Media Support</span>
@@ -250,6 +247,12 @@ const AdminDashboard = () => {
       </section>
 
       <section className="dashboard-grid grid grid-cols-1 gap-6">
+        {loadError && (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-800">
+            Unable to load {sectionMeta.feedTitle.toLowerCase()}: {loadError}
+          </div>
+        )}
+
         {/* Sidebar: Content Composer */}
         <div>
           <article className="panel-card column rounded-lg border border-gray-200 bg-white p-6 shadow-sm">

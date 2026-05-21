@@ -122,7 +122,7 @@ const AdminResearch = () => {
   });
 
   return (
-    <main className="mx-auto max-w-[1500px] space-y-6 pb-16 font-outfit text-gray-900">
+    <main className="admin-page mx-auto max-w-[1500px] space-y-6 pb-16 font-outfit text-gray-900">
       <section className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
           <div>

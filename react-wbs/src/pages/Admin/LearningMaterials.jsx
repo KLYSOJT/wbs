@@ -131,7 +131,7 @@ const AdminLearningMaterials = () => {
   };
 
   return (
-    <main className="mx-auto max-w-[1500px] pb-16 font-outfit text-gray-900">
+    <main className="admin-page mx-auto max-w-[1500px] pb-16 font-outfit text-gray-900">
       <div className="space-y-6">
         <section className="rounded-lg border border-gray-200 bg-white px-7 py-6 shadow-sm">
           <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../lib/AuthContext';
+import { useAuth } from '../../lib/useAuth';
 import {
   Mail,
   Eye,
@@ -32,7 +32,6 @@ const AdminLogin = () => {
       await login(email, password);
       navigate('/admin/dashboard');
     } catch (err) {
-      console.error('Login failed:', err);
       setError(err.message || 'Invalid email or password');
     } finally {
       setLoading(false);

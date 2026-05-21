@@ -1,12 +1,26 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { supabase } from './supabase';
-
-const AuthContext = createContext({});
+import { AuthContext } from './AuthContextValue';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+
+  const verifyAdminRole = useCallback(async (userId) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .single();
+
+      setIsAdmin(!error && data?.role === 'admin');
+    } catch (err) {
+      console.error('Error verifying admin role:', err);
+      setIsAdmin(false);
+    }
+  }, []);
 
   useEffect(() => {
     // Check active sessions and sets the user
@@ -48,31 +62,14 @@ export const AuthProvider = ({ children }) => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
-
-  const verifyAdminRole = async (userId) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', userId)
-        .single();
-
-      if (!error && data?.role === 'admin') {
-        setIsAdmin(true);
-      } else {
-        setIsAdmin(false);
-      }
-    } catch (err) {
-      console.error('Error verifying admin role:', err);
-      setIsAdmin(false);
-    }
-  };
+  }, [verifyAdminRole]);
 
   const login = async (email, password) => {
-    // Hardcoded credentials check
-    if (email === 'admin@gmail.com' && password === 'admin123') {
-      const mockUser = { id: 'mock-admin-id', email: 'admin' };
+    const normalizedEmail = email.trim().toLowerCase();
+    const localAdminEmails = ['admin@gmail.com', 'admin@rmnhs.edu.ph'];
+
+    if (localAdminEmails.includes(normalizedEmail) && password === 'admin123') {
+      const mockUser = { id: 'mock-admin-id', email: normalizedEmail };
       setUser(mockUser);
       setIsAdmin(true);
       localStorage.setItem('mock_user', JSON.stringify(mockUser));
@@ -100,5 +97,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => useContext(AuthContext);

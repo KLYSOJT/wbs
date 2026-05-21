@@ -158,7 +158,7 @@ const AdminRecognizedOrgs = () => {
   };
 
   return (
-    <main className="mx-auto max-w-[1440px] pb-16 font-outfit text-gray-900">
+    <main className="admin-page mx-auto max-w-[1440px] pb-16 font-outfit text-gray-900">
       <div className="space-y-8">
         <section className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
           <span className="inline-flex items-center rounded-md bg-maroon-50 px-3 py-1 text-xs font-semibold text-maroon-800">

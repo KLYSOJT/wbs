@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, Navigate } from 'react-router-dom';
-import { useAuth } from '../lib/AuthContext';
+import { useAuth } from '../lib/useAuth';
 import { 
   LogOut, 
   Search,
@@ -19,7 +19,9 @@ import {
   ChevronDown,
   CircleDot,
   Lock,
-  ClipboardList
+  ClipboardList,
+  Moon,
+  Sun
 } from 'lucide-react';
 import logo from '../assets/imgs/rectologo.png';
 
@@ -28,6 +30,11 @@ const AdminLayout = ({ children }) => {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [openSections, setOpenSections] = useState({});
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('admin-theme') === 'dark');
+
+  useEffect(() => {
+    localStorage.setItem('admin-theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
 
   if (loading) {
     return (
@@ -140,7 +147,7 @@ const AdminLayout = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f7f3] font-outfit text-gray-900">
+    <div className={`admin-shell min-h-screen bg-[#f7f7f5] font-outfit text-gray-950 ${darkMode ? 'admin-dark' : ''}`}>
       {sidebarOpen && (
         <button
           type="button"
@@ -151,94 +158,92 @@ const AdminLayout = ({ children }) => {
       )}
 
       {/* Admin Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 flex w-[19rem] max-w-[85vw] flex-col overflow-hidden border-r border-gray-200 bg-white text-gray-900 shadow-2xl shadow-gray-950/10 transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 flex w-[16.5rem] max-w-[82vw] flex-col overflow-hidden border-r border-black/5 bg-[linear-gradient(180deg,#f3f1ed_0%,#ebe7df_54%,#dfd8cd_100%)] text-gray-950 shadow-2xl shadow-gray-950/10 transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         {/* Sidebar Identity */}
-        <div className="border-b border-gray-200 bg-white px-5 py-5">
-          <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-maroon-100 bg-maroon-50 p-1.5 shadow-sm">
-            <img src={logo} alt="RMNHS" className="h-full w-full object-contain" />
-          </div>
+        <div className="relative flex min-h-20 items-center border-b border-black/5 px-4 py-3">
+          <div className="flex items-center gap-3">
+          <img src={logo} alt="RMNHS" className="h-12 w-12 shrink-0 object-contain" />
           <div className="min-w-0">
-            <h1 className="text-lg font-bold leading-none tracking-tight text-gray-950">RMNHS Admin</h1>
-            <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-widest text-maroon-800/70">School Website CMS</p>
+            <h1 className="text-base font-bold leading-none tracking-tight text-gray-950">RMNHS Admin</h1>
+            <p className="mt-1.5 text-[10px] font-semibold uppercase tracking-widest text-maroon-800/60">School Website </p>
           </div>
           <button
             type="button"
-            className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-600 lg:hidden"
+            className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-xl border border-black/5 bg-white text-gray-600 lg:hidden"
             aria-label="Close admin menu"
             onClick={() => setSidebarOpen(false)}
           >
-            <X size={18} />
+            <X size={17} />
           </button>
           </div>
-          <div className="mt-4 h-1 w-20 rounded-full bg-maroon-800" />
+          <div className="absolute bottom-0 left-4 h-1 w-16 rounded-full bg-maroon-800" />
         </div>
 
         {/* Management Navigation */}
-        <nav className="custom-scrollbar flex-1 space-y-1 overflow-y-auto px-4 py-5">
+        <nav className="custom-scrollbar flex-1 space-y-1 overflow-y-auto px-3 py-4">
           {navItems.map((item, idx) => (
-            <div key={idx} className="space-y-1.5">
+            <div key={idx} className="space-y-1">
               <button
                 type="button"
                 onClick={() => toggleSection(item)}
                 className={`
-                  group flex w-full items-center justify-between gap-3 rounded-xl px-4 py-3 text-left transition-all duration-300
+                  group flex w-full items-center justify-between gap-2.5 rounded-lg px-3 py-2.5 text-left transition-all duration-300
                   ${isItemActive(item)
                     ? 'bg-maroon-800 text-white shadow-sm'
-                    : 'text-gray-700 hover:bg-maroon-50 hover:text-maroon-900'}
+                    : 'text-gray-700 hover:bg-white/75 hover:text-maroon-900'}
                 `}
                 aria-expanded={isSectionOpen(item)}
               >
-                <span className="flex min-w-0 items-center gap-3">
-                  <span className={`${isItemActive(item) ? 'text-white' : 'text-gray-400 group-hover:text-maroon-800'}`}>
+                <span className="flex min-w-0 items-center gap-2.5">
+                  <span className={`${isItemActive(item) ? 'text-white' : 'text-gray-400 group-hover:text-maroon-800'} [&_svg]:h-4 [&_svg]:w-4`}>
                     {item.icon}
                   </span>
-                  <span className="truncate text-sm font-semibold">{item.title}</span>
+                  <span className="truncate text-[13px] font-semibold">{item.title}</span>
                 </span>
                 <ChevronDown
-                  size={17}
+                  size={15}
                 className={`shrink-0 transition-transform duration-300 ${isSectionOpen(item) ? 'rotate-180' : ''}`}
                 />
               </button>
 
               {isSectionOpen(item) && (
-                <div className="space-y-1 pl-3">
+                <div className="space-y-1 pl-2.5">
                   {item.subItems.map((sub, sIdx) => (
                     <div key={sIdx} className="space-y-1">
                       <Link
                         to={sub.path}
                         className={`
-                          group flex items-center justify-between rounded-xl border px-4 py-3 transition-all duration-200
+                          group flex items-center justify-between rounded-lg border px-3 py-2.5 transition-all duration-200
                           ${isItemActive(sub) 
-                            ? 'border-maroon-100 bg-maroon-50 text-maroon-950 shadow-sm' 
-                            : 'border-transparent text-gray-600 hover:bg-maroon-50/70 hover:text-gray-950'}
+                            ? 'border-maroon-100 bg-white text-maroon-950 shadow-sm' 
+                            : 'border-transparent text-gray-600 hover:bg-white/75 hover:text-gray-950'}
                         `}
                         onClick={() => setSidebarOpen(false)}
                       >
-                        <div className="flex items-center gap-3 min-w-0">
-                          {sub.icon || <CircleDot size={9} className={`shrink-0 ${isItemActive(sub) ? 'text-maroon-800' : 'text-gray-300 group-hover:text-maroon-700'}`} />}
-                          <span className="font-medium text-[13px] leading-tight truncate">{sub.title}</span>
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          {sub.icon || <CircleDot size={8} className={`shrink-0 ${isItemActive(sub) ? 'text-maroon-800' : 'text-gray-300 group-hover:text-maroon-700'}`} />}
+                          <span className="font-medium text-[12px] leading-tight truncate">{sub.title}</span>
                         </div>
                         {isItemActive(sub) && (
-                           <div className="h-6 w-1 shrink-0 rounded-full bg-maroon-800"></div>
+                           <div className="h-5 w-1 shrink-0 rounded-full bg-maroon-800"></div>
                         )}
                       </Link>
                       {sub.subItems && (
-                        <div className="ml-5 space-y-1.5 border-l border-gray-200 py-1 pl-3">
+                        <div className="ml-4 space-y-1 border-l border-black/10 py-1 pl-2.5">
                           {sub.subItems.map((child, cIdx) => (
                             <Link
                               key={cIdx}
                               to={child.path}
                               className={`
-                                group/child flex items-center gap-3 rounded-lg px-4 py-2.5 transition-all duration-200
+                                group/child flex items-center gap-2.5 rounded-lg px-3 py-2 transition-all duration-200
                                 ${isItemActive(child)
-                                  ? 'bg-maroon-50 text-maroon-950'
-                                  : 'text-gray-500 hover:bg-maroon-50/70 hover:text-gray-900'}
+                                  ? 'bg-white text-maroon-950'
+                                  : 'text-gray-500 hover:bg-white/75 hover:text-gray-900'}
                               `}
                               onClick={() => setSidebarOpen(false)}
                             >
                               <CircleDot size={7} className={`shrink-0 ${isItemActive(child) ? 'text-maroon-800' : 'text-gray-300 group-hover/child:text-maroon-700'}`} />
-                              <span className="font-medium text-[12px] leading-tight">{child.title}</span>
+                              <span className="font-medium text-[11px] leading-tight">{child.title}</span>
                             </Link>
                           ))}
                         </div>
@@ -252,13 +257,13 @@ const AdminLayout = ({ children }) => {
         </nav>
 
         {/* Sidebar User */}
-        <div className="border-t border-gray-200 bg-[#fbfbfa] p-5">
-          <div className="mb-3 flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-maroon-800 text-base font-bold text-white">
+        <div className="border-t border-black/5 bg-black/[0.03] p-4">
+          <div className="mb-2.5 flex items-center gap-2.5 rounded-xl border border-black/5 bg-white/70 p-2.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-maroon-800 text-sm font-bold text-white">
               {user?.email?.[0]?.toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="truncate text-sm font-semibold text-gray-950">{user?.email?.split('@')?.[0] || 'Admin'}</p>
+              <p className="truncate text-xs font-semibold text-gray-950">{user?.email?.split('@')?.[0] || 'Admin'}</p>
               <div className="mt-0.5 flex items-center gap-1.5 text-gray-400">
                  <Lock size={11} />
                  <p className="text-[10px] font-medium uppercase tracking-widest">Admin access</p>
@@ -267,20 +272,20 @@ const AdminLayout = ({ children }) => {
           </div>
           <button 
             onClick={logout}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white py-3 text-sm font-semibold text-gray-600 transition-all duration-200 hover:border-red-200 hover:bg-red-50 hover:text-red-700"
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-black/5 bg-white/70 py-2.5 text-xs font-semibold text-gray-600 transition-all duration-200 hover:bg-white hover:text-maroon-900"
           >
-            <LogOut size={17} /> Logout
+            <LogOut size={15} /> Logout
           </button>
         </div>
       </aside>
 
       {/* Main Admin Area */}
-        <main className="relative flex min-h-screen flex-col lg:ml-[19rem]">
-        <header className="sticky top-0 z-30 flex min-h-20 items-center justify-between border-b border-gray-200 bg-white/92 px-4 py-3 shadow-sm shadow-gray-950/[0.03] backdrop-blur-xl md:px-8">
+        <main className="relative flex min-h-screen flex-col lg:ml-[16.5rem]">
+        <header className="sticky top-0 z-30 flex min-h-20 items-center justify-between border-b border-black/5 bg-[#f7f7f5]/90 px-4 py-3 shadow-sm shadow-gray-950/[0.03] backdrop-blur-xl md:px-8">
           <div className="flex items-center gap-4">
             <button
               type="button"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-600 lg:hidden"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-black/5 bg-white text-gray-600 shadow-sm lg:hidden"
               aria-label="Open admin menu"
               onClick={() => setSidebarOpen(true)}
             >
@@ -298,7 +303,7 @@ const AdminLayout = ({ children }) => {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="hidden items-center gap-3 rounded-xl border border-gray-200 bg-[#fbfbfa] px-4 py-2.5 transition-all focus-within:border-maroon-200 focus-within:bg-white focus-within:ring-4 focus-within:ring-maroon-50 xl:flex">
+            <div className="hidden items-center gap-3 rounded-full border border-black/5 bg-white px-4 py-2.5 shadow-sm transition-all focus-within:border-maroon-200 focus-within:bg-white focus-within:ring-4 focus-within:ring-maroon-50 xl:flex">
               <Search className="text-gray-400 group-focus-within:text-maroon-800 transition-colors" size={18} />
               <input 
                 type="text" 
@@ -306,15 +311,25 @@ const AdminLayout = ({ children }) => {
                 className="bg-transparent border-none outline-none text-sm font-medium text-gray-900 placeholder:text-gray-400 w-64"
               />
             </div>
-            
-            <button className="relative hidden h-11 w-11 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition-all hover:border-maroon-100 hover:bg-maroon-50 hover:text-maroon-900 sm:flex">
+
+            <button
+              type="button"
+              onClick={() => setDarkMode((current) => !current)}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/5 bg-white text-gray-500 shadow-sm transition-all hover:border-maroon-100 hover:bg-maroon-50 hover:text-maroon-900"
+              aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={darkMode ? 'Light mode' : 'Dark mode'}
+            >
+              {darkMode ? <Sun size={19} /> : <Moon size={19} />}
+            </button>
+
+            <button className="relative hidden h-11 w-11 items-center justify-center rounded-full border border-black/5 bg-white text-gray-500 shadow-sm transition-all hover:border-maroon-100 hover:bg-maroon-50 hover:text-maroon-900 sm:flex">
               <Bell size={19} />
               <span className="absolute top-3 right-3 w-2 h-2 bg-maroon-600 rounded-full border-2 border-white"></span>
             </button>
             <Link 
               to="/" 
               target="_blank" 
-              className="flex items-center gap-2 rounded-xl bg-maroon-800 px-4 py-3 text-[12px] font-semibold text-white shadow-sm transition-all hover:bg-maroon-900 md:px-5"
+              className="flex items-center gap-2 rounded-full bg-maroon-800 px-4 py-3 text-[12px] font-semibold text-white shadow-sm transition-all hover:bg-maroon-900 md:px-5"
             >
               <Sparkles size={15} /> <span className="hidden sm:inline">View Site</span> <ArrowUpRight size={16} className="opacity-70" />
             </Link>
@@ -328,7 +343,7 @@ const AdminLayout = ({ children }) => {
           </div>
         </div>
 
-        <footer className="flex flex-col items-center justify-between gap-4 border-t border-gray-200 bg-white px-8 py-6 md:flex-row">
+        <footer className="flex flex-col items-center justify-between gap-4 border-t border-black/5 bg-white px-8 py-6 md:flex-row">
            <div className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-widest text-gray-400">
               <div className="w-2 h-2 rounded-full bg-maroon-800"></div>
               RMNHS Admin

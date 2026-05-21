@@ -77,6 +77,283 @@ body {
   @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl;
 }
 
+/* Admin visual system. Scoped so the login page keeps its current design. */
+.admin-shell {
+  --admin-card: #ffffff;
+  --admin-soft: #fbfbfa;
+  --admin-line: rgba(0, 0, 0, 0.05);
+}
+
+.admin-shell.admin-dark {
+  --admin-card: #171717;
+  --admin-soft: #202020;
+  --admin-line: rgba(255, 255, 255, 0.1);
+  color-scheme: dark;
+  background: #101010;
+  color: #f5f5f5;
+}
+
+.admin-shell.admin-dark aside {
+  background: linear-gradient(180deg, #171414 0%, #151515 54%, #101010 100%);
+  border-color: var(--admin-line);
+  color: #f5f5f5;
+}
+
+.admin-shell.admin-dark main > header {
+  background: rgba(16, 16, 16, 0.9);
+  border-color: var(--admin-line);
+}
+
+.admin-shell.admin-dark footer,
+.admin-shell.admin-dark [class~="bg-white"],
+.admin-shell.admin-dark [class~="bg-[#fbfbfa]"],
+.admin-shell.admin-dark [class~="bg-gray-50"] {
+  background-color: var(--admin-card);
+}
+
+.admin-shell.admin-dark [class~="bg-white/70"],
+.admin-shell.admin-dark [class~="bg-white/75"],
+.admin-shell.admin-dark [class*="hover:bg-white/"]:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.admin-shell.admin-dark [class*="bg-black/"] {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.admin-shell.admin-dark [class*="border-black/"],
+.admin-shell.admin-dark [class*="border-gray-"],
+.admin-shell.admin-dark button.border,
+.admin-shell.admin-dark a.border,
+.admin-shell.admin-dark section,
+.admin-shell.admin-dark article {
+  border-color: var(--admin-line);
+}
+
+.admin-shell.admin-dark [class*="text-gray-950"],
+.admin-shell.admin-dark [class*="text-gray-900"] {
+  color: #f5f5f5;
+}
+
+.admin-shell.admin-dark [class*="text-gray-800"],
+.admin-shell.admin-dark [class*="text-gray-700"],
+.admin-shell.admin-dark [class*="text-gray-600"] {
+  color: #d4d4d4;
+}
+
+.admin-shell.admin-dark [class*="text-gray-500"],
+.admin-shell.admin-dark [class*="text-gray-400"] {
+  color: #a3a3a3;
+}
+
+.admin-shell.admin-dark [class*="text-maroon-800"],
+.admin-shell.admin-dark [class*="text-maroon-900"] {
+  color: #f0b4b4;
+}
+
+.admin-shell.admin-dark button.bg-maroon-800,
+.admin-shell.admin-dark a.bg-maroon-800,
+.admin-shell.admin-dark label.bg-maroon-800,
+.admin-shell.admin-dark [class*="bg-maroon-800"] {
+  background-color: #8b1515;
+  color: #ffffff;
+}
+
+.admin-shell.admin-dark [class~="bg-maroon-50"],
+.admin-shell.admin-dark [class*="hover:bg-maroon-50"]:hover {
+  background-color: rgba(139, 21, 21, 0.22);
+}
+
+.admin-shell.admin-dark input,
+.admin-shell.admin-dark textarea,
+.admin-shell.admin-dark select {
+  background-color: #171717;
+  border-color: var(--admin-line);
+  color: #f5f5f5;
+}
+
+.admin-shell.admin-dark input::placeholder,
+.admin-shell.admin-dark textarea::placeholder {
+  color: #737373;
+}
+
+.admin-shell.admin-dark table,
+.admin-shell.admin-dark thead tr {
+  background-color: var(--admin-soft);
+  color: #e5e5e5;
+}
+
+.admin-shell.admin-dark tbody tr,
+.admin-shell.admin-dark .divide-y > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--admin-line);
+}
+
+.admin-shell section.rounded-lg,
+.admin-shell article.rounded-lg,
+.admin-shell div.rounded-lg.border,
+.admin-shell section.rounded-xl,
+.admin-shell article.rounded-xl {
+  border-radius: 1.5rem;
+  border-color: var(--admin-line);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 18px 45px rgba(128, 0, 0, 0.04);
+}
+
+.admin-shell section.bg-white,
+.admin-shell article.bg-white,
+.admin-shell div.bg-white.border {
+  background-color: var(--admin-card);
+}
+
+.admin-shell .bg-gray-50,
+.admin-shell .bg-\[\#fbfbfa\] {
+  background-color: var(--admin-soft);
+}
+
+.admin-shell thead tr {
+  background-color: var(--admin-soft);
+}
+
+.admin-shell tbody tr,
+.admin-shell .divide-y > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+.admin-shell input,
+.admin-shell textarea,
+.admin-shell select {
+  border-radius: 1rem;
+}
+
+.admin-shell button,
+.admin-shell a {
+  letter-spacing: 0;
+}
+
+.admin-shell button.bg-maroon-800,
+.admin-shell a.bg-maroon-800,
+.admin-shell label.bg-maroon-800 {
+  border-radius: 9999px;
+  box-shadow: 0 14px 28px rgba(93, 0, 0, 0.16);
+}
+
+.admin-shell button.border,
+.admin-shell a.border {
+  border-color: rgba(0, 0, 0, 0.07);
+}
+
+.admin-shell label.border-dashed {
+  border-radius: 1.25rem;
+}
+
+.admin-shell .shadow-sm {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.admin-page > header:first-child,
+.admin-page > section:first-child,
+.admin-page > div > section:first-child {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(0, 0, 0, 0.05);
+  background:
+    radial-gradient(circle at 92% 12%, rgba(128, 0, 0, 0.12), transparent 30%),
+    linear-gradient(135deg, #ffffff 0%, #fbfbfa 58%, #f4f0eb 100%);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 24px 70px rgba(128, 0, 0, 0.07);
+}
+
+.admin-shell.admin-dark .admin-page > header:first-child,
+.admin-shell.admin-dark .admin-page > section:first-child,
+.admin-shell.admin-dark .admin-page > div > section:first-child {
+  border-color: var(--admin-line);
+  background:
+    radial-gradient(circle at 92% 12%, rgba(180, 42, 42, 0.2), transparent 30%),
+    linear-gradient(135deg, #191919 0%, #151515 58%, #241717 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.32), 0 24px 70px rgba(0, 0, 0, 0.24);
+}
+
+.admin-shell.admin-dark .admin-page > header:first-child::after,
+.admin-shell.admin-dark .admin-page > section:first-child::after,
+.admin-shell.admin-dark .admin-page > div > section:first-child::after {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.admin-page > header:first-child::after,
+.admin-page > section:first-child::after,
+.admin-page > div > section:first-child::after {
+  content: "";
+  position: absolute;
+  right: -4rem;
+  bottom: -7rem;
+  width: 18rem;
+  height: 18rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(128, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.28);
+  pointer-events: none;
+}
+
+.admin-page > header:first-child > *,
+.admin-page > section:first-child > *,
+.admin-page > div > section:first-child > * {
+  position: relative;
+  z-index: 1;
+}
+
+.admin-page h1 {
+  letter-spacing: -0.025em;
+}
+
+.admin-page h2,
+.admin-page h3 {
+  letter-spacing: -0.015em;
+}
+
+.admin-page section > div[class*="border-b"] {
+  background-color: #fbfbfa;
+}
+
+.admin-shell.admin-dark .admin-page section > div[class*="border-b"] {
+  background-color: var(--admin-soft);
+}
+
+.admin-page article:hover,
+.admin-page section.bg-white:hover {
+  border-color: rgba(128, 0, 0, 0.16);
+}
+
+.admin-shell.admin-dark .admin-page article:hover,
+.admin-shell.admin-dark .admin-page section.bg-white:hover,
+.admin-shell.admin-dark .admin-page table tbody tr:hover,
+.admin-shell.admin-dark .admin-page .divide-y > article:hover,
+.admin-shell.admin-dark .admin-page .divide-y > div:hover {
+  background-color: #202020;
+  border-color: rgba(240, 180, 180, 0.22);
+}
+
+.admin-page table th {
+  color: #6b7280;
+  font-size: 0.7rem;
+}
+
+.admin-page table tbody tr:hover,
+.admin-page .divide-y > article:hover,
+.admin-page .divide-y > div:hover {
+  background-color: #fbfbfa;
+}
+
+.admin-page span.rounded-md,
+.admin-page span.rounded-lg {
+  border-radius: 9999px;
+}
+
+.admin-page div[class*="h-10"][class*="w-10"],
+.admin-page div[class*="h-11"][class*="w-11"],
+.admin-page div[class*="h-12"][class*="w-12"],
+.admin-page div[class*="h-14"][class*="w-14"] {
+  border-radius: 1rem;
+}
+
 .user-screen-container,
 .user-navbar-container {
   width: 100%;
