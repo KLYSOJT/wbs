@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, BookOpenText, CalendarDays, Languages, Landmark, Quote } from 'lucide-react';
+import { BookOpenText, CalendarDays, Languages, Landmark, Quote } from 'lucide-react';
 import HeroWaveBackground from '../components/HeroWaveBackground';
 import oldrecto from '../assets/imgs/oldrecto.png';
 

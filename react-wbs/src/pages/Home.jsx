@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { toEmbedUrl } from '../lib/videoUtils';
 import { Calendar, ArrowRight, Award, Users, GraduationCap, Clock, Megaphone, Newspaper, Play } from 'lucide-react';
 import HeroWaveBackground from '../components/HeroWaveBackground';
 import welcomeImg from '../assets/imgs/welcome.png';
@@ -16,48 +17,58 @@ const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [announcementPage, setAnnouncementPage] = useState(1);
   const [newsPage, setNewsPage] = useState(1);
+  const [featuredVideos, setFeaturedVideos] = useState([]);
+  const [selectedVideo, setSelectedVideo] = useState(null);
   
   const slides = [welcomeImg, makingImg, tatakrectoImg];
   const itemsPerPage = 3;
-  const featuredVideos = [
+
+  // Hardcoded fallback playlist rendered when database has no videos yet
+  const fallbackVideos = [
     {
       id: 1,
       title: 'Sample Video Title',
       description: 'Sample description here.',
-      date: 'January 1, 2026',
-      embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      created_at: '2026-01-01T00:00:00Z',
+      video_url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     },
     {
       id: 2,
       title: 'Campus Highlights',
       description: 'A quick look at recent school activities and student moments.',
-      date: 'January 8, 2026',
-      embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      created_at: '2026-01-08T00:00:00Z',
+      video_url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     },
     {
       id: 3,
       title: 'Official School Update',
       description: 'Featured clips and announcements from the RMNHS community.',
-      date: 'January 15, 2026',
-      embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      created_at: '2026-01-15T00:00:00Z',
+      video_url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     },
   ];
-  const [selectedVideo, setSelectedVideo] = useState(featuredVideos[0]);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [annRes, newsRes] = await Promise.all([
+        const [annRes, newsRes, videoRes] = await Promise.all([
           supabase.from('announcements').select('*').order('created_at', { ascending: false }),
           supabase.from('news').select('*').order('created_at', { ascending: false }),
+          supabase.from('featured_videos').select('*').order('created_at', { ascending: false }),
         ]);
-        const annData = annRes.data;
-        const newsData = newsRes.data;
-        if (annData) setAnnouncements(annData);
-        if (newsData) setNews(newsData);
+        if (annRes.data) setAnnouncements(annRes.data);
+        if (newsRes.data) setNews(newsRes.data);
+        
+        // Use database videos if available, otherwise fall back to hardcoded playlist
+        const videos = videoRes.data && videoRes.data.length > 0 ? videoRes.data : fallbackVideos;
+        setFeaturedVideos(videos);
+        setSelectedVideo(videos[0] || null);
       } catch (error) {
         console.error('Error fetching data:', error);
+        // On error, use fallback so homepage always has content
+        setFeaturedVideos(fallbackVideos);
+        setSelectedVideo(fallbackVideos[0]);
       } finally {
         setLoading(false);
       }
@@ -365,28 +376,33 @@ const Home = () => {
           <div className="featured-video-grid grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_420px] gap-8 items-start">
             <div className="featured-main">
               <div className="video-wrapper aspect-video overflow-hidden rounded-[1.5rem] bg-black border border-white/10 shadow-2xl">
-                <iframe
-                  id="mainVideo"
-                  title={selectedVideo.title}
-                  width="100%"
-                  height="500"
-                  src={selectedVideo.embedUrl}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
+                {selectedVideo && (
+                  <iframe
+                    key={selectedVideo.id}
+                    id="mainVideo"
+                    title={selectedVideo.title}
+                    width="100%"
+                    height="500"
+                    src={toEmbedUrl(selectedVideo.video_url || selectedVideo.embedUrl)}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                )}
               </div>
 
               <div className="video-info mt-8 space-y-3">
                 <h3 id="mainTitle" className="text-3xl font-bold tracking-tight">
-                  {selectedVideo.title}
+                  {selectedVideo?.title}
                 </h3>
                 <p id="mainDesc" className="text-white/60 leading-relaxed">
-                  {selectedVideo.description}
+                  {selectedVideo?.description}
                 </p>
                 <p id="mainDate" className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
                   <Calendar size={12} />
-                  {selectedVideo.date}
+                  {selectedVideo?.created_at
+                    ? new Date(selectedVideo.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+                    : selectedVideo?.date}
                 </p>
               </div>
             </div>
@@ -405,7 +421,7 @@ const Home = () => {
                     type="button"
                     onClick={() => setSelectedVideo(video)}
                     className={`w-full text-left rounded-2xl border p-4 transition-all duration-300 ${
-                      selectedVideo.id === video.id
+                      selectedVideo?.id === video.id
                         ? 'border-maroon-300 bg-maroon-800/40'
                         : 'border-white/10 bg-white/[0.03] hover:border-white/30 hover:bg-white/[0.07]'
                     }`}
@@ -417,7 +433,11 @@ const Home = () => {
                       <div className="min-w-0">
                         <h4 className="font-bold leading-tight">{video.title}</h4>
                         <p className="mt-2 text-xs text-white/50 line-clamp-2">{video.description}</p>
-                        <p className="mt-3 text-[10px] font-bold uppercase tracking-widest text-white/30">{video.date}</p>
+                        <p className="mt-3 text-[10px] font-bold uppercase tracking-widest text-white/30">
+                          {video.created_at
+                            ? new Date(video.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                            : video.date}
+                        </p>
                       </div>
                     </div>
                   </button>

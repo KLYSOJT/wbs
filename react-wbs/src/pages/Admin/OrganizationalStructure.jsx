@@ -83,20 +83,11 @@ const AdminOrgStructure = () => {
         updated_at: new Date().toISOString()
       };
 
-      if (existingRecord) {
-        const { error } = await supabase
-          .from('organizational_structure')
-          .update(payload)
-          .eq('id', existingRecord.id);
+      const { error: upsertError } = await supabase
+        .from('organizational_structure')
+        .upsert(payload, { onConflict: 'department' });
 
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from('organizational_structure')
-          .insert([payload]);
-
-        if (error) throw error;
-      }
+      if (upsertError) throw upsertError;
 
       await fetchDepartmentRecords();
       alert('Department chart updated successfully!');

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
+import { toEmbedUrl } from '../../lib/videoUtils';
 import { 
   Megaphone, 
   Newspaper, 
@@ -142,7 +143,9 @@ const AdminDashboard = () => {
       const payload = isVideoSection
         ? {
             title: publishTitle,
-            video_url: videoType === 'url' ? videoUrl.trim() : publicAssetUrl,
+            description: trimmedDescription,
+            // Normalize any YouTube URL to embed format so it works in iframes
+            video_url: toEmbedUrl(videoType === 'url' ? videoUrl.trim() : publicAssetUrl),
             created_at: new Date().toISOString()
           }
         : { 
@@ -282,6 +285,17 @@ const AdminDashboard = () => {
                     />
                   </div>
 
+                  <div>
+                    <label htmlFor="videoDescription" className="mb-2 block text-sm font-semibold text-gray-700">Description</label>
+                    <textarea
+                      id="videoDescription"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Short description of the video (shown under the player on the homepage)..."
+                      className="h-24 w-full resize-none rounded-md border border-gray-300 bg-white px-3 py-2.5 text-sm leading-6 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-maroon-600 focus:ring-4 focus:ring-maroon-100"
+                    />
+                  </div>
+
                   <div className="radio-group grid grid-cols-2 gap-3">
                     <label className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm font-semibold transition ${videoType === 'file' ? 'border-maroon-200 bg-maroon-50 text-maroon-800' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
                       <input
@@ -341,7 +355,7 @@ const AdminDashboard = () => {
                         required
                         value={videoUrl}
                         onChange={(e) => setVideoUrl(e.target.value)}
-                        placeholder="Paste YouTube, Google Drive, or other video URL"
+                        placeholder="Paste any YouTube URL (watch, share, Shorts, or embed link)"
                         className="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-maroon-600 focus:ring-4 focus:ring-maroon-100"
                       />
                     </div>

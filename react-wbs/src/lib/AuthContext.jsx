@@ -15,26 +15,19 @@ export const AuthProvider = ({ children }) => {
         .eq('id', userId)
         .single();
 
-      setIsAdmin(!error && data?.role === 'admin');
+      const adminCheck = !error && data?.role === 'admin';
+      setIsAdmin(adminCheck);
+      return adminCheck;
     } catch (err) {
       console.error('Error verifying admin role:', err);
       setIsAdmin(false);
+      return false;
     }
   }, []);
 
   useEffect(() => {
     // Check active sessions and sets the user
     const checkUser = async () => {
-      // Check for mock user first
-      const storedMockUser = localStorage.getItem('mock_user');
-      if (storedMockUser) {
-        const user = JSON.parse(storedMockUser);
-        setUser(user);
-        setIsAdmin(true);
-        setLoading(false);
-        return;
-      }
-
       try {
         const { data: { session } } = await supabase.auth.getSession();
         setUser(session?.user ?? null);
@@ -51,7 +44,12 @@ export const AuthProvider = ({ children }) => {
     checkUser();
 
     // Listen for changes on auth state (sign in, sign out, etc.)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Manual login/logout functions handle state synchronously, so we prevent double-handling
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+        return;
+      }
+      
       setUser(session?.user ?? null);
       if (session?.user) {
         await verifyAdminRole(session.user.id);
@@ -65,30 +63,39 @@ export const AuthProvider = ({ children }) => {
   }, [verifyAdminRole]);
 
   const login = async (email, password) => {
-    const normalizedEmail = email.trim().toLowerCase();
-    const localAdminEmails = ['admin@gmail.com', 'admin@rmnhs.edu.ph'];
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (error) {
+        setLoading(false);
+        throw error;
+      }
 
-    if (localAdminEmails.includes(normalizedEmail) && password === 'admin123') {
-      const mockUser = { id: 'mock-admin-id', email: normalizedEmail };
-      setUser(mockUser);
-      setIsAdmin(true);
-      localStorage.setItem('mock_user', JSON.stringify(mockUser));
-      return { user: mockUser };
+      setUser(data.user);
+      if (data.user) {
+        await verifyAdminRole(data.user.id);
+      }
+      setLoading(false);
+      return data;
+    } catch (err) {
+      setLoading(false);
+      throw err;
     }
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) throw error;
-    return data;
   };
 
   const logout = async () => {
-    localStorage.removeItem('mock_user');
-    setIsAdmin(false);
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    setLoading(true);
+    try {
+      setIsAdmin(false);
+      setUser(null);
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

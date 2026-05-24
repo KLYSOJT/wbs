@@ -1,0 +1,38 @@
+name: Supabase Keep-Alive
+
+# Runs every 3 days to prevent Supabase free-tier project from pausing.
+# Supabase pauses projects after 7 days of inactivity — this fires well within that window.
+on:
+  schedule:
+    - cron: '0 0 */3 * *'   # Every 3 days at midnight UTC
+  workflow_dispatch:          # Allow manual trigger from GitHub Actions UI
+
+jobs:
+  ping:
+    name: Ping Supabase Database
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Ping Supabase REST API
+        run: |
+          echo "Pinging Supabase to prevent inactivity pause..."
+
+          RESPONSE=$(curl --silent --write-out "\nHTTP_STATUS:%{http_code}" \
+            --max-time 30 \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/announcements?select=id&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
+
+          HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d: -f2)
+          BODY=$(echo "$RESPONSE" | grep -v "HTTP_STATUS")
+
+          echo "Response: $BODY"
+          echo "HTTP Status: $HTTP_STATUS"
+
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "✅ Supabase is alive and responding (HTTP $HTTP_STATUS)"
+          else
+            echo "❌ Supabase returned an unexpected status: HTTP $HTTP_STATUS"
+            exit 1
+          fi
