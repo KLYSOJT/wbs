@@ -124,7 +124,7 @@ const AdminDashboard = () => {
     const fallbackTitle = trimmedDescription.length > 70
       ? `${trimmedDescription.slice(0, 70)}...`
       : trimmedDescription;
-    const typedTitle = isNewsSection || isVideoSection ? title.trim() : '';
+    const typedTitle = title.trim();
     const publishTitle = typedTitle || fallbackTitle || (isVideoSection ? 'Untitled video' : 'Untitled announcement');
 
     try {
@@ -386,20 +386,20 @@ const AdminDashboard = () => {
 
                 <form id="announcementForm" onSubmit={handlePublish} className="space-y-5">
                   <div className="space-y-4">
-                    {isNewsSection && (
-                      <div>
-                        <label htmlFor="newsTitle" className="mb-2 block text-sm font-semibold text-gray-700">Headline</label>
-                        <input 
-                          type="text"
-                          id="newsTitle"
-                          required
-                          value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                          placeholder="Specify the publication title..."
-                          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-maroon-600 focus:ring-4 focus:ring-maroon-100"
-                        />
-                      </div>
-                    )}
+                    <div>
+                      <label htmlFor="contentTitle" className="mb-2 block text-sm font-semibold text-gray-700">
+                        {isNewsSection ? 'Headline' : 'Announcement Title'}
+                      </label>
+                      <input 
+                        type="text"
+                        id="contentTitle"
+                        required
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder={isNewsSection ? 'Specify the publication title...' : 'Enter the announcement title...'}
+                        className="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-maroon-600 focus:ring-4 focus:ring-maroon-100"
+                      />
+                    </div>
 
                     <div>
                       <label htmlFor="announcementText" className="mb-2 block text-sm font-semibold text-gray-700">

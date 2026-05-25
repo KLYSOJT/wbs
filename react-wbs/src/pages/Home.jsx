@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { toEmbedUrl } from '../lib/videoUtils';
-import { Calendar, ArrowRight, Award, Users, GraduationCap, Clock, Megaphone, Newspaper, Play } from 'lucide-react';
+import { Calendar, ArrowRight, Award, Users, GraduationCap, Clock, Megaphone, Newspaper, Play, X } from 'lucide-react';
 import HeroWaveBackground from '../components/HeroWaveBackground';
 import welcomeImg from '../assets/imgs/welcome.png';
 import makingImg from '../assets/imgs/making.png';
@@ -9,6 +9,101 @@ import tatakrectoImg from '../assets/imgs/tatakrecto.png';
 import speechlabImg from '../assets/imgs/speechlab.png';
 import comlabImg from '../assets/imgs/comlabG11-4.png';
 import coveredcourtImg from '../assets/imgs/coveredcourt.jpg';
+
+const formatLongDate = (date) => (
+  new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+);
+
+const fallbackVideos = [
+  {
+    id: 1,
+    title: 'Sample Video Title',
+    description: 'Sample description here.',
+    created_at: '2026-01-01T00:00:00Z',
+    video_url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+  },
+  {
+    id: 2,
+    title: 'Campus Highlights',
+    description: 'A quick look at recent school activities and student moments.',
+    created_at: '2026-01-08T00:00:00Z',
+    video_url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+  },
+  {
+    id: 3,
+    title: 'Official School Update',
+    description: 'Featured clips and announcements from the RMNHS community.',
+    created_at: '2026-01-15T00:00:00Z',
+    video_url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+  },
+];
+
+const ArticleModal = ({ item, onClose, category, bodyLabel, emptyText, EmptyIcon, emptyClassName }) => {
+  if (!item) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-gray-950/70 backdrop-blur-sm">
+      <button
+        type="button"
+        aria-label={`Close ${category.toLowerCase()}`}
+        onClick={onClose}
+        className="absolute inset-0 cursor-default"
+      />
+      <div className="absolute inset-x-0 bottom-0 top-[88px] flex items-center justify-center p-4 sm:p-6 lg:top-[94px]">
+      <article className="relative grid max-h-full w-full max-w-3xl grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-[1.5rem] bg-white shadow-2xl ring-1 ring-black/5">
+        <button
+          type="button"
+          aria-label={`Close ${category.toLowerCase()}`}
+          onClick={onClose}
+          className="absolute right-3 top-3 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-gray-700 shadow-lg ring-1 ring-black/10 transition hover:bg-maroon-800 hover:text-white sm:right-4 sm:top-4"
+        >
+          <X size={18} />
+        </button>
+
+        <div className="relative flex h-44 items-center justify-center overflow-hidden bg-[#f4f0eb] sm:h-56 lg:h-64">
+          {item.image_url ? (
+            <img src={item.image_url} alt={item.title} className="h-full w-full object-contain" />
+          ) : (
+            <div className={`flex h-full w-full items-center justify-center ${emptyClassName}`}>
+              <EmptyIcon size={64} />
+            </div>
+          )}
+        </div>
+
+        <div className="min-h-0 overflow-y-auto">
+          <div className="mx-auto px-5 pb-8 pt-4 sm:px-8 sm:pb-10">
+            <div className="border-t border-gray-200" />
+
+            <header className="py-7 sm:py-9">
+              <p className="mb-4 flex items-center gap-2 text-xs font-medium text-gray-500 sm:hidden">
+                <Calendar size={15} />
+                {formatLongDate(item.created_at)}
+              </p>
+              <h2 className="text-3xl font-bold leading-tight tracking-tight text-gray-950 sm:text-4xl">
+                {item.title}
+              </h2>
+              <div className="mt-5 flex flex-col gap-2 text-base font-medium text-gray-500 sm:flex-row sm:items-center sm:justify-between">
+                <p>RMNHS Office</p>
+                <p className="hidden items-center gap-2 text-sm text-gray-400 sm:flex">
+                  <Calendar size={15} />
+                  {formatLongDate(item.created_at)}
+                </p>
+              </div>
+            </header>
+
+            <section className="border-t border-gray-200 pt-6">
+              <p className="text-[12px] font-bold uppercase tracking-[0.28em] text-maroon-800">{bodyLabel}</p>
+              <div className="mt-5 whitespace-pre-line text-base leading-8 text-gray-700">
+                {item.description || emptyText}
+              </div>
+            </section>
+          </div>
+        </div>
+      </article>
+      </div>
+    </div>
+  );
+};
 
 const Home = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -19,34 +114,11 @@ const Home = () => {
   const [newsPage, setNewsPage] = useState(1);
   const [featuredVideos, setFeaturedVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
+  const [selectedNews, setSelectedNews] = useState(null);
   
   const slides = [welcomeImg, makingImg, tatakrectoImg];
   const itemsPerPage = 3;
-
-  // Hardcoded fallback playlist rendered when database has no videos yet
-  const fallbackVideos = [
-    {
-      id: 1,
-      title: 'Sample Video Title',
-      description: 'Sample description here.',
-      created_at: '2026-01-01T00:00:00Z',
-      video_url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    },
-    {
-      id: 2,
-      title: 'Campus Highlights',
-      description: 'A quick look at recent school activities and student moments.',
-      created_at: '2026-01-08T00:00:00Z',
-      video_url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    },
-    {
-      id: 3,
-      title: 'Official School Update',
-      description: 'Featured clips and announcements from the RMNHS community.',
-      created_at: '2026-01-15T00:00:00Z',
-      video_url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    },
-  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,6 +153,25 @@ const Home = () => {
     }, 5000);
     return () => clearInterval(timer);
   }, [slides.length]);
+
+  useEffect(() => {
+    if (!selectedAnnouncement && !selectedNews) return undefined;
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setSelectedAnnouncement(null);
+        setSelectedNews(null);
+      }
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedAnnouncement, selectedNews]);
 
   const stats = [
     { icon: <GraduationCap className="text-maroon-800" />, label: 'Students Enrolled', value: '4,500+' },
@@ -137,7 +228,11 @@ const Home = () => {
         </div>
         <h3 className="text-2xl font-bold text-gray-950 tracking-tight leading-tight">{item.title}</h3>
         <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">{item.description}</p>
-        <button className="inline-flex w-fit items-center gap-3 rounded-full border border-gray-200 px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-600 transition-all hover:border-maroon-800 hover:text-maroon-800">
+        <button
+          type="button"
+          onClick={() => setSelectedAnnouncement(item)}
+          className="inline-flex w-fit items-center gap-3 rounded-full border border-gray-200 px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-600 transition-all hover:border-maroon-800 hover:text-maroon-800"
+        >
           Read more <ArrowRight size={16} />
         </button>
       </div>
@@ -162,7 +257,11 @@ const Home = () => {
         </div>
         <h3 className="text-2xl font-bold text-gray-950 tracking-tight leading-tight">{item.title}</h3>
         <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">{item.description}</p>
-        <button className="inline-flex w-fit items-center gap-3 rounded-full border border-gray-200 px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-600 transition-all hover:border-maroon-800 hover:text-maroon-800">
+        <button
+          type="button"
+          onClick={() => setSelectedNews(item)}
+          className="inline-flex w-fit items-center gap-3 rounded-full border border-gray-200 px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-600 transition-all hover:border-maroon-800 hover:text-maroon-800"
+        >
           Read more <ArrowRight size={16} />
         </button>
       </div>
@@ -516,6 +615,25 @@ const Home = () => {
             </div>
          </div>
       </section>
+
+      <ArticleModal
+        item={selectedAnnouncement}
+        onClose={() => setSelectedAnnouncement(null)}
+        category="Announcement"
+        bodyLabel="Announcement"
+        emptyText="No announcement details available."
+        EmptyIcon={Megaphone}
+        emptyClassName="bg-maroon-50 text-maroon-800"
+      />
+      <ArticleModal
+        item={selectedNews}
+        onClose={() => setSelectedNews(null)}
+        category="Campus Journal"
+        bodyLabel="News"
+        emptyText="No news details available."
+        EmptyIcon={Newspaper}
+        emptyClassName="bg-gray-950 text-white"
+      />
 
     </main>
   );

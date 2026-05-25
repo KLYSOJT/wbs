@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import History from './pages/History';
@@ -23,10 +24,66 @@ import AdminMemoranda from './pages/Admin/Memoranda';
 import AdminLearningMaterials from './pages/Admin/LearningMaterials';
 import AdminLocation from './pages/Admin/Location';
 
+const pageTitles = {
+  '/': 'Home',
+  '/about/history': 'Historical Profile',
+  '/about/vmc': 'Vision and Mission',
+  '/about/organizational-structure': 'Organizational Structure',
+  '/about/recognized-organizations': 'Recognized Organizations',
+  '/resources/school-memorandum': 'School Memorandum',
+  '/resources/division-memorandum': 'Division Memorandum',
+  '/resources/deped-memorandum': 'DepEd Memorandum',
+  '/resources/deped-order': 'DepEd Order',
+  '/resources/grade-7': 'Grade 7 Learning Materials',
+  '/resources/grade-8': 'Grade 8 Learning Materials',
+  '/resources/grade-9': 'Grade 9 Learning Materials',
+  '/resources/grade-10': 'Grade 10 Learning Materials',
+  '/location': 'Location',
+  '/research': 'Research',
+  '/transparency/info': 'Transparency Information',
+  '/transparency/app': 'Annual Procurement Plan',
+  '/transparency/award-contracts': 'Award of Contracts',
+  '/transparency/bac': 'Bids and Awards Committee',
+  '/transparency/bid-bulletin': 'Bid Bulletin',
+  '/transparency/invitation-to-bid': 'Invitation to Bid',
+  '/transparency/philgeps': 'PhilGEPS',
+  '/transparency/procurement-reports': 'Procurement Reports',
+  '/transparency/spta': 'SPTA',
+  '/transparency/sslg': 'SSLG',
+  '/transparency/bsp': 'BSP',
+  '/transparency/gsp': 'GSP',
+  '/transparency/tr': 'TR',
+  '/transparency/mooe': 'MOOE',
+  '/transparency/red-cross': 'Red Cross',
+  '/transparency/sef': 'SEF Records',
+  '/transparency/year-end-report': 'Year End Report',
+  '/admin/login': 'Admin Login',
+  '/admin/dashboard': 'Admin Dashboard',
+  '/admin/organizational-structure': 'Admin Organizational Structure',
+  '/admin/recognized-organizations': 'Admin Recognized Organizations',
+  '/admin/memoranda': 'Admin Memoranda',
+  '/admin/learning-materials': 'Admin Learning Materials',
+  '/admin/research': 'Admin Research',
+  '/admin/location': 'Admin Location',
+  '/admin/transparency': 'Admin Transparency',
+};
+
+const PageTitle = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const pageTitle = pageTitles[pathname] || 'Page Under Construction';
+    document.title = `${pageTitle} | RMNHS`;
+  }, [pathname]);
+
+  return null;
+};
+
 function App() {
   return (
     <AuthProvider>
       <Router>
+        <PageTitle />
         <Routes>
           {/* Admin Routes (No Layout) */}
           <Route path="/admin/login" element={<AdminLogin />} />
